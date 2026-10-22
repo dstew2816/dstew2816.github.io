@@ -6,7 +6,15 @@
 <title>Truly Diverse Soldiers case study | David Stewart</title>
 <meta name="description" content="Case study: Truly Diverse Soldiers, a Mount & Blade II: Bannerlord mod that gives every soldier a lasting identity.">
 <meta name="color-scheme" content="dark">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Truly Diverse Soldiers case study | David Stewart">
+<meta property="og:description" content="A Bannerlord mod that gives every soldier a lasting identity, so armies stop looking like clones.">
+<meta property="og:image" content="https://dstew2816.github.io/og-image.png">
+<meta property="og:url" content="https://dstew2816.github.io/projects/truly-diverse-soldiers.html">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
@@ -39,60 +47,26 @@
 </section>
 
 <section aria-labelledby="decisions">
-  <h2 id="decisions">Key decisions and tradeoffs</h2>
+  <h2 id="decisions">Three decisions that shaped it</h2>
 
-  <article class="decision">
-    <h3>Build soldiers correctly from the start</h3>
-    <dl>
-      <dt>Chose</dt><dd>A configurable share of regular soldiers, 30% by default, spawn as women built that way from the start, with body, animations and voice. Their faces, hair and tattoos come from their own culture's women.</dd>
-      <dt>Over</dt><dd>Swapping a soldier's appearance after it spawns.</dd>
-      <dt>Because</dt><dd>It looks and sounds right, and each culture keeps its character.</dd>
-    </dl>
-  </article>
+  <h3 class="dec">I derive each soldier from a stable seed instead of saving anything.</h3>
+  <p>Each soldier's gender, face and build come from a seed hashed from the party, the troop type and the soldier's slot, so the same slot always produces the same soldier. That means the mod stores nothing in the save, which makes it safe to add or remove mid-campaign. The cost is that the game only tracks how many of each troop a party has, not individuals. When soldiers die or are upgraded, later soldiers shift into new slots and their appearance changes. I state that limit on the mod page instead of hiding it.</p>
 
-  <article class="decision">
-    <h3>Derive identity from a stable seed instead of saving it</h3>
-    <dl>
-      <dt>Chose</dt><dd>Each soldier's gender, face and build come from a seed hashed from the party, the troop type and the soldier's slot, so the same slot always produces the same soldier.</dd>
-      <dt>Because</dt><dd>The mod stores nothing in the save, which makes it safe to add or remove mid-campaign.</dd>
-      <dt>Cost</dt><dd>The game only tracks how many of each troop a party has, not individuals. When soldiers die or are upgraded, later soldiers shift into new slots and their appearance changes.</dd>
-    </dl>
-  </article>
+  <h3 class="dec">I build soldiers correctly from the start.</h3>
+  <p>A configurable share of regular soldiers, 30% by default, spawn as women built that way from the start, with the right body, animations and voice, rather than being swapped after they appear. Their faces, hair and tattoos come from their own culture's women, and every culture keeps its character: Sturgians stay broad and Khuzaits stay lean, just less uniform.</p>
 
-  <article class="decision">
-    <h3>Let the player choose consistency or performance</h3>
-    <dl>
-      <dt>Chose</dt><dd>An ExactFaces setting. On, which is the default, keeps every soldier's face identical between battles. Off uses the game's face cache, which is slightly lighter in huge battles but only similar, not identical.</dd>
-      <dt>Because</dt><dd>Players with very large battles and long mod lists have different limits than players who want exact faces.</dd>
-    </dl>
-  </article>
-
-  <article class="decision">
-    <h3>Leave heroes and other mods' choices alone</h3>
-    <dl>
-      <dt>Chose</dt><dd>The player character, companions, lords and all other heroes are never changed, and troops whose gender or face another mod has already set are left as they are.</dd>
-      <dt>Because</dt><dd>Many mods depend on heroes, so touching them would break the load orders this audience runs.</dd>
-    </dl>
-  </article>
-
-  <article class="decision">
-    <h3>Simple, forgiving configuration</h3>
-    <dl>
-      <dt>Chose</dt><dd>Three settings in one config file (female share, body variety, ExactFaces) and a message at the main menu showing the active settings. If the file is missing or a value is unreadable, it falls back to defaults.</dd>
-    </dl>
-  </article>
+  <h3 class="dec">I leave heroes and other mods' choices alone, and let players pick the tradeoff.</h3>
+  <p>The player character, companions, lords and every other hero are never changed, and troops whose gender or face another mod has already set are left as they are. Many mods depend on heroes, so touching them would break the load orders this audience runs. For performance, one setting lets players choose between identical faces every battle and the game's lighter face cache, which only looks similar. Three settings in one config file cover everything, and the mod falls back to defaults if the file is missing.</p>
 </section>
 
 <section aria-labelledby="results">
   <h2 id="results">Results</h2>
-  <p>Released as v1.0.0 on Nexus Mods. It works in field battles, sieges and hideouts, and it was tested alongside a load order of more than 100 mods, including Dynamic Troop Equipment, Culture Diversity Mod, Living Armies and RBM.</p>
-  <ul class="stats three">
-    <li><strong>v1.0.0</strong><span>first release</span></li>
-    <li><strong>100+</strong><span>mods in the test load order</span></li>
-    <li><strong class="ph">not yet</strong><span>download count</span></li>
+  <p>Released as v1.0.0 on Nexus Mods. It works in field battles, sieges and hideouts, and I tested it alongside a load order of more than 100 mods, including Dynamic Troop Equipment, Culture Diversity Mod, Living Armies and RBM.</p>
+  <ul class="stats">
+    <li><strong>v1.0.0</strong> <span>first release</span></li>
+    <li><strong>100+</strong> <span>mods in the test load order</span></li>
   </ul>
   <div class="callout"><p>Known limitations, stated on the mod page: soldier appearance shifts when slots change, Custom Battle is random each time because it has no persistent parties, and height is not varied yet.</p></div>
-  <p class="todo">Download count and any player feedback or endorsements, once you have them.</p>
 </section>
 
 <section aria-labelledby="next">

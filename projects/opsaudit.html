@@ -6,7 +6,15 @@
 <title>OpsAudit case study | David Stewart</title>
 <meta name="description" content="Case study: OpsAudit, an audit that finds what operations automation silently misses and puts a price on it.">
 <meta name="color-scheme" content="dark">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpsAudit case study | David Stewart">
+<meta property="og:description" content="An audit that finds what operations automation silently misses and puts a price on it.">
+<meta property="og:image" content="https://dstew2816.github.io/og-image.png">
+<meta property="og:url" content="https://dstew2816.github.io/projects/opsaudit.html">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
@@ -27,6 +35,11 @@
   </dl>
 </header>
 
+<figure class="shot demo">
+  <img src="img/opsaudit-demo.gif" width="880" height="546" alt="A 15-second walkthrough of the OpsAudit demo: the audit, the control charts, the fix queue and the classifier.">
+  <figcaption>A 15-second walkthrough of the live demo. <a href="https://dstew2816.github.io/ops-audit/">Open it and click around.</a></figcaption>
+</figure>
+
 <section aria-labelledby="problem">
   <h2 id="problem">The problem</h2>
   <p>Automated procedures watch for a condition, such as a port blocked for 30 minutes, and act on it. They run on live events with no historical replay. If the platform is down, an event arrives late, or a rule is slightly too narrow, the case is never picked up and nothing records that it was missed.</p>
@@ -43,72 +56,44 @@
 </section>
 
 <section aria-labelledby="decisions">
-  <h2 id="decisions">Key decisions and tradeoffs</h2>
+  <h2 id="decisions">Three decisions that shaped it</h2>
 
-  <article class="decision">
-    <h3>Audit from raw history, not from the procedure's own log</h3>
-    <dl>
-      <dt>Chose</dt><dd>Rebuild what each procedure should have picked up from raw events, then anti-join against what it logged.</dd>
-      <dt>Over</dt><dd>Trusting the procedure's reported success rate.</dd>
-      <dt>Because</dt><dd>The reported rate only counts handled cases, so it cannot show what was never seen.</dd>
-      <dt>Cost</dt><dd>It needs two independent sources, and in practice the hard part is access to the automation's own log.</dd>
-    </dl>
-  </article>
+  <h3 class="dec">I audited from raw history, not from each procedure's own log.</h3>
+  <p>A procedure's success rate only counts the cases it handled, so it can never show a case it never saw. I rebuilt what each procedure should have picked up from the raw events and compared that with what it logged. The cost is that the audit needs two independent sources, and in practice the hard part is getting access to the automation's own log.</p>
 
-  <article class="decision">
-    <h3>Hand-written answer keys, with checks built to fail</h3>
-    <dl>
-      <dt>Chose</dt><dd>Seven hand-written baseline queries as the answer key, and scorers that are themselves tested by feeding them deliberately wrong answers.</dd>
-      <dt>Because</dt><dd>A query that finds nothing looks the same as one that is broken, so the audit fails if any procedure returns zero misses.</dd>
-      <dt>Cost</dt><dd>I wrote the keys, so they share my vocabulary and the numbers lean optimistic.</dd>
-    </dl>
-  </article>
+  <h3 class="dec">I made the comparison hard to cheat, including against myself.</h3>
+  <p>I wrote the answer keys by hand and froze the baseline rules before training any model, then scored the test set once. The checks are tested too: the audit fails if a procedure returns zero misses, because a query that finds nothing looks the same as one that is broken. The cost is that I wrote the keys, so they share my vocabulary and the results lean optimistic. I say that on the page instead of hiding it.</p>
 
-  <article class="decision">
-    <h3>Fix the control limits from a healthy baseline</h3>
-    <dl>
-      <dt>Chose</dt><dd>Set statistical process control limits from the first 15 subgroups, then hold them fixed.</dd>
-      <dt>Over</dt><dd>Setting limits from all the data.</dd>
-      <dt>Because</dt><dd>Limits from all the data let a drift drag the center line toward itself and hide it.</dd>
-    </dl>
-  </article>
-
-  <article class="decision">
-    <h3>Price the misses with assumptions anyone can edit</h3>
-    <dl>
-      <dt>Chose</dt><dd>Turn each miss into labor hours and cost at risk, group misses into fixes, and rank them by cost, hours or payback. Every input is an editable assumption, set low on purpose.</dd>
-      <dt>Because</dt><dd>Managers act on a ranked list of fixes, not on a miss count.</dd>
-      <dt>Cost</dt><dd>The dollar figures are illustrative, not measured. The annualized figure just scales the 14-day window and should not be read as a forecast.</dd>
-    </dl>
-  </article>
-
-  <article class="decision">
-    <h3>Freeze the baseline before training the model</h3>
-    <dl>
-      <dt>Chose</dt><dd>Branching hand-written keyword rules as the baseline, frozen before any model was trained. One stratified split, tuning by cross-validation on training data only, and the test set scored once.</dd>
-      <dt>Because</dt><dd>It keeps the comparison between the model and the rules honest.</dd>
-    </dl>
-  </article>
-
-  <article class="decision">
-    <h3>Split the AI layer into three calls</h3>
-    <dl>
-      <dt>Chose</dt><dd>Resolve the procedure, extract the condition, then compose the SQL, as three separate model calls graded against the hand-written baselines.</dd>
-      <dt>Because</dt><dd>A wrong extraction is visible before any SQL is written, so a person can catch it. The model proposes and the baselines check it.</dd>
-    </dl>
-  </article>
+  <h3 class="dec">I priced the misses with assumptions anyone can change.</h3>
+  <p>Managers act on a ranked list of fixes, not on a count of misses. So each miss becomes labor hours and cost at risk, misses are grouped into fixes, and the fixes are ranked by cost, hours or payback. Every input is an editable assumption, set low on purpose. The dollar figures are illustrative and the annualized number just scales a 14-day window, so it should not be read as a forecast.</p>
 </section>
 
 <section aria-labelledby="results">
   <h2 id="results">Results</h2>
   <ul class="stats three">
-    <li><strong>26.1%</strong><span>miss rate: 24 of 92 qualifying cases</span></li>
-    <li><strong>89% vs 66%</strong><span>random forest vs hand-written rules</span></li>
-    <li><strong>33</strong><span>specific check types classified</span></li>
+    <li><strong>26.1%</strong> <span>miss rate: 24 of 92 qualifying cases</span></li>
+    <li><strong>89% vs 66%</strong> <span>accuracy: random forest vs hand-written rules, on 413 held-out records</span></li>
+    <li><strong>33</strong> <span>specific check types classified</span></li>
   </ul>
-  <p><strong>Audit.</strong> 92 qualifying cases, 68 logged, 24 missed. The largest fix, an outage backfill, covers 8 of the 24 misses.</p>
-  <p><strong>Statistical process control.</strong> A drift planted in one lane alarmed three subgroups after it started, and the chart on the difference between the two parallel lanes flagged it at subgroup 22. A single-subgroup spike produced exactly one alert.</p>
-  <p><strong>Classifier.</strong> On the 413-record test set, the random forest named the specific check 89.1% of the time. Hand-written rules with multilingual keywords scored 66.3%, and always guessing the most common class scored 2.9%.</p>
+
+  <p><strong>Audit.</strong> 92 qualifying cases, 68 logged, 24 missed. Grouped into fixes and ranked by cost at risk, the largest fix, an outage backfill, covers 8 of the 24 misses.</p>
+  <figure class="shot">
+    <img src="img/opsaudit-fixes.png" width="1400" height="534" loading="lazy" alt="The ranked fix queue: one row per fix, with cause, number of misses, labor hours, cost at risk, effort and payback. The top fix, an outage, accounts for eight misses.">
+    <figcaption>The ranked fix queue (top of the list). One row per fix, with its cause, misses, hours, cost at risk and payback. Dollar figures come from editable, deliberately low assumptions.</figcaption>
+  </figure>
+
+  <p><strong>Statistical process control.</strong> A drift planted in one of two parallel process lanes alarmed three subgroups after it started. The chart on the difference between the lanes, shown below, flagged it at subgroup 22. A single-subgroup spike produced exactly one alert.</p>
+  <figure class="shot">
+    <img src="img/opsaudit-drift.png" width="1400" height="474" loading="lazy" alt="A control chart of the difference between two process lanes. The points stay near the center line for the first 15 subgroups, then drift upward and trigger red alerts.">
+    <figcaption>Drift being caught. The control limits are learned from the first 15 subgroups and then held fixed. Red points are alerts, and the first one fires at subgroup 22.</figcaption>
+  </figure>
+
+  <p><strong>Classifier.</strong> Each procedure definition is messy text, and the classifier has to name what it watches. There are 33 specific check types, such as queue time, time since maintenance, an out-of-control alert left open, a test result with no decision, a hold with no owner, and repeated autoload failures. On the 413-record test set, the random forest named the specific check 89.1% of the time. Hand-written rules with multilingual keywords scored 66.3%, and always guessing the most common class scored 2.9%.</p>
+  <figure class="shot">
+    <img src="img/opsaudit-confusion.png" width="1047" height="449" loading="lazy" alt="A confusion matrix for six kinds of check. Most counts sit on the diagonal, for example 150 of 175 interval checks were identified correctly.">
+    <figcaption>Where the model gets confused. Decision tree, naming the kind of check (6 kinds) on the 413 held-out records: 355 correct, or 86.0%. Green is right, red is a mix-up.</figcaption>
+  </figure>
+
   <p><strong>Real data, and a weak result.</strong> I stress-tested the same ideas on UCI SECOM, a public semiconductor dataset of 1,567 production runs. The control charts as built did not separate failures from passes (95.0% of failing runs were flagged, but so were 98.8% of passing runs), and no classifier clearly beat chance on the later runs. I report it as it came out.</p>
   <p><strong>AI layers.</strong> One run each. The right procedure resolved 5 of 5 times, but only 2 of 5 generated queries matched the baseline exactly. Root-cause grouping passed 3 of 5 checks and recovered the outage cluster exactly.</p>
   <div class="callout"><p>Limits: synthetic data, a small sample (24 misses, one 14-day window), answer keys I wrote myself, and one run of each AI layer. Treat the numbers as a demonstration of method, not a benchmark or a forecast.</p></div>

@@ -3,10 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Backroom case study | David Stewart</title>
-<meta name="description" content="Case study: Backroom, a game master tool that surfaces your own prepped ideas mid-session.">
+<title>Backroom product brief | David Stewart</title>
+<meta name="description" content="Product brief: Backroom, a game master tool that surfaces your own prepped ideas mid-session.">
 <meta name="color-scheme" content="dark">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Backroom product brief | David Stewart">
+<meta property="og:description" content="A game master tool that surfaces your own prepped ideas mid-session. The problem, users, scope and principles.">
+<meta property="og:image" content="https://dstew2816.github.io/og-image.png">
+<meta property="og:url" content="https://dstew2816.github.io/projects/backroom.html">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
@@ -19,91 +27,79 @@
 
 <header class="case-head">
   <h1>Backroom <span class="status">In progress</span></h1>
-  <p class="lede">A game master tool that surfaces your own prepped ideas mid-session.</p>
+  <p class="lede">A product brief for a game master tool that surfaces your own prepped ideas mid-session.</p>
   <dl class="facts">
     <div><dt>Status</dt><dd>In progress, with a public demo</dd></div>
-    <div><dt>Runs</dt><dd>Locally, no AI service</dd></div>
+    <div><dt>Runs</dt><dd>Locally, no generative AI</dd></div>
     <div><dt>Built with</dt><dd>TypeScript, Node, local embeddings</dd></div>
   </dl>
 </header>
 
 <section aria-labelledby="problem">
   <h2 id="problem">The problem</h2>
-  <p>A game master prepares far more than a single session can use, and the prep lives in notes. Mid-session, when the table does something unexpected, the useful idea is somewhere in those notes and there is no time to look for it.</p>
-  <p class="todo">The story behind it: how you ran into this problem yourself, in a sentence or two.</p>
+  <p>A game master prepares far more than a single session can use, and the prep lives in notes. Mid-session, when the table does something unexpected, the useful idea is somewhere in those notes and there is no time to look for it. The prep exists, but it is not available when it matters.</p>
+  <p class="todo">The story behind it: how you ran into this at your own table, in a sentence or two.</p>
 </section>
 
 <section aria-labelledby="users">
   <h2 id="users">Who it is for</h2>
-  <p>Game masters who keep their prep as Markdown notes and want to find the right idea for the scene in front of them while the session is running.</p>
-  <p class="todo">Who actually tried it, if anyone has: how many game masters, and what system or campaign they run.</p>
+  <p>Game masters who keep their prep as Markdown notes and run live sessions, where attention is the scarce resource. They need an answer in seconds, in their own words, without leaving the scene.</p>
+  <p class="todo">Which game masters you have in mind or have asked, and what system or campaign they run.</p>
 </section>
 
-<section aria-labelledby="decisions">
-  <h2 id="decisions">Key decisions and tradeoffs</h2>
-
-  <article class="decision">
-    <h3>Find the game master's own ideas, never generate new ones</h3>
-    <dl>
-      <dt>Chose</dt><dd>Search and rank text the game master already wrote. It generates nothing and calls no AI service.</dd>
-      <dt>Because</dt><dd>The value is recalling prep you trust, in your own words and your own world, not receiving someone else's suggestions.</dd>
-      <dt>Cost</dt><dd>It can only be as good as the notes behind it, and new notes need a re-index before they can be found.</dd>
-    </dl>
-  </article>
-
-  <article class="decision">
-    <h3>Run locally</h3>
-    <dl>
-      <dt>Chose</dt><dd>Notes are only read, and the index, usage state and logs stay in the project folder. The only network access is a one-time download of a small embedding model (about 25 MB).</dd>
-      <dt>Because</dt><dd>Campaign notes are personal, and a tool used mid-session should not depend on a connection.</dd>
-    </dl>
-  </article>
-
-  <article class="decision">
-    <h3>One idea per result</h3>
-    <dl>
-      <dt>Chose</dt><dd>Split notes on headings, paragraphs and top-level bullets, keep a bullet's indented children with it, and show each result with its note, heading and line numbers.</dd>
-      <dt>Because</dt><dd>A result has to be readable at a glance and traceable back to where it was written.</dd>
-    </dl>
-  </article>
-
-  <article class="decision">
-    <h3>Be honest about relevance</h3>
-    <dl>
-      <dt>Chose</dt><dd>Show how far above the average idea in the notes a match scores, and draw a divider where relevance drops sharply.</dd>
-      <dt>Over</dt><dd>Presenting a ranked list as if every row were a good answer.</dd>
-      <dt>Because</dt><dd>At the table, you need to know when to stop reading the list.</dd>
-    </dl>
-  </article>
-
-  <article class="decision">
-    <h3>Track what gets used</h3>
-    <dl>
-      <dt>Chose</dt><dd>A "mark used" button, an "unused only" filter, and a boost for old prep that has never been used. Usage is keyed on the idea's text, not its line number, so marks survive edits elsewhere in the note.</dd>
-      <dt>Because</dt><dd>Prep that is never used is the thing worth resurfacing, and it is the signal for what to improve next.</dd>
-    </dl>
-  </article>
-
-  <article class="decision">
-    <h3>A public demo that cannot leak private notes</h3>
-    <dl>
-      <dt>Chose</dt><dd>The demo ships a precomputed index, runs the search in the visitor's browser, and makes no outside requests. The build refuses any folder other than the sample notes unless explicitly overridden.</dd>
-      <dt>Cost</dt><dd>The first visit downloads about 36 MB for the model and runtime, then the browser caches it.</dd>
-    </dl>
-  </article>
+<section aria-labelledby="scope">
+  <h2 id="scope">Scope</h2>
+  <div class="scope">
+    <div>
+      <h3>In scope now</h3>
+      <ul class="plain">
+        <li>Type the current scene and get the most relevant ideas from your own notes, each with its note, heading and line numbers.</li>
+        <li>Mark an idea as used, filter to unused ideas, and give old unused prep a small boost.</li>
+        <li>Re-index changed notes.</li>
+        <li>Run entirely on your machine. A public demo runs the same search in the browser on invented sample notes.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Out of scope</h3>
+      <ul class="plain">
+        <li>Generating plots, characters, descriptions or any new content.</li>
+        <li>Editing or rewriting the game master's notes.</li>
+        <li>Sending notes to an outside service.</li>
+      </ul>
+    </div>
+  </div>
 </section>
 
-<section aria-labelledby="results">
-  <h2 id="results">Results so far</h2>
-  <p>It works end to end: a local web page and command-line tools for search, marking ideas used and re-indexing, backed by an automated test suite, plus a public demo built from a small sample of invented world notes.</p>
-  <p class="todo">Any usage or feedback numbers once you have them (sessions run, ideas surfaced and marked used, how fast a search feels).</p>
-</section>
-
-<section aria-labelledby="next">
-  <h2 id="next">What I would do next</h2>
+<section aria-labelledby="principle">
+  <h2 id="principle">The principle: AI maintains, never writes your story</h2>
+  <p>Anything AI does in this tool is limited to looking after the game master's own material. It never authors the story. The tool finds and ranks text the game master wrote, and today it uses no generative AI at all: a small local model is used only to measure how similar two pieces of text are.</p>
+  <p>I held this line for three reasons.</p>
   <ul class="plain">
-    <li>Run it in real sessions and use the "mark used" data to learn which kinds of ideas get used and which are never found.</li>
-    <li>Tune the ranking and the relevance divider against those sessions instead of my own guesses.</li>
+    <li><strong>Trust at the table.</strong> A game master has to be able to act on a result without checking it. A result that is their own sentence, with the note and line it came from, needs no checking. Generated text would.</li>
+    <li><strong>The world stays coherent.</strong> A campaign only works if its facts agree with each other. New text from a model would not know the world, and would quietly add contradictions.</li>
+    <li><strong>The value is recall, not invention.</strong> Game masters do not lack ideas. They lack access to the ones they already had.</li>
+  </ul>
+  <p class="todo">What "maintain" means in practice: the specific upkeep jobs you imagine AI helping with, such as tagging or tidying notes.</p>
+</section>
+
+<section aria-labelledby="measure">
+  <h2 id="measure">How I would know it works</h2>
+  <p>The tool already records which results a game master marks as used. That is the product signal. The questions I would track:</p>
+  <ul class="plain">
+    <li>How often a search leads to an idea being marked used.</li>
+    <li>How much old, never-used prep gets surfaced and used, since resurfacing it is the point.</li>
+    <li>How long a search takes, because a tool used mid-session has to feel instant.</li>
+  </ul>
+  <p>I have not yet measured these with real sessions. For scale, building the demo index from 5 sample notes (29 ideas) takes about 0.6 seconds.</p>
+  <p class="todo">Any real usage or feedback once you have it.</p>
+</section>
+
+<section aria-labelledby="status">
+  <h2 id="status">Status and next</h2>
+  <p>It works end to end: a local web page and command-line tools for search, marking ideas used and re-indexing, backed by an automated test suite, plus the public demo.</p>
+  <ul class="plain">
+    <li>Run it in real sessions and use the "mark used" data to see which ideas get found and which never do.</li>
+    <li>Tune the ranking and the point where relevance drops off against those sessions.</li>
     <li>Pick up changed notes without a manual re-index.</li>
   </ul>
 </section>

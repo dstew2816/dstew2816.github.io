@@ -39,7 +39,7 @@ header::after {
 @media (prefers-reduced-motion: reduce) { header::before { animation: none; } }
 h1 { font: 700 clamp(2.6rem, 10vw, 3.75rem)/1 "Barlow Condensed", "Arial Narrow", sans-serif; text-transform: uppercase; letter-spacing: .02em; margin: 0 0 .5rem; }
 .sub { color: var(--muted); margin: 0 0 1.25rem; font-size: .95rem; }
-.pos { font-size: clamp(1.1rem, 3.4vw, 1.3rem); line-height: 1.45; margin: 0 0 1.75rem; font-weight: 500; max-width: 34rem; }
+.pos { text-wrap: balance; font-size: clamp(1.1rem, 3.4vw, 1.3rem); line-height: 1.45; margin: 0 0 1.75rem; font-weight: 500; max-width: 34rem; }
 .links { display: flex; flex-wrap: wrap; gap: .6rem; padding: 0; margin: 0; list-style: none; }
 .links a { display: inline-block; padding: .5rem .95rem; border: 1px solid var(--border); border-radius: 2px; text-decoration: none; font-size: .92rem; min-height: 2.5rem; transition: border-color .15s, background .15s; }
 .links a:hover { border-color: var(--silver); background: rgba(255,255,255,.04); }
@@ -86,7 +86,7 @@ footer { color: var(--muted); font-size: .85rem; }
 .crumb a:hover { color: var(--text); }
 .case-head { position: relative; isolation: isolate; padding-bottom: 2rem; margin-bottom: 2.5rem; border-bottom: 1px solid var(--border); }
 .case-head h1 { font-size: clamp(2.2rem, 8vw, 3.2rem); }
-.lede { font-size: 1.15rem; line-height: 1.5; font-weight: 500; margin: 0 0 1.5rem; max-width: 36rem; }
+.lede { text-wrap: balance; font-size: 1.15rem; line-height: 1.5; font-weight: 500; margin: 0 0 1.5rem; max-width: 36rem; }
 .facts { display: grid; grid-template-columns: 1fr; gap: .75rem 2rem; margin: 0; }
 .facts div { border-top: 1px solid var(--border); padding-top: .5rem; }
 .facts dt { font: 600 .75rem "Barlow Condensed", "Arial Narrow", sans-serif; text-transform: uppercase; letter-spacing: .2em; color: var(--muted); }
@@ -124,3 +124,19 @@ footer { color: var(--muted); font-size: .85rem; }
   .decision dl { grid-template-columns: 7.5rem 1fr; }
   .decision dt { margin-top: .15rem; padding-top: .2rem; }
 }
+
+/* About, figures and case-study prose */
+.about { margin: 0; max-width: 36rem; font-size: 1.05rem; }
+.shot { margin: 0 0 2rem; }
+.shot img { display: block; width: 100%; height: auto; border: 1px solid var(--border); border-top-color: var(--chrome); border-radius: 2px; background: var(--well); }
+.shot figcaption { margin-top: .5rem; font-size: .85rem; color: var(--muted); max-width: 40rem; }
+.shot figcaption a { color: var(--text); text-decoration-color: var(--steel); }
+.case .demo { margin-bottom: 2.5rem; }
+.case h3.dec { margin: 1.75rem 0 .5rem; font: 600 1.3rem/1.3 "Barlow Condensed", "Arial Narrow", sans-serif; letter-spacing: .02em; }
+.case h3.dec:first-of-type { margin-top: 0; }
+.scope { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+.scope > div { background: linear-gradient(180deg, var(--card-top), var(--card)); border: 1px solid var(--border); border-top-color: var(--chrome); box-shadow: inset 0 1px 0 rgba(255,255,255,.07); border-radius: 2px; padding: 1rem 1.25rem .5rem; }
+.scope h3 { margin: 0 0 .5rem; font: 600 .8rem "Barlow Condensed", "Arial Narrow", sans-serif; text-transform: uppercase; letter-spacing: .2em; color: var(--muted); }
+.how a { color: var(--text); text-decoration-color: var(--steel); }
+.how a:hover { text-decoration-color: var(--silver); }
+@media (min-width: 40rem) { .scope { grid-template-columns: 1fr 1fr; } }
