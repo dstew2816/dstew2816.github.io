@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>David Stewart | Industrial Engineering, Georgia Tech</title>
+<meta name="description" content="David Stewart, Industrial Engineering (Analytics & Data Science) at Georgia Tech. I find what operations systems silently miss and turn it into fixes people use.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+:root {
+  --bg: #fafaf8;
+  --surface: #ffffff;
+  --text: #1b1d21;
+  --muted: #5b6068;
+  --border: #e3e4e0;
+  --accent: #0b5cad;
+  --accent-soft: #e6f0fa;
+  --tag-bg: #f0efe9;
+  --focus: #0b5cad;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111316;
+    --surface: #1a1d21;
+    --text: #ececea;
+    --muted: #9ba0a8;
+    --border: #2b2f35;
+    --accent: #6fb1f2;
+    --accent-soft: #172433;
+    --tag-bg: #242830;
+    --focus: #6fb1f2;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+main { max-width: 46rem; margin: 0 auto; padding: 3rem 1.25rem 4rem; }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 3px; }
+
+header { margin-bottom: 3rem; }
+h1 { font-size: clamp(2rem, 7vw, 2.75rem); line-height: 1.1; margin: 0 0 .35rem; letter-spacing: -.02em; }
+.sub { color: var(--muted); margin: 0 0 1.25rem; }
+.pos { font-size: clamp(1.15rem, 3.6vw, 1.4rem); line-height: 1.4; margin: 0 0 1.5rem; font-weight: 500; }
+.links { display: flex; flex-wrap: wrap; gap: .6rem; padding: 0; margin: 0; list-style: none; }
+.links a {
+  display: inline-block; padding: .5rem .95rem; border: 1px solid var(--border);
+  border-radius: 999px; background: var(--surface); color: var(--text);
+  text-decoration: none; font-size: .95rem; min-height: 2.5rem;
+}
+.links a:hover { border-color: var(--accent); color: var(--accent); }
+
+section { margin-bottom: 2.75rem; }
+h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin: 0 0 1rem; font-weight: 600; }
+
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 1.25rem 1.25rem 1.1rem; margin-bottom: 1rem;
+}
+.card h3 { margin: 0 0 .15rem; font-size: 1.15rem; line-height: 1.3; }
+.meta { color: var(--muted); font-size: .9rem; margin: 0 0 .8rem; }
+.card p { margin: 0 0 .8rem; }
+.stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; margin: 0 0 1rem; padding: 0; list-style: none; }
+.stats li { background: var(--accent-soft); border-radius: 8px; padding: .65rem .8rem; margin: 0; }
+.stats strong { display: block; font-size: 1.3rem; line-height: 1.2; color: var(--accent); }
+.stats span { font-size: .85rem; color: var(--muted); }
+.tags { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0; padding: 0; list-style: none; }
+.tags li { margin: 0; font-size: .8rem; padding: .15rem .6rem; border-radius: 999px; background: var(--tag-bg); color: var(--muted); }
+.status { font-size: .75rem; font-weight: 600; padding: .1rem .55rem; border-radius: 999px; background: var(--tag-bg); color: var(--muted); vertical-align: middle; margin-left: .4rem; }
+.status.wip { background: var(--accent-soft); color: var(--accent); }
+.ph { color: var(--muted); font-style: italic; }
+.card .more { margin: .9rem 0 0; font-weight: 500; }
+
+.how { padding: 0; margin: 0; list-style: none; }
+.how li { padding: .9rem 0; border-top: 1px solid var(--border); }
+.how li:last-child { border-bottom: 1px solid var(--border); }
+.how strong { display: block; }
+.how span { color: var(--muted); }
+
+footer { color: var(--muted); font-size: .85rem; }
+
+@media (min-width: 40rem) {
+  main { padding-top: 5rem; }
+  .stats { grid-template-columns: repeat(4, 1fr); }
+  .stats.three { grid-template-columns: repeat(3, 1fr); }
+}
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <h1>David Stewart</h1>
+  <p class="sub">Industrial Engineering (Analytics &amp; Data Science), Georgia Tech &middot; May 2028</p>
+  <p class="pos">I find what operations systems silently miss and turn it into fixes people use.</p>
+  <ul class="links">
+    <li><a href="https://www.linkedin.com/in/david-y-stewart" rel="noopener">LinkedIn</a></li>
+    <li><a href="mailto:david.y.stewart1@gmail.com">david.y.stewart1@gmail.com</a></li>
+    <li><a href="resume.pdf">Resume (PDF)</a></li>
+  </ul>
+</header>
+
+<section aria-labelledby="exp">
+  <h2 id="exp">Experience</h2>
+  <article class="card">
+    <h3>TSMC &mdash; Automation Program Management Intern</h3>
+    <p class="meta">Summer 2026 &middot; Automation program audit</p>
+    <ul class="stats">
+      <li><strong>130</strong><span>procedures audited</span></li>
+      <li><strong>2,200+</strong><span>tools covered</span></li>
+      <li><strong>4&ndash;6%</strong><span>silent failure rate found</span></li>
+      <li><strong>~600 hrs</strong><span>manual work per month quantified</span></li>
+    </ul>
+    <p>Audited an automation program end to end, found failures that were passing unnoticed, and sized the manual effort they created. Defined a time-saved-per-run KPI that the fab's head of manufacturing approved.</p>
+  </article>
+</section>
+
+<section aria-labelledby="proj">
+  <h2 id="proj">Projects</h2>
+
+  <article class="card">
+    <h3>OpsAudit</h3>
+    <p class="meta">Audit tool for operations data</p>
+    <ul class="stats three">
+      <li><strong>26.1%</strong><span>miss rate surfaced</span></li>
+      <li><strong>89% vs 66%</strong><span>random forest vs hand-written rules</span></li>
+      <li><strong>33</strong><span>check types</span></li>
+    </ul>
+    <p>A random forest caught more than hand-written rules across 33 check types, backed by statistical process control and stress-tested on real fab data (UCI SECOM).</p>
+    <ul class="tags"><li>Random forest</li><li>Statistical process control</li><li>UCI SECOM</li></ul>
+    <p class="more"><a href="https://dstew2816.github.io/ops-audit/">View OpsAudit &rarr;</a></p>
+  </article>
+
+  <article class="card">
+    <h3>Backroom <span class="status wip">In progress</span></h3>
+    <p class="meta">Game master tool</p>
+    <p>Surfaces your own prepped ideas mid-session, so the prep you did is there when the table needs it.</p>
+    <p class="more"><a href="https://dstew2816.github.io/backroom/">View Backroom &rarr;</a></p>
+  </article>
+
+  <article class="card">
+    <h3>Truly Diverse Soldiers</h3>
+    <p class="meta">Mod for Mount &amp; Blade II: Bannerlord</p>
+    <p>Downloads: <span class="ph">not available yet</span></p>
+    <p class="more"><a href="https://www.nexusmods.com/mountandblade2bannerlord/mods/14184" rel="noopener">View on Nexus Mods &rarr;</a></p>
+  </article>
+</section>
+
+<section aria-labelledby="how">
+  <h2 id="how">How I work</h2>
+  <ul class="how">
+    <li><strong>Validate on real data</strong><span>Models and checks get tested against messy real-world data, not just clean examples.</span></li>
+    <li><strong>Keep humans in the loop for AI</strong><span>AI proposes; people with context review and decide.</span></li>
+    <li><strong>Measure what's actually used</strong><span>A fix only counts if people adopt it, so I track usage, not just delivery.</span></li>
+  </ul>
+</section>
+
+<footer>&copy; David Stewart</footer>
+
+</main>
+</body>
+</html>
