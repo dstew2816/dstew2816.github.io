@@ -5,81 +5,81 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>David Stewart | Industrial Engineering, Georgia Tech</title>
 <meta name="description" content="David Stewart, Industrial Engineering (Analytics & Data Science) at Georgia Tech. I find what operations systems silently miss and turn it into fixes people use.">
-<meta name="color-scheme" content="light dark">
+<meta name="color-scheme" content="dark">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #fafaf8;
-  --surface: #ffffff;
-  --text: #1b1d21;
-  --muted: #5b6068;
-  --border: #e3e4e0;
-  --accent: #0b5cad;
-  --accent-soft: #e6f0fa;
-  --tag-bg: #f0efe9;
-  --focus: #0b5cad;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #111316;
-    --surface: #1a1d21;
-    --text: #ececea;
-    --muted: #9ba0a8;
-    --border: #2b2f35;
-    --accent: #6fb1f2;
-    --accent-soft: #172433;
-    --tag-bg: #242830;
-    --focus: #6fb1f2;
-  }
+  --bg: #0b0c0e;
+  --card: #121417;
+  --card-top: #181b1f;
+  --well: #0f1113;
+  --border: #2a2e33;
+  --chrome: #4a5058;
+  --text: #e8e6e1;
+  --muted: #8a9099;
+  --crimson: #b3122e;
+  --crimson-text: #e0405a;
 }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-}
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 Inter, system-ui, -apple-system, "Segoe UI", sans-serif; }
 main { max-width: 46rem; margin: 0 auto; padding: 3rem 1.25rem 4rem; }
-a { color: var(--accent); text-underline-offset: 3px; }
-a:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 3px; }
+a { color: var(--text); text-underline-offset: 3px; }
+a:focus-visible { outline: 2px solid var(--crimson-text); outline-offset: 3px; }
+.n { font-family: "IBM Plex Mono", ui-monospace, Consolas, monospace; font-variant-numeric: tabular-nums; }
 
-header { margin-bottom: 3rem; }
-h1 { font-size: clamp(2rem, 7vw, 2.75rem); line-height: 1.1; margin: 0 0 .35rem; letter-spacing: -.02em; }
-.sub { color: var(--muted); margin: 0 0 1.25rem; }
-.pos { font-size: clamp(1.15rem, 3.6vw, 1.4rem); line-height: 1.4; margin: 0 0 1.5rem; font-weight: 500; }
+header { position: relative; isolation: isolate; margin-bottom: 3rem; padding-bottom: 2.5rem; }
+header::before {
+  content: ""; position: absolute; z-index: -1; left: -10%; top: -90px; width: 70%; height: 340px;
+  background: radial-gradient(closest-side, rgba(179,18,46,.5), transparent);
+  opacity: .16; animation: breathe 9s ease-in-out infinite;
+}
+header::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: linear-gradient(90deg, var(--chrome), var(--border) 60%, transparent);
+}
+@keyframes breathe { 0%, 100% { opacity: .12; } 50% { opacity: .2; } }
+@media (prefers-reduced-motion: reduce) { header::before { animation: none; } }
+h1 { font: 700 clamp(2.6rem, 10vw, 3.75rem)/1 "Barlow Condensed", "Arial Narrow", sans-serif; text-transform: uppercase; letter-spacing: .02em; margin: 0 0 .5rem; }
+.sub { color: var(--muted); margin: 0 0 1.25rem; font-size: .95rem; }
+.pos { font-size: clamp(1.1rem, 3.4vw, 1.3rem); line-height: 1.45; margin: 0 0 1.75rem; font-weight: 500; max-width: 34rem; }
 .links { display: flex; flex-wrap: wrap; gap: .6rem; padding: 0; margin: 0; list-style: none; }
-.links a {
-  display: inline-block; padding: .5rem .95rem; border: 1px solid var(--border);
-  border-radius: 999px; background: var(--surface); color: var(--text);
-  text-decoration: none; font-size: .95rem; min-height: 2.5rem;
-}
-.links a:hover { border-color: var(--accent); color: var(--accent); }
+.links a { display: inline-block; padding: .5rem .95rem; border: 1px solid var(--border); border-radius: 2px; text-decoration: none; font-size: .92rem; min-height: 2.5rem; transition: border-color .15s, color .15s; }
+.links a:hover { border-color: var(--crimson); color: var(--crimson-text); }
 
-section { margin-bottom: 2.75rem; }
-h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin: 0 0 1rem; font-weight: 600; }
+section { margin-bottom: 2.75rem; padding-bottom: 2.75rem; border-bottom: 1px solid var(--border); }
+section:last-of-type { border-bottom: 0; padding-bottom: 0; }
+h2 { font: 600 .9rem "Barlow Condensed", "Arial Narrow", sans-serif; text-transform: uppercase; letter-spacing: .22em; color: var(--muted); margin: 0 0 1rem; }
 
-.card {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-  padding: 1.25rem 1.25rem 1.1rem; margin-bottom: 1rem;
-}
-.card h3 { margin: 0 0 .15rem; font-size: 1.15rem; line-height: 1.3; }
-.meta { color: var(--muted); font-size: .9rem; margin: 0 0 .8rem; }
-.card p { margin: 0 0 .8rem; }
-.stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; margin: 0 0 1rem; padding: 0; list-style: none; }
-.stats li { background: var(--accent-soft); border-radius: 8px; padding: .65rem .8rem; margin: 0; }
-.stats strong { display: block; font-size: 1.3rem; line-height: 1.2; color: var(--accent); }
-.stats span { font-size: .85rem; color: var(--muted); }
-.tags { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0; padding: 0; list-style: none; }
-.tags li { margin: 0; font-size: .8rem; padding: .15rem .6rem; border-radius: 999px; background: var(--tag-bg); color: var(--muted); }
-.status { font-size: .75rem; font-weight: 600; padding: .1rem .55rem; border-radius: 999px; background: var(--tag-bg); color: var(--muted); vertical-align: middle; margin-left: .4rem; }
-.status.wip { background: var(--accent-soft); color: var(--accent); }
+.card { background: linear-gradient(180deg, var(--card-top), var(--card)); border: 1px solid var(--border); border-top-color: var(--chrome); border-radius: 2px; padding: 1.4rem 1.25rem 1.2rem; margin-bottom: 1rem; }
+.card:last-child { margin-bottom: 0; }
+.card h3 { margin: 0; font: 600 1.5rem/1.2 "Barlow Condensed", "Arial Narrow", sans-serif; letter-spacing: .02em; text-transform: uppercase; }
+.role { color: var(--muted); font-size: .85rem; margin: .2rem 0 .1rem; }
+.meta { color: var(--muted); font-size: .85rem; margin: .2rem 0 1.1rem; }
+.role + .meta { margin-top: 0; }
+.card p { margin: 0 0 .9rem; }
+.card p:last-child { margin-bottom: 0; }
+
+.stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; margin: 0 0 1.1rem; padding: 0; list-style: none; }
+.stats li { background: var(--well); border: 1px solid var(--border); border-left: 2px solid var(--crimson); border-radius: 2px; padding: .65rem .8rem; }
+.stats strong { display: block; font: 500 1.4rem/1.25 "IBM Plex Mono", ui-monospace, Consolas, monospace; font-variant-numeric: tabular-nums; color: var(--crimson-text); }
+.stats span { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); display: block; line-height: 1.5; }
+
+.tags { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 .9rem; padding: 0; list-style: none; }
+.tags li { font-size: .78rem; padding: .1rem .55rem; border: 1px solid var(--border); border-radius: 2px; color: var(--muted); }
+.status { font: 500 .7rem "IBM Plex Mono", ui-monospace, Consolas, monospace; text-transform: uppercase; letter-spacing: .08em; padding: .1rem .5rem; border: 1px solid var(--crimson); border-radius: 2px; color: var(--crimson-text); vertical-align: middle; margin-left: .5rem; }
 .ph { color: var(--muted); font-style: italic; }
-.card .more { margin: .9rem 0 0; font-weight: 500; }
+.card .more { font-weight: 500; }
+.card .more a { color: var(--text); text-decoration-color: var(--chrome); }
+.card .more a:hover { color: var(--crimson-text); text-decoration-color: var(--crimson); }
 
 .how { padding: 0; margin: 0; list-style: none; }
-.how li { padding: .9rem 0; border-top: 1px solid var(--border); }
+.how li { padding: .9rem 0; border-top: 1px solid var(--border); display: flex; gap: 1rem; }
 .how li:last-child { border-bottom: 1px solid var(--border); }
+.how .i { color: var(--crimson-text); font-size: .85rem; padding-top: .2rem; }
 .how strong { display: block; }
 .how span { color: var(--muted); }
 
@@ -97,7 +97,7 @@ footer { color: var(--muted); font-size: .85rem; }
 
 <header>
   <h1>David Stewart</h1>
-  <p class="sub">Industrial Engineering (Analytics &amp; Data Science), Georgia Tech &middot; May 2028</p>
+  <p class="sub">Industrial Engineering (Analytics &amp; Data Science), Georgia Tech &middot; <span class="n">May 2028</span></p>
   <p class="pos">I find what operations systems silently miss and turn it into fixes people use.</p>
   <ul class="links">
     <li><a href="https://www.linkedin.com/in/david-y-stewart" rel="noopener">LinkedIn</a></li>
@@ -109,15 +109,16 @@ footer { color: var(--muted); font-size: .85rem; }
 <section aria-labelledby="exp">
   <h2 id="exp">Experience</h2>
   <article class="card">
-    <h3>TSMC &mdash; Automation Program Management Intern</h3>
-    <p class="meta">Summer 2026 &middot; Automation program audit</p>
+    <h3>TSMC &mdash; Automation Program Management</h3>
+    <p class="role">Intelligent Manufacturing Engineer Intern</p>
+    <p class="meta"><span class="n">Summer 2026</span> &middot; Automation program audit</p>
     <ul class="stats">
-      <li><strong>130</strong><span>procedures audited</span></li>
-      <li><strong>2,200+</strong><span>tools covered</span></li>
-      <li><strong>4&ndash;6%</strong><span>silent failure rate found</span></li>
-      <li><strong>~600 hrs</strong><span>manual work per month quantified</span></li>
+      <li><strong data-tpl="{0}" data-to="130">130</strong><span>procedures audited</span></li>
+      <li><strong data-tpl="{0}+" data-to="2200" data-sep>2,200+</strong><span>tools covered</span></li>
+      <li><strong data-tpl="{0}&ndash;{1}%" data-to="4,6">4&ndash;6%</strong><span>silent failure rate found</span></li>
+      <li><strong data-tpl="~{0} hrs" data-to="600">~600 hrs</strong><span>manual work per month quantified</span></li>
     </ul>
-    <p>Audited an automation program end to end, found failures that were passing unnoticed, and sized the manual effort they created. Defined a time-saved-per-run KPI that the fab's head of manufacturing approved.</p>
+    <p>Audited an automation program end to end, found failures that were passing unnoticed, and sized the manual effort they created. Presented a time-saved-per-run KPI to the head of manufacturing for all of Fab 21; it was fully approved and implemented.</p>
   </article>
 </section>
 
@@ -128,9 +129,9 @@ footer { color: var(--muted); font-size: .85rem; }
     <h3>OpsAudit</h3>
     <p class="meta">Audit tool for operations data</p>
     <ul class="stats three">
-      <li><strong>26.1%</strong><span>miss rate surfaced</span></li>
-      <li><strong>89% vs 66%</strong><span>random forest vs hand-written rules</span></li>
-      <li><strong>33</strong><span>check types</span></li>
+      <li><strong data-tpl="{0}%" data-to="26.1" data-dec="1">26.1%</strong><span>miss rate surfaced</span></li>
+      <li><strong data-tpl="{0}% vs {1}%" data-to="89,66">89% vs 66%</strong><span>random forest vs hand-written rules</span></li>
+      <li><strong data-tpl="{0}" data-to="33">33</strong><span>check types</span></li>
     </ul>
     <p>A random forest caught more than hand-written rules across 33 check types, backed by statistical process control and stress-tested on real fab data (UCI SECOM).</p>
     <ul class="tags"><li>Random forest</li><li>Statistical process control</li><li>UCI SECOM</li></ul>
@@ -138,7 +139,7 @@ footer { color: var(--muted); font-size: .85rem; }
   </article>
 
   <article class="card">
-    <h3>Backroom <span class="status wip">In progress</span></h3>
+    <h3>Backroom <span class="status">In progress</span></h3>
     <p class="meta">Game master tool</p>
     <p>Surfaces your own prepped ideas mid-session, so the prep you did is there when the table needs it.</p>
     <p class="more"><a href="https://dstew2816.github.io/backroom/">View Backroom &rarr;</a></p>
@@ -155,14 +156,42 @@ footer { color: var(--muted); font-size: .85rem; }
 <section aria-labelledby="how">
   <h2 id="how">How I work</h2>
   <ul class="how">
-    <li><strong>Validate on real data</strong><span>Models and checks get tested against messy real-world data, not just clean examples.</span></li>
-    <li><strong>Keep humans in the loop for AI</strong><span>AI proposes; people with context review and decide.</span></li>
-    <li><strong>Measure what's actually used</strong><span>A fix only counts if people adopt it, so I track usage, not just delivery.</span></li>
+    <li><span class="i n">01</span><div><strong>Validate on real data</strong><span>Models and checks get tested against messy real-world data, not just clean examples.</span></div></li>
+    <li><span class="i n">02</span><div><strong>Keep humans in the loop for AI</strong><span>AI proposes; people with context review and decide.</span></div></li>
+    <li><span class="i n">03</span><div><strong>Measure what's actually used</strong><span>A fix only counts if people adopt it, so I track usage, not just delivery.</span></div></li>
   </ul>
 </section>
 
 <footer>&copy; David Stewart</footer>
 
 </main>
+<script>
+(function () {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var els = document.querySelectorAll('[data-to]');
+  var dur = 1100, start = null;
+  function fmt(el, v, i) {
+    var dec = +(el.dataset.dec || 0);
+    var s = v.toFixed(dec);
+    return el.hasAttribute('data-sep') ? Number(s).toLocaleString('en-US') : s;
+  }
+  function render(el, p) {
+    var tos = el.dataset.to.split(',').map(Number);
+    var out = el.dataset.tpl;
+    tos.forEach(function (t, i) { out = out.replace('{' + i + '}', fmt(el, t * p, i)); });
+    el.innerHTML = out;
+  }
+  els.forEach(function (el) { render(el, 0); });
+  function tick(t) {
+    if (start === null) start = t;
+    var p = Math.min((t - start) / dur, 1);
+    var e = 1 - Math.pow(1 - p, 3);
+    els.forEach(function (el) { render(el, e); });
+    if (p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+  setTimeout(function () { start = -1e9; els.forEach(function (el) { render(el, 1); }); }, dur + 400);
+})();
+</script>
 </body>
 </html>
