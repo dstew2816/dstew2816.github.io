@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backroom case study | David Stewart</title>
+<meta name="description" content="Case study: Backroom, a game master tool that surfaces your own prepped ideas mid-session.">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<main class="case">
+
+<p class="crumb"><a href="../index.html">&larr; David Stewart</a></p>
+
+<header class="case-head">
+  <h1>Backroom <span class="status">In progress</span></h1>
+  <p class="lede">A game master tool that surfaces your own prepped ideas mid-session.</p>
+  <dl class="facts">
+    <div><dt>Status</dt><dd>In progress, with a public demo</dd></div>
+    <div><dt>Runs</dt><dd>Locally, no AI service</dd></div>
+    <div><dt>Built with</dt><dd>TypeScript, Node, local embeddings</dd></div>
+  </dl>
+</header>
+
+<section aria-labelledby="problem">
+  <h2 id="problem">The problem</h2>
+  <p>A game master prepares far more than a single session can use, and the prep lives in notes. Mid-session, when the table does something unexpected, the useful idea is somewhere in those notes and there is no time to look for it.</p>
+  <p class="todo">The story behind it: how you ran into this problem yourself, in a sentence or two.</p>
+</section>
+
+<section aria-labelledby="users">
+  <h2 id="users">Who it is for</h2>
+  <p>Game masters who keep their prep as Markdown notes and want to find the right idea for the scene in front of them while the session is running.</p>
+  <p class="todo">Who actually tried it, if anyone has: how many game masters, and what system or campaign they run.</p>
+</section>
+
+<section aria-labelledby="decisions">
+  <h2 id="decisions">Key decisions and tradeoffs</h2>
+
+  <article class="decision">
+    <h3>Find the game master's own ideas, never generate new ones</h3>
+    <dl>
+      <dt>Chose</dt><dd>Search and rank text the game master already wrote. It generates nothing and calls no AI service.</dd>
+      <dt>Because</dt><dd>The value is recalling prep you trust, in your own words and your own world, not receiving someone else's suggestions.</dd>
+      <dt>Cost</dt><dd>It can only be as good as the notes behind it, and new notes need a re-index before they can be found.</dd>
+    </dl>
+  </article>
+
+  <article class="decision">
+    <h3>Run locally</h3>
+    <dl>
+      <dt>Chose</dt><dd>Notes are only read, and the index, usage state and logs stay in the project folder. The only network access is a one-time download of a small embedding model (about 25 MB).</dd>
+      <dt>Because</dt><dd>Campaign notes are personal, and a tool used mid-session should not depend on a connection.</dd>
+    </dl>
+  </article>
+
+  <article class="decision">
+    <h3>One idea per result</h3>
+    <dl>
+      <dt>Chose</dt><dd>Split notes on headings, paragraphs and top-level bullets, keep a bullet's indented children with it, and show each result with its note, heading and line numbers.</dd>
+      <dt>Because</dt><dd>A result has to be readable at a glance and traceable back to where it was written.</dd>
+    </dl>
+  </article>
+
+  <article class="decision">
+    <h3>Be honest about relevance</h3>
+    <dl>
+      <dt>Chose</dt><dd>Show how far above the average idea in the notes a match scores, and draw a divider where relevance drops sharply.</dd>
+      <dt>Over</dt><dd>Presenting a ranked list as if every row were a good answer.</dd>
+      <dt>Because</dt><dd>At the table, you need to know when to stop reading the list.</dd>
+    </dl>
+  </article>
+
+  <article class="decision">
+    <h3>Track what gets used</h3>
+    <dl>
+      <dt>Chose</dt><dd>A "mark used" button, an "unused only" filter, and a boost for old prep that has never been used. Usage is keyed on the idea's text, not its line number, so marks survive edits elsewhere in the note.</dd>
+      <dt>Because</dt><dd>Prep that is never used is the thing worth resurfacing, and it is the signal for what to improve next.</dd>
+    </dl>
+  </article>
+
+  <article class="decision">
+    <h3>A public demo that cannot leak private notes</h3>
+    <dl>
+      <dt>Chose</dt><dd>The demo ships a precomputed index, runs the search in the visitor's browser, and makes no outside requests. The build refuses any folder other than the sample notes unless explicitly overridden.</dd>
+      <dt>Cost</dt><dd>The first visit downloads about 36 MB for the model and runtime, then the browser caches it.</dd>
+    </dl>
+  </article>
+</section>
+
+<section aria-labelledby="results">
+  <h2 id="results">Results so far</h2>
+  <p>It works end to end: a local web page and command-line tools for search, marking ideas used and re-indexing, backed by an automated test suite, plus a public demo built from a small sample of invented world notes.</p>
+  <p class="todo">Any usage or feedback numbers once you have them (sessions run, ideas surfaced and marked used, how fast a search feels).</p>
+</section>
+
+<section aria-labelledby="next">
+  <h2 id="next">What I would do next</h2>
+  <ul class="plain">
+    <li>Run it in real sessions and use the "mark used" data to learn which kinds of ideas get used and which are never found.</li>
+    <li>Tune the ranking and the relevance divider against those sessions instead of my own guesses.</li>
+    <li>Pick up changed notes without a manual re-index.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="links">
+  <h2 id="links">Explore it</h2>
+  <ul class="buttons">
+    <li><a href="https://dstew2816.github.io/backroom/">Try the demo &rarr;</a></li>
+    <li><a href="https://github.com/dstew2816/backroom">Source on GitHub &rarr;</a></li>
+  </ul>
+</section>
+
+<nav class="pager" aria-label="Case studies">
+  <a href="opsaudit.html">&larr; Previous: OpsAudit</a>
+  <a href="truly-diverse-soldiers.html">Next: Truly Diverse Soldiers &rarr;</a>
+</nav>
+
+</main>
+</body>
+</html>

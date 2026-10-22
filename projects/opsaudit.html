@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpsAudit case study | David Stewart</title>
+<meta name="description" content="Case study: OpsAudit, an audit that finds what operations automation silently misses and puts a price on it.">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<main class="case">
+
+<p class="crumb"><a href="../index.html">&larr; David Stewart</a></p>
+
+<header class="case-head">
+  <h1>OpsAudit</h1>
+  <p class="lede">Finding what operations automation silently misses, and putting a price on it.</p>
+  <dl class="facts">
+    <div><dt>Status</dt><dd>Live demo</dd></div>
+    <div><dt>Data</dt><dd>Synthetic, plus one public real-data check</dd></div>
+    <div><dt>Built with</dt><dd>JavaScript, React, SQLite, Python, scikit-learn</dd></div>
+  </dl>
+</header>
+
+<section aria-labelledby="problem">
+  <h2 id="problem">The problem</h2>
+  <p>Automated procedures watch for a condition, such as a port blocked for 30 minutes, and act on it. They run on live events with no historical replay. If the platform is down, an event arrives late, or a rule is slightly too narrow, the case is never picked up and nothing records that it was missed.</p>
+  <p>Success metrics are calculated over the cases that were handled, so a procedure can report 100% while missing a quarter of what it should have caught.</p>
+  <div class="callout"><p>This is a demo of the kind of work I did at my TSMC internship. All data on this page is synthetic, except the clearly labeled public-data check.</p></div>
+</section>
+
+<section aria-labelledby="users">
+  <h2 id="users">Who it is for</h2>
+  <ul class="plain">
+    <li><strong>Operations and program managers</strong> who own automated procedures and need to know what those procedures are not catching, what it costs, and which fix to do first.</li>
+    <li><strong>Automation and process engineers</strong> who write the detection logic and maintain it as documents drift.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="decisions">
+  <h2 id="decisions">Key decisions and tradeoffs</h2>
+
+  <article class="decision">
+    <h3>Audit from raw history, not from the procedure's own log</h3>
+    <dl>
+      <dt>Chose</dt><dd>Rebuild what each procedure should have picked up from raw events, then anti-join against what it logged.</dd>
+      <dt>Over</dt><dd>Trusting the procedure's reported success rate.</dd>
+      <dt>Because</dt><dd>The reported rate only counts handled cases, so it cannot show what was never seen.</dd>
+      <dt>Cost</dt><dd>It needs two independent sources, and in practice the hard part is access to the automation's own log.</dd>
+    </dl>
+  </article>
+
+  <article class="decision">
+    <h3>Hand-written answer keys, with checks built to fail</h3>
+    <dl>
+      <dt>Chose</dt><dd>Seven hand-written baseline queries as the answer key, and scorers that are themselves tested by feeding them deliberately wrong answers.</dd>
+      <dt>Because</dt><dd>A query that finds nothing looks the same as one that is broken, so the audit fails if any procedure returns zero misses.</dd>
+      <dt>Cost</dt><dd>I wrote the keys, so they share my vocabulary and the numbers lean optimistic.</dd>
+    </dl>
+  </article>
+
+  <article class="decision">
+    <h3>Fix the control limits from a healthy baseline</h3>
+    <dl>
+      <dt>Chose</dt><dd>Set statistical process control limits from the first 15 subgroups, then hold them fixed.</dd>
+      <dt>Over</dt><dd>Setting limits from all the data.</dd>
+      <dt>Because</dt><dd>Limits from all the data let a drift drag the center line toward itself and hide it.</dd>
+    </dl>
+  </article>
+
+  <article class="decision">
+    <h3>Price the misses with assumptions anyone can edit</h3>
+    <dl>
+      <dt>Chose</dt><dd>Turn each miss into labor hours and cost at risk, group misses into fixes, and rank them by cost, hours or payback. Every input is an editable assumption, set low on purpose.</dd>
+      <dt>Because</dt><dd>Managers act on a ranked list of fixes, not on a miss count.</dd>
+      <dt>Cost</dt><dd>The dollar figures are illustrative, not measured. The annualized figure just scales the 14-day window and should not be read as a forecast.</dd>
+    </dl>
+  </article>
+
+  <article class="decision">
+    <h3>Freeze the baseline before training the model</h3>
+    <dl>
+      <dt>Chose</dt><dd>Branching hand-written keyword rules as the baseline, frozen before any model was trained. One stratified split, tuning by cross-validation on training data only, and the test set scored once.</dd>
+      <dt>Because</dt><dd>It keeps the comparison between the model and the rules honest.</dd>
+    </dl>
+  </article>
+
+  <article class="decision">
+    <h3>Split the AI layer into three calls</h3>
+    <dl>
+      <dt>Chose</dt><dd>Resolve the procedure, extract the condition, then compose the SQL, as three separate model calls graded against the hand-written baselines.</dd>
+      <dt>Because</dt><dd>A wrong extraction is visible before any SQL is written, so a person can catch it. The model proposes and the baselines check it.</dd>
+    </dl>
+  </article>
+</section>
+
+<section aria-labelledby="results">
+  <h2 id="results">Results</h2>
+  <ul class="stats three">
+    <li><strong>26.1%</strong><span>miss rate: 24 of 92 qualifying cases</span></li>
+    <li><strong>89% vs 66%</strong><span>random forest vs hand-written rules</span></li>
+    <li><strong>33</strong><span>specific check types classified</span></li>
+  </ul>
+  <p><strong>Audit.</strong> 92 qualifying cases, 68 logged, 24 missed. The largest fix, an outage backfill, covers 8 of the 24 misses.</p>
+  <p><strong>Statistical process control.</strong> A drift planted in one lane alarmed three subgroups after it started, and the chart on the difference between the two parallel lanes flagged it at subgroup 22. A single-subgroup spike produced exactly one alert.</p>
+  <p><strong>Classifier.</strong> On the 413-record test set, the random forest named the specific check 89.1% of the time. Hand-written rules with multilingual keywords scored 66.3%, and always guessing the most common class scored 2.9%.</p>
+  <p><strong>Real data, and a weak result.</strong> I stress-tested the same ideas on UCI SECOM, a public semiconductor dataset of 1,567 production runs. The control charts as built did not separate failures from passes (95.0% of failing runs were flagged, but so were 98.8% of passing runs), and no classifier clearly beat chance on the later runs. I report it as it came out.</p>
+  <p><strong>AI layers.</strong> One run each. The right procedure resolved 5 of 5 times, but only 2 of 5 generated queries matched the baseline exactly. Root-cause grouping passed 3 of 5 checks and recovered the outage cluster exactly.</p>
+  <div class="callout"><p>Limits: synthetic data, a small sample (24 misses, one 14-day window), answer keys I wrote myself, and one run of each AI layer. Treat the numbers as a demonstration of method, not a benchmark or a forecast.</p></div>
+</section>
+
+<section aria-labelledby="next">
+  <h2 id="next">What I would do next</h2>
+  <ul class="plain">
+    <li>Run it on a real pair of sources, the raw events plus the automation's own log, since that access is the real bottleneck.</li>
+    <li>Replace my hand-written answer keys with keys written by someone who owns the procedures.</li>
+    <li>Repeat the AI runs enough times to report a spread, instead of one sample each.</li>
+    <li>Extend the same audit to other domains that have the same two-source structure, such as inventory reorders, shipment exceptions and ticket escalations.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="links">
+  <h2 id="links">Explore it</h2>
+  <ul class="buttons">
+    <li><a href="https://dstew2816.github.io/ops-audit/">Open the live demo &rarr;</a></li>
+    <li><a href="https://github.com/dstew2816/ops-audit">Source on GitHub &rarr;</a></li>
+  </ul>
+</section>
+
+<nav class="pager" aria-label="Case studies">
+  <a href="../index.html">&larr; Back to portfolio</a>
+  <a href="backroom.html">Next: Backroom &rarr;</a>
+</nav>
+
+</main>
+</body>
+</html>

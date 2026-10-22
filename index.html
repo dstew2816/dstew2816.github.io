@@ -10,87 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg: #0b0c0e;
-  --card: #121417;
-  --card-top: #181b1f;
-  --well: #0f1113;
-  --border: #2a2e33;
-  --chrome: #4a5058;
-  --text: #e8e6e1;
-  --muted: #8a9099;
-  --crimson: #b3122e;
-  --crimson-text: #e0405a;
-}
-* { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
-body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 Inter, system-ui, -apple-system, "Segoe UI", sans-serif; }
-main { max-width: 46rem; margin: 0 auto; padding: 3rem 1.25rem 4rem; }
-a { color: var(--text); text-underline-offset: 3px; }
-a:focus-visible { outline: 2px solid var(--crimson-text); outline-offset: 3px; }
-.n { font-family: "IBM Plex Mono", ui-monospace, Consolas, monospace; font-variant-numeric: tabular-nums; }
-
-header { position: relative; isolation: isolate; margin-bottom: 3rem; padding-bottom: 2.5rem; }
-header::before {
-  content: ""; position: absolute; z-index: -1; left: -10%; top: -90px; width: 70%; height: 340px;
-  background: radial-gradient(closest-side, rgba(179,18,46,.5), transparent);
-  opacity: .16; animation: breathe 9s ease-in-out infinite;
-}
-header::after {
-  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
-  background: linear-gradient(90deg, var(--chrome), var(--border) 60%, transparent);
-}
-@keyframes breathe { 0%, 100% { opacity: .12; } 50% { opacity: .2; } }
-@media (prefers-reduced-motion: reduce) { header::before { animation: none; } }
-h1 { font: 700 clamp(2.6rem, 10vw, 3.75rem)/1 "Barlow Condensed", "Arial Narrow", sans-serif; text-transform: uppercase; letter-spacing: .02em; margin: 0 0 .5rem; }
-.sub { color: var(--muted); margin: 0 0 1.25rem; font-size: .95rem; }
-.pos { font-size: clamp(1.1rem, 3.4vw, 1.3rem); line-height: 1.45; margin: 0 0 1.75rem; font-weight: 500; max-width: 34rem; }
-.links { display: flex; flex-wrap: wrap; gap: .6rem; padding: 0; margin: 0; list-style: none; }
-.links a { display: inline-block; padding: .5rem .95rem; border: 1px solid var(--border); border-radius: 2px; text-decoration: none; font-size: .92rem; min-height: 2.5rem; transition: border-color .15s, color .15s; }
-.links a:hover { border-color: var(--crimson); color: var(--crimson-text); }
-
-section { margin-bottom: 2.75rem; padding-bottom: 2.75rem; border-bottom: 1px solid var(--border); }
-section:last-of-type { border-bottom: 0; padding-bottom: 0; }
-h2 { font: 600 .9rem "Barlow Condensed", "Arial Narrow", sans-serif; text-transform: uppercase; letter-spacing: .22em; color: var(--muted); margin: 0 0 1rem; }
-
-.card { background: linear-gradient(180deg, var(--card-top), var(--card)); border: 1px solid var(--border); border-top-color: var(--chrome); border-radius: 2px; padding: 1.4rem 1.25rem 1.2rem; margin-bottom: 1rem; }
-.card:last-child { margin-bottom: 0; }
-.card h3 { margin: 0; font: 600 1.5rem/1.2 "Barlow Condensed", "Arial Narrow", sans-serif; letter-spacing: .02em; text-transform: uppercase; }
-.role { color: var(--muted); font-size: .85rem; margin: .2rem 0 .1rem; }
-.meta { color: var(--muted); font-size: .85rem; margin: .2rem 0 1.1rem; }
-.role + .meta { margin-top: 0; }
-.card p { margin: 0 0 .9rem; }
-.card p:last-child { margin-bottom: 0; }
-
-.stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; margin: 0 0 1.1rem; padding: 0; list-style: none; }
-.stats li { background: var(--well); border: 1px solid var(--border); border-left: 2px solid var(--crimson); border-radius: 2px; padding: .65rem .8rem; }
-.stats strong { display: block; font: 500 1.4rem/1.25 "IBM Plex Mono", ui-monospace, Consolas, monospace; font-variant-numeric: tabular-nums; color: var(--crimson-text); }
-.stats span { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); display: block; line-height: 1.5; }
-
-.tags { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 .9rem; padding: 0; list-style: none; }
-.tags li { font-size: .78rem; padding: .1rem .55rem; border: 1px solid var(--border); border-radius: 2px; color: var(--muted); }
-.status { font: 500 .7rem "IBM Plex Mono", ui-monospace, Consolas, monospace; text-transform: uppercase; letter-spacing: .08em; padding: .1rem .5rem; border: 1px solid var(--crimson); border-radius: 2px; color: var(--crimson-text); vertical-align: middle; margin-left: .5rem; }
-.ph { color: var(--muted); font-style: italic; }
-.card .more { font-weight: 500; }
-.card .more a { color: var(--text); text-decoration-color: var(--chrome); }
-.card .more a:hover { color: var(--crimson-text); text-decoration-color: var(--crimson); }
-
-.how { padding: 0; margin: 0; list-style: none; }
-.how li { padding: .9rem 0; border-top: 1px solid var(--border); display: flex; gap: 1rem; }
-.how li:last-child { border-bottom: 1px solid var(--border); }
-.how .i { color: var(--crimson-text); font-size: .85rem; padding-top: .2rem; }
-.how strong { display: block; }
-.how span { color: var(--muted); }
-
-footer { color: var(--muted); font-size: .85rem; }
-
-@media (min-width: 40rem) {
-  main { padding-top: 5rem; }
-  .stats { grid-template-columns: repeat(4, 1fr); }
-  .stats.three { grid-template-columns: repeat(3, 1fr); }
-}
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <main>
@@ -129,27 +49,27 @@ footer { color: var(--muted); font-size: .85rem; }
     <h3>OpsAudit</h3>
     <p class="meta">Audit tool for operations data</p>
     <ul class="stats three">
-      <li><strong data-tpl="{0}%" data-to="26.1" data-dec="1">26.1%</strong><span>miss rate surfaced</span></li>
+      <li><strong data-tpl="{0}%" data-to="26.1" data-dec="1">26.1%</strong><span>miss rate surfaced (synthetic data)</span></li>
       <li><strong data-tpl="{0}% vs {1}%" data-to="89,66">89% vs 66%</strong><span>random forest vs hand-written rules</span></li>
       <li><strong data-tpl="{0}" data-to="33">33</strong><span>check types</span></li>
     </ul>
     <p>A random forest caught more than hand-written rules across 33 check types, backed by statistical process control and stress-tested on real fab data (UCI SECOM).</p>
     <ul class="tags"><li>Random forest</li><li>Statistical process control</li><li>UCI SECOM</li></ul>
-    <p class="more"><a href="https://dstew2816.github.io/ops-audit/">View OpsAudit &rarr;</a></p>
+    <p class="more"><a href="projects/opsaudit.html">Read the case study &rarr;</a></p>
   </article>
 
   <article class="card">
     <h3>Backroom <span class="status">In progress</span></h3>
     <p class="meta">Game master tool</p>
     <p>Surfaces your own prepped ideas mid-session, so the prep you did is there when the table needs it.</p>
-    <p class="more"><a href="https://dstew2816.github.io/backroom/">View Backroom &rarr;</a></p>
+    <p class="more"><a href="projects/backroom.html">Read the case study &rarr;</a></p>
   </article>
 
   <article class="card">
     <h3>Truly Diverse Soldiers</h3>
     <p class="meta">Mod for Mount &amp; Blade II: Bannerlord</p>
     <p>Downloads: <span class="ph">not available yet</span></p>
-    <p class="more"><a href="https://www.nexusmods.com/mountandblade2bannerlord/mods/14184" rel="noopener">View on Nexus Mods &rarr;</a></p>
+    <p class="more"><a href="projects/truly-diverse-soldiers.html">Read the case study &rarr;</a></p>
   </article>
 </section>
 
