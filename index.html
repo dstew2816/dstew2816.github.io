@@ -18,100 +18,175 @@
 <script>try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site.css">
 </head>
 <body>
-<div class="wrap">
 
-<div class="top">
-  <a class="name" href="#top">David Stewart</a>
-  <button class="toggle" type="button">Light mode</button>
-</div>
+<nav class="nav" aria-label="Main">
+  <div class="nav-in">
+    <a class="brand" href="#top">David Stewart <span>&middot; Industrial engineering</span></a>
+    <ul class="links">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+    <button class="switch" type="button" role="switch" aria-checked="true"><span class="lbl">Dark</span><span class="track"></span></button>
+  </div>
+</nav>
 
-<header class="intro" id="top">
-  <h1>David Stewart</h1>
-  <p class="where">Industrial engineering at Georgia Tech, graduating May 2028</p>
-  <p>I study industrial engineering at Georgia Tech with a concentration in analytics and data science. This past summer I interned at Taiwan Semiconductor Manufacturing Company in Arizona, where I audited automated procedures to find the ones that were failing without anyone noticing.</p>
-  <p>I'm looking for internships in technical program management, operations focused product management, supply chain, or data and analytics.</p>
-  <ul class="contact">
-    <li><a href="mailto:david.y.stewart1@gmail.com">david.y.stewart1@gmail.com</a></li>
-    <li><a href="https://www.linkedin.com/in/david-y-stewart" rel="noopener">LinkedIn</a></li>
-    <li><a href="resume.pdf">Resume</a></li>
-  </ul>
+<div class="shell" id="top">
+
+<header class="hero">
+  <div>
+    <h1>Hi, I'm David.</h1>
+    <p>I study industrial engineering at Georgia Tech and graduate in May 2028. This past summer I interned at Taiwan Semiconductor Manufacturing Company in Arizona, where I audited automated procedures to find the ones that were failing without anyone noticing.</p>
+    <p class="small">I'm looking for internships in technical program management, operations focused product management, supply chain, or data and analytics.</p>
+    <div class="cta">
+      <a class="btn solid" href="resume.pdf">View r&eacute;sum&eacute;</a>
+      <a class="btn" href="mailto:david.y.stewart1@gmail.com">Contact me</a>
+      <a class="btn" href="https://www.linkedin.com/in/david-y-stewart" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+  <div class="panel monitor">
+    <p class="eyebrow">Runs, scanned</p>
+    <canvas id="monitor" aria-hidden="true"></canvas>
+    <p class="readout mono" aria-hidden="true"><span id="mon-checked">Move your cursor across the runs.</span><span id="mon-bad"></span></p>
+    <p class="cap">An illustration of the gap I found at the fab. Each mark is one run, and about 5 percent never ran. This is not real data.</p>
+  </div>
 </header>
 
-<div class="monitor">
-  <canvas id="monitor" aria-hidden="true"></canvas>
-  <p class="readout mono" aria-hidden="true"><span id="mon-checked">Move your cursor across the runs.</span><span id="mon-bad"></span></p>
-  <p class="cap">An illustration of the gap I found at the fab. Each mark is one run, and about 5 percent never ran. This is not real data.</p>
+<div class="affil">
+  <span class="eyebrow">Affiliations</span>
+  <b>Georgia Tech</b>
+  <b>Taiwan Semiconductor Manufacturing Company</b>
+  <b>Microsoft Student Research</b>
+  <b>Product @ GT</b>
 </div>
 
 <main>
 
-<section class="sec" id="work" data-map="work">
-  <h2>Taiwan Semiconductor Manufacturing Company</h2>
-  <p class="role"><span>Automation Program Management Intern</span><span>Intelligent Manufacturing Engineer Intern, Phoenix, Arizona, May to August 2026</span></p>
-
-  <dl class="figures">
-    <div><dd>130</dd><dt>procedures audited</dt></div>
-    <div><dd>2,200+</dd><dt>tools covered</dt></div>
-    <div><dd>4&ndash;6%</dd><dt>silent failures, compared with the runs that did start</dt></div>
-    <div><dd>~600 hrs</dd><dt>of manual work a month, quantified</dt></div>
-  </dl>
-
-  <p>Automated procedures at the fab watch for a condition and act on it, and the platform reports how many of the runs it started were successful. It had no record of the runs that never started. I proposed an audit of that gap, scoped it, and led it across 130 automated procedures and more than 2,200 tools. The audit found silent failures equal to 4 to 6 percent of the runs that did start.</p>
-  <p>The procedures had been written from inconsistent templates, so I turned them into detection specifications and found owners for them across several departments and with teams in Taiwan, where I worked in Mandarin. I wrote SQL and Python against more than 1,000,000 daily log entries and set up on-call alerts for critical misses.</p>
-  <p>I quantified about 600 hours a month of manual work and an estimated six figures in scrap, with wafers worth about $25,000 each, by prioritizing the fixes that protect wafer flow. I also built a reusable audit template organized by candidate type.</p>
-  <p>I shipped a key performance indicator across the whole platform, time saved per run, that measures what each automation is actually worth, along with four Power BI dashboards that are now in active use. The indicator was approved after I presented it to the head of manufacturing for Fab 21, and it has been implemented.</p>
+<section class="block" id="work">
+  <h2>Work</h2>
+  <div class="card card-pad work">
+    <dl class="figures">
+      <div><dd>130</dd><dt>procedures audited</dt></div>
+      <div><dd>2,200+</dd><dt>tools covered</dt></div>
+      <div><dd>4&ndash;6%</dd><dt>silent failures, compared with the runs that did start</dt></div>
+      <div><dd>~600 hrs</dd><dt>of manual work a month, quantified</dt></div>
+    </dl>
+    <div>
+      <h3>Taiwan Semiconductor Manufacturing Company</h3>
+      <p class="role"><span>Automation Program Management Intern</span><span>Intelligent Manufacturing Engineer Intern, Phoenix, Arizona, May to August 2026</span></p>
+      <p>Automated procedures at the fab watch for a condition and act on it, and the platform reports how many of the runs it started were successful. It had no record of the runs that never started. I proposed an audit of that gap, scoped it, and led it across 130 automated procedures and more than 2,200 tools. The audit found silent failures equal to 4 to 6 percent of the runs that did start.</p>
+      <details>
+        <summary>Read the full story</summary>
+        <div>
+          <p>The procedures had been written from inconsistent templates, so I turned them into detection specifications and found owners for them across several departments and with teams in Taiwan, where I worked in Mandarin. I wrote SQL and Python against more than 1,000,000 daily log entries and set up on-call alerts for critical misses.</p>
+          <p>I quantified about 600 hours a month of manual work and an estimated six figures in scrap, with wafers worth about $25,000 each, by prioritizing the fixes that protect wafer flow. I also built a reusable audit template organized by candidate type.</p>
+          <p>I shipped a key performance indicator across the whole platform, time saved per run, that measures what each automation is actually worth, along with four Power BI dashboards that are now in active use. The indicator was approved after I presented it to the head of manufacturing for Fab 21, and it has been implemented.</p>
+        </div>
+      </details>
+    </div>
+  </div>
 </section>
 
-<section class="sec" id="product" data-map="product">
-  <h2>Product work</h2>
-  <p>Since September I have been a Product Management Fellow with Microsoft Student Research, working remotely on research into AI-powered incident management and on-call tooling for a Microsoft product team. So far that has meant competitive teardowns, market sizing and discovery. I'm tearing down one competitor's platform across six evaluation tracks, from on-call alerting to AI investigation agents and pricing, and I source the evidence so that verified capabilities are separate from vendor marketing. I'm also sorting competitor features with the Kano model, which feeds a market matrix, a go-to-market recommendation and a prototype for a readout in December.</p>
-  <p>Since August I have also been the Director of Events for Product @ GT at Georgia Tech.</p>
-</section>
-
-<section class="sec" id="projects" data-map="projects">
+<section class="block" id="projects">
   <h2>Projects</h2>
+  <div class="grid3">
 
-  <article class="proj">
-    <h3>OpsAudit</h3>
-    <p class="meta">Python, SQL, JavaScript &middot; live demo</p>
-    <p>I built this to show the kind of audit I did at the fab, using synthetic data. It rebuilds what each automated procedure should have caught and compares that with what the procedure logged. On the synthetic data, 26.1 percent of the qualifying cases were missed. A random forest identified which of 33 check types a procedure watches with 89 percent accuracy, against 66 percent for hand-written rules on the same 413 held-out records. When I tried the methods on real semiconductor data from a public dataset called SECOM, they mostly did not work, and the write-up says so.</p>
-    <p class="go"><a href="projects/opsaudit.html">Read the write-up</a></p>
-  </article>
+    <a class="card proj" href="projects/opsaudit.html">
+      <div class="cover"><img src="img/cover-opsaudit.png" width="1000" height="625" alt="A control chart showing a drift between two process lanes being caught"><span class="badge live">Live demo</span></div>
+      <div class="proj-body">
+        <div class="proj-top"><h3>OpsAudit</h3><span class="arrow" aria-hidden="true">&nearr;</span></div>
+        <p>An audit that rebuilds what automated procedures should have caught. On synthetic data it found 26.1 percent of cases missed, and on a real semiconductor dataset it mostly did not work, which I wrote up.</p>
+        <span class="meta mono">Python, SQL, JavaScript</span>
+      </div>
+    </a>
 
-  <article class="proj">
-    <h3>Backroom <span class="status">in progress</span></h3>
-    <p class="meta">TypeScript, Node &middot; public demo</p>
-    <p>A tool for people who run tabletop games. You type what is happening at the table and it finds the notes you already wrote that fit the scene. It only searches and ranks your own writing, it never generates anything, and it runs on your own computer.</p>
-    <p class="go"><a href="projects/backroom.html">Read the write-up</a></p>
-  </article>
+    <a class="card proj" href="projects/backroom.html">
+      <div class="cover"><img src="img/cover-backroom.png" width="1000" height="625" alt="The Backroom demo returning the notes that best match a scene typed by the user"><span class="badge">In progress</span></div>
+      <div class="proj-body">
+        <div class="proj-top"><h3>Backroom</h3><span class="arrow" aria-hidden="true">&nearr;</span></div>
+        <p>Finds the notes you already wrote that fit what is happening at the table. It only searches your own writing and never generates anything.</p>
+        <span class="meta mono">TypeScript, Node</span>
+      </div>
+    </a>
 
-  <article class="proj">
-    <h3>Truly Diverse Soldiers</h3>
-    <p class="meta">C# &middot; released on Nexus Mods</p>
-    <p>A mod for Mount &amp; Blade II: Bannerlord. In the base game every recruit of a troop type has the same build and the faces change every battle. The mod gives each soldier a build and a face that stay the same, varies body types within each culture, and adds a configurable share of women to the ranks.</p>
-    <p class="go"><a href="projects/truly-diverse-soldiers.html">Read the write-up</a></p>
-  </article>
+    <a class="card proj" href="projects/truly-diverse-soldiers.html">
+      <div class="cover"><img src="img/cover-mod.svg" width="1000" height="625" alt="Rows of figures with different builds and heights"><span class="badge">Released</span></div>
+      <div class="proj-body">
+        <div class="proj-top"><h3>Truly Diverse Soldiers</h3><span class="arrow" aria-hidden="true">&nearr;</span></div>
+        <p>A Mount &amp; Blade II: Bannerlord mod that gives every soldier a build and a face that stay the same, and adds women to the ranks.</p>
+        <span class="meta mono">C#, Harmony</span>
+      </div>
+    </a>
+
+  </div>
 </section>
 
-<section class="sec" id="how" data-map="how I work">
-  <h2>How I work</h2>
-  <p>I start by learning the field I'm auditing. At the fab I spent my first week on manufacturing principles, then learned the automation platform and the standard process for creating and editing procedures, and only after that went looking for the problem. Being able to read the data and understand the system behind it is what let me find false negatives, the lack of standardization in both the templates and the auditing procedure, and the fact that nothing measured what an automation was worth. That last gap became the key performance indicator I shipped.</p>
-  <p>When I run into pushback, I either gather more evidence and data or move to the next best option. The key performance indicator and the calls I made to people in Taiwan both came out of that.</p>
-</section>
+<section class="block" id="about">
+  <h2>About me</h2>
+  <div class="bento">
 
-<section class="sec" id="about" data-map="about">
-  <h2>About</h2>
-  <p>I grew up in Hangzhou and I'm fluent in Mandarin, which I used at Taiwan Semiconductor Manufacturing Company to work with teams in Taiwan. I have six years of acting experience, and I run a Dungeons &amp; Dragons campaign.</p>
-  <p>Storytelling is my favorite thing. When I have an idea to get across, I spend a lot of time thinking about who I'm telling, what they get out of it, and how they will best receive it. Being able to bring both facts and emotion into my presentations and performances is something I'm very grateful for. It has made me adaptable and curious about how both systems and people operate, so I can adjust how I tell a story to fit them, the same way my dashboards should fit the people who use them.</p>
+    <div class="card card-pad">
+      <div class="bento-head"><span class="eyebrow">Skills</span><span class="eyebrow">drag me</span></div>
+      <ul class="pile" id="pile">
+        <li>SQL</li><li>Python</li><li class="red">Statistical process control</li><li>Power BI</li><li>Tableau</li><li>Excel</li>
+        <li class="red">Root cause analysis</li><li>Process mapping</li><li>Process automation</li><li>Stakeholder management</li>
+        <li>Requirements gathering</li><li>Risk prioritization</li><li>Jira</li><li>Git and GitHub</li><li>LLM evaluation</li><li>Mandarin</li>
+      </ul>
+    </div>
+
+    <div class="card card-pad" data-tabs>
+      <div class="bento-head"><span class="eyebrow">R&eacute;sum&eacute;</span><a class="eyebrow" href="resume.pdf">PDF</a></div>
+      <div class="tabs" role="tablist">
+        <button role="tab" aria-selected="true" data-for="exp">Experience</button>
+        <button role="tab" aria-selected="false" data-for="edu">Education</button>
+      </div>
+      <div class="panelbody" id="exp" role="tabpanel">
+        <div class="entry"><h4>Automation Program Management Intern</h4><p class="sub">Taiwan Semiconductor Manufacturing Company, Summer 2026</p><p>Audited 130 automated procedures across more than 2,200 tools and shipped a key performance indicator for the whole platform.</p></div>
+        <div class="entry"><h4>Product Management Fellow</h4><p class="sub">Microsoft Student Research, September 2026 to present</p><p>Research on AI-powered incident management and on-call tooling for a Microsoft product team. Competitive teardowns, market sizing and discovery, including a teardown of one competitor across six evaluation tracks with sourced evidence that separates verified capability from vendor marketing.</p></div>
+        <div class="entry"><h4>Director of Events</h4><p class="sub">Product @ GT, Georgia Tech, August 2026 to present</p></div>
+      </div>
+      <div class="panelbody" id="edu" role="tabpanel" hidden>
+        <div class="entry"><h4>Georgia Institute of Technology</h4><p class="sub">B.S. in Industrial Engineering, concentration in Analytics and Data Science, graduating May 2028</p><p>Coursework includes Database Systems, Engineering Optimization, Simulation Analysis and Design, Quality Improvement Methods, and Regression and Forecasting.</p></div>
+      </div>
+    </div>
+
+    <div class="card card-pad" data-tabs>
+      <div class="bento-head"><span class="eyebrow">How I work</span></div>
+      <div class="tabs" role="tablist">
+        <button role="tab" aria-selected="true" data-for="learn">Learning a system</button>
+        <button role="tab" aria-selected="false" data-for="push">Pushback</button>
+      </div>
+      <div class="panelbody" id="learn" role="tabpanel">
+        <p>I start by learning the field I'm auditing. At the fab I spent my first week on manufacturing principles, then learned the automation platform and the standard process for creating and editing procedures, and only after that went looking for the problem.</p>
+        <p>Being able to read the data and understand the system behind it is what let me find false negatives, the lack of standardization in both the templates and the auditing procedure, and the fact that nothing measured what an automation was worth. That last gap became the key performance indicator I shipped.</p>
+      </div>
+      <div class="panelbody" id="push" role="tabpanel" hidden>
+        <p>When I run into pushback, I either gather more evidence and data or move to the next best option. The key performance indicator and the calls I made to people in Taiwan both came out of that.</p>
+      </div>
+    </div>
+
+    <div class="card wide">
+      <div class="card-pad">
+        <div class="bento-head"><span class="eyebrow">Outside of work</span></div>
+        <div class="about-cols">
+          <p>I grew up in Hangzhou and I'm fluent in Mandarin, which I used at Taiwan Semiconductor Manufacturing Company to work with teams in Taiwan. I have six years of acting experience, and I run a Dungeons &amp; Dragons campaign.</p>
+          <p>Storytelling is my favorite thing. When I have an idea to get across, I spend a lot of time thinking about who I'm telling, what they get out of it, and how they will best receive it. Being able to bring both facts and emotion into my presentations and performances is something I'm very grateful for. It has made me adaptable and curious about how both systems and people operate, so I can adjust how I tell a story to fit them, the same way my dashboards should fit the people who use them.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </section>
 
 </main>
 
-<footer>&copy; 2026 David Stewart</footer>
+<footer>
+  <a href="mailto:david.y.stewart1@gmail.com">david.y.stewart1@gmail.com</a> &middot; <a href="https://www.linkedin.com/in/david-y-stewart" rel="noopener">LinkedIn</a> &middot; <a href="resume.pdf">R&eacute;sum&eacute;</a>
+</footer>
 
 </div>
 <script src="site.js"></script>

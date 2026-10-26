@@ -1,23 +1,96 @@
 (function () {
   var root = document.documentElement;
 
-  // Light and dark toggle. The head script applies a saved choice before first paint.
-  var btn = document.querySelector('.toggle');
+  // Light and dark switch. The head script applies a saved choice before first paint.
+  var sw = document.querySelector('.switch');
   function current() {
     return root.dataset.theme || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
   }
-  function label() {
-    if (btn) btn.textContent = current() === 'dark' ? 'Light mode' : 'Dark mode';
+  function paintSwitch() {
+    if (!sw) return;
+    var dark = current() === 'dark';
+    sw.setAttribute('aria-checked', dark ? 'true' : 'false');
+    var lbl = sw.querySelector('.lbl');
+    if (lbl) lbl.textContent = dark ? 'Dark' : 'Light';
   }
-  if (btn) {
-    btn.addEventListener('click', function () {
+  if (sw) {
+    sw.addEventListener('click', function () {
       var next = current() === 'dark' ? 'light' : 'dark';
       root.dataset.theme = next;
       try { localStorage.setItem('theme', next); } catch (e) {}
-      label();
+      paintSwitch();
       document.dispatchEvent(new Event('themechange'));
     });
-    label();
+    paintSwitch();
+  }
+
+  // Tabs inside cards.
+  document.querySelectorAll('[data-tabs]').forEach(function (card) {
+    var tabs = card.querySelectorAll('[role="tab"]');
+    function show(tab) {
+      tabs.forEach(function (t) {
+        var on = t === tab;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        var p = document.getElementById(t.dataset.for);
+        if (p) p.hidden = !on;
+      });
+    }
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () { show(t); });
+      t.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+          var n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+          n.focus(); show(n);
+        }
+      });
+    });
+  });
+
+  // Skills: a loose pile of pills that can be dragged around inside the card.
+  var pile = document.getElementById('pile');
+  if (pile) {
+    var items = Array.prototype.slice.call(pile.children);
+    var seed = 3;
+    var rand = function () { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    var rot = items.map(function () { return (rand() - 0.5) * 12; });
+    var layout = function () {
+      var W = pile.clientWidth, x = 0, y = 4, rowH = 0, row = [];
+      var flush = function () {
+        var used = row.reduce(function (s, r) { return s + r.w; }, 0) + (row.length - 1) * 8;
+        var cx = Math.max(0, (W - used) / 2);
+        row.forEach(function (r) { r.el.style.left = cx + 'px'; r.el.style.top = y + 'px'; cx += r.w + 8; });
+        y += rowH + 10; row = []; x = 0; rowH = 0;
+      };
+      items.forEach(function (el, i) {
+        el.style.transform = 'rotate(' + rot[i].toFixed(1) + 'deg)';
+        var w = el.offsetWidth, h = el.offsetHeight;
+        if (x && x + w > W) flush();
+        row.push({ el: el, w: w }); x += w + 8; rowH = Math.max(rowH, h);
+      });
+      flush();
+      pile.style.minHeight = Math.max(pile.clientHeight, y) + 'px';
+    };
+    var drag = null;
+    pile.addEventListener('pointerdown', function (e) {
+      var el = e.target.closest('li'); if (!el) return;
+      var r = el.getBoundingClientRect();
+      drag = { el: el, dx: e.clientX - r.left, dy: e.clientY - r.top };
+      el.classList.add('drag'); el.setPointerCapture(e.pointerId); e.preventDefault();
+    });
+    pile.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      var p = pile.getBoundingClientRect();
+      var x = e.clientX - p.left - drag.dx, y = e.clientY - p.top - drag.dy;
+      x = Math.max(0, Math.min(x, p.width - drag.el.offsetWidth));
+      y = Math.max(0, Math.min(y, p.height - drag.el.offsetHeight));
+      drag.el.style.left = x + 'px'; drag.el.style.top = y + 'px';
+    });
+    var end = function () { if (drag) { drag.el.classList.remove('drag'); drag = null; } };
+    pile.addEventListener('pointerup', end);
+    pile.addEventListener('pointercancel', end);
+    var go = function () { layout(); };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(go); else go();
+    window.addEventListener('resize', go);
   }
 })();
 
@@ -62,7 +135,7 @@
   }
   function tick(r, color, alpha, extra) {
     ctx.globalAlpha = alpha; ctx.fillStyle = color;
-    ctx.fillRect(r.x - 1.5, r.y - 7 - (extra || 0), 3, 14 + 2 * (extra || 0));
+    ctx.fillRect(r.x - 1.5, r.y - 8 - (extra || 0), 3, 16 + 2 * (extra || 0));
   }
   function draw() {
     ctx.clearRect(0, 0, W, H);
@@ -109,46 +182,14 @@
   document.addEventListener('pointermove', function (e) {
     if (reduce) return;
     var r = canvas.getBoundingClientRect();
-    if (e.clientY < r.top - 140 || e.clientY > r.bottom + 140) { if (bandOn && !sweepStart) { bandOn = false; kick(); } return; }
+    if (e.clientY < r.top - 140 || e.clientY > r.bottom + 140 || e.clientX < r.left - 140 || e.clientX > r.right + 140) {
+      if (bandOn && !sweepStart) { bandOn = false; kick(); }
+      return;
+    }
     sweepStart = 0; bandOn = true; bandX = e.clientX - r.left; kick();
   });
   window.addEventListener('resize', function () { layout(); draw(); });
   document.addEventListener('themechange', function () { colors(); draw(); });
   window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function () { colors(); draw(); });
   init();
-})();
-
-// Section map: a small log in the margin that tracks where you are and jumps to a section.
-(function () {
-  var sections = document.querySelectorAll('[data-map]');
-  if (!sections.length || !('IntersectionObserver' in window)) return;
-  var nav = document.createElement('nav');
-  nav.className = 'map';
-  nav.setAttribute('aria-label', 'Page sections');
-  var ol = document.createElement('ol');
-  var items = [{ id: 'top', label: 'top', el: document.getElementById('top') }];
-  sections.forEach(function (s) { items.push({ id: s.id, label: s.dataset.map, el: s }); });
-  var byId = {};
-  items.forEach(function (it, i) {
-    var li = document.createElement('li');
-    var a = document.createElement('a');
-    a.href = '#' + it.id;
-    a.textContent = String(i).padStart(2, '0') + '  ' + it.label;
-    li.appendChild(a); ol.appendChild(li);
-    byId[it.id] = li;
-  });
-  nav.appendChild(ol);
-  document.body.appendChild(nav);
-  function setOn(id) {
-    Object.keys(byId).forEach(function (k) {
-      var on = k === id;
-      byId[k].classList.toggle('on', on);
-      byId[k].firstChild.classList.toggle('on', on);
-    });
-  }
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) { if (e.isIntersecting) setOn(e.target.id); });
-  }, { rootMargin: '-35% 0px -60% 0px' });
-  items.forEach(function (it) { if (it.el) io.observe(it.el); });
-  setOn('top');
 })();
