@@ -3,129 +3,102 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>David Stewart | Industrial Engineering, Georgia Tech</title>
-<meta name="description" content="David Stewart, Industrial Engineering (Analytics & Data Science) at Georgia Tech. At TSMC, automations reported 100% success while silently skipping runs equal to 4-6% of the ones that started. I build the audits that catch that.">
-<meta name="color-scheme" content="dark">
+<title>David Stewart | Industrial engineering, Georgia Tech</title>
+<meta name="description" content="David Stewart studies industrial engineering at Georgia Tech. Work on operations analytics, a tool for tabletop game masters, and a Bannerlord mod.">
+<meta name="color-scheme" content="dark light">
 <meta property="og:type" content="website">
-<meta property="og:title" content="David Stewart | Industrial Engineering, Georgia Tech">
-<meta property="og:description" content="I build the audits that catch what operations automation silently misses. Projects, case studies and experience.">
+<meta property="og:title" content="David Stewart | Industrial engineering, Georgia Tech">
+<meta property="og:description" content="Industrial engineering student at Georgia Tech. Internship work on automation audits, plus projects in operations analytics, tabletop games and game modding.">
 <meta property="og:image" content="https://dstew2816.github.io/og-image.png">
 <meta property="og:url" content="https://dstew2816.github.io/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script>try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
 </head>
 <body>
-<main>
+<div class="wrap">
 
-<header>
+<div class="top">
+  <a class="name" href="#top">David Stewart</a>
+  <button class="toggle" type="button">Light mode</button>
+</div>
+
+<header class="intro" id="top">
   <h1>David Stewart</h1>
-  <p class="sub">Industrial Engineering (Analytics &amp; Data Science), Georgia Tech &middot; <span class="n">May 2028</span></p>
-  <p class="pos">At TSMC, automations reported 100% success while silently skipping runs equal to 4&ndash;6% of the ones that started. I build the audits that catch that.</p>
-  <ul class="links">
-    <li><a href="https://www.linkedin.com/in/david-y-stewart" rel="noopener">LinkedIn</a></li>
+  <p class="where">Industrial engineering at Georgia Tech, graduating May 2028</p>
+  <p>I study industrial engineering at Georgia Tech with a concentration in analytics and data science. This past summer I interned at Taiwan Semiconductor Manufacturing Company in Arizona, where I audited automated procedures to find the ones that were failing without anyone noticing.</p>
+  <p>I'm looking for internships in technical program management, operations focused product management, supply chain, or data and analytics.</p>
+  <ul class="contact">
     <li><a href="mailto:david.y.stewart1@gmail.com">david.y.stewart1@gmail.com</a></li>
-    <li><a href="resume.pdf">Resume (PDF)</a></li>
+    <li><a href="https://www.linkedin.com/in/david-y-stewart" rel="noopener">LinkedIn</a></li>
+    <li><a href="resume.pdf">Resume</a></li>
   </ul>
 </header>
 
-<section aria-labelledby="about">
-  <h2 id="about">About</h2>
-  <p class="about">I grew up in Hangzhou and I'm fluent in Mandarin. I've done six years of acting, and I run a D&amp;D campaign.</p>
+<main>
+
+<section class="sec" id="work" data-map="work">
+  <h2>Taiwan Semiconductor Manufacturing Company</h2>
+  <p class="role"><span>Automation Program Management Intern</span><span>Intelligent Manufacturing Engineer Intern, Phoenix, Arizona, May to August 2026</span></p>
+
+  <dl class="figures">
+    <div><dd>130</dd><dt>procedures audited</dt></div>
+    <div><dd>2,200+</dd><dt>tools covered</dt></div>
+    <div><dd>4&ndash;6%</dd><dt>silent failures, compared with the runs that did start</dt></div>
+    <div><dd>~600 hrs</dd><dt>of manual work a month, quantified</dt></div>
+  </dl>
+
+  <p>Automated procedures at the fab watch for a condition and act on it, and the platform reports how many of the runs it started were successful. It had no record of the runs that never started. I proposed an audit of that gap, scoped it, and led it across 130 automated procedures and more than 2,200 tools. The audit found silent failures equal to 4 to 6 percent of the runs that did start.</p>
+  <p>The procedures had been written from inconsistent templates, so I turned them into detection specifications and found owners for them across several departments and with teams in Taiwan, where I worked in Mandarin. I wrote SQL and Python against more than 1,000,000 daily log entries and set up on-call alerts for critical misses.</p>
+  <p>I quantified about 600 hours a month of manual work and an estimated six figures in scrap, with wafers worth about $25,000 each, by prioritizing the fixes that protect wafer flow. I also built a reusable audit template organized by candidate type.</p>
+  <p>I shipped a key performance indicator across the whole platform, time saved per run, that measures what each automation is actually worth, along with four Power BI dashboards that are now in active use. The indicator was approved after I presented it to the head of manufacturing for Fab 21, and it has been implemented.</p>
 </section>
 
-<section aria-labelledby="exp">
-  <h2 id="exp">Experience</h2>
-  <article class="card">
-    <h3>TSMC &mdash; Automation Program Management</h3>
-    <p class="role">Intelligent Manufacturing Engineer Intern</p>
-    <p class="meta"><span class="n">Summer 2026</span> &middot; Automation program audit</p>
-    <ul class="stats">
-      <li><strong data-tpl="{0}" data-to="130">130</strong> <span>procedures audited</span></li>
-      <li><strong data-tpl="{0}+" data-to="2200" data-sep>2,200+</strong> <span>tools covered</span></li>
-      <li><strong data-tpl="{0}&ndash;{1}%" data-to="4,6">4&ndash;6%</strong> <span>extra runs that silently never ran, relative to runs that did start</span></li>
-      <li><strong data-tpl="~{0} hrs" data-to="600">~600 hrs</strong> <span>of manual work per month, quantified</span></li>
-    </ul>
-    <p>Audited an automation program end to end, found failures that were passing unnoticed, and sized the manual effort they created. Presented a time-saved-per-run KPI to the head of manufacturing for all of Fab 21; it was fully approved and implemented.</p>
-  </article>
-</section>
+<section class="sec" id="projects" data-map="projects">
+  <h2>Projects</h2>
 
-<section aria-labelledby="proj">
-  <h2 id="proj">Projects</h2>
-
-  <article class="card">
+  <article class="proj">
     <h3>OpsAudit</h3>
-    <p class="meta">Audit tool for operations data</p>
-    <ul class="stats three">
-      <li><strong data-tpl="{0}%" data-to="26.1" data-dec="1">26.1%</strong> <span>miss rate surfaced (synthetic data)</span></li>
-      <li><strong data-tpl="{0}% vs {1}%" data-to="89,66">89% vs 66%</strong> <span>accuracy: random forest vs hand-written rules, on 413 held-out records</span></li>
-      <li><strong data-tpl="{0}" data-to="33">33</strong> <span>check types, such as queue time and a hold with no owner</span></li>
-    </ul>
-    <p>A random forest caught more than hand-written rules across 33 check types, backed by statistical process control and stress-tested on real fab data (UCI SECOM).</p>
-    <ul class="tags"><li>Random forest</li><li>Statistical process control</li><li>UCI SECOM</li></ul>
-    <p class="more"><a href="projects/opsaudit.html">Read the case study &rarr;</a></p>
+    <p class="meta">Python, SQL, JavaScript &middot; live demo</p>
+    <p>I built this to show the kind of audit I did at the fab, using synthetic data. It rebuilds what each automated procedure should have caught and compares that with what the procedure logged. On the synthetic data, 26.1 percent of the qualifying cases were missed. A random forest identified which of 33 check types a procedure watches with 89 percent accuracy, against 66 percent for hand-written rules on the same 413 held-out records. When I tried the methods on real semiconductor data from a public dataset called SECOM, they mostly did not work, and the write-up says so.</p>
+    <p class="go"><a href="projects/opsaudit.html">Read the write-up</a></p>
   </article>
 
-  <article class="card">
-    <h3>Backroom <span class="status">In progress</span></h3>
-    <p class="meta">Game master tool</p>
-    <p>Surfaces your own prepped ideas mid-session, so the prep you did is there when the table needs it.</p>
-    <p class="more"><a href="projects/backroom.html">Read the case study &rarr;</a></p>
+  <article class="proj">
+    <h3>Backroom <span class="status">in progress</span></h3>
+    <p class="meta">TypeScript, Node &middot; public demo</p>
+    <p>A tool for people who run tabletop games. You type what is happening at the table and it finds the notes you already wrote that fit the scene. It only searches and ranks your own writing, it never generates anything, and it runs on your own computer.</p>
+    <p class="go"><a href="projects/backroom.html">Read the write-up</a></p>
   </article>
 
-  <article class="card">
+  <article class="proj">
     <h3>Truly Diverse Soldiers</h3>
-    <p class="meta">Mod for Mount &amp; Blade II: Bannerlord</p>
-    <p>Gives every soldier in an army a lasting identity: varied builds, culture-appropriate faces, and a configurable share of women in the ranks.</p>
-    <p class="more"><a href="projects/truly-diverse-soldiers.html">Read the case study &rarr;</a></p>
+    <p class="meta">C# &middot; released on Nexus Mods</p>
+    <p>A mod for Mount &amp; Blade II: Bannerlord. In the base game every recruit of a troop type has the same build and the faces change every battle. The mod gives each soldier a build and a face that stay the same, varies body types within each culture, and adds a configurable share of women to the ranks.</p>
+    <p class="go"><a href="projects/truly-diverse-soldiers.html">Read the write-up</a></p>
   </article>
 </section>
 
-<section aria-labelledby="how">
-  <h2 id="how">How I work</h2>
-  <ul class="how">
-    <li><span class="i n">01</span><div><strong>I test on real data, and report it when results are weak.</strong> <span>My control charts did not separate failures from passes on the SECOM semiconductor data, and I published that result. <a href="projects/opsaudit.html#results">See the SECOM stress test</a>.</span></div></li>
-    <li><span class="i n">02</span><div><strong>I keep a person between AI and the decision.</strong> <span>In OpsAudit, a model's work is split into steps so a wrong extraction is visible before any query runs. Backroom never writes a game master's story. <a href="projects/backroom.html#principle">See the principle</a>.</span></div></li>
-    <li><span class="i n">03</span><div><strong>I measure what actually gets used.</strong> <span>At TSMC, the KPI I proposed was approved and implemented. Backroom records which ideas a game master really uses. <a href="projects/backroom.html#measure">See how</a>.</span></div></li>
-  </ul>
-</section>
+<!-- TODO: "How I work" section. Waiting on David's own words, from a voice memo. -->
 
-<footer>&copy; David Stewart</footer>
+<section class="sec" id="about" data-map="about">
+  <h2>About</h2>
+  <p>I grew up in Hangzhou and I'm fluent in Mandarin, which I used at Taiwan Semiconductor Manufacturing Company to work with teams in Taiwan. I also have six years of acting experience, and I run a Dungeons &amp; Dragons campaign.</p>
+  <!-- TODO: more in David's voice. -->
+</section>
 
 </main>
-<script>
-(function () {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var els = document.querySelectorAll('[data-to]');
-  var dur = 1100, start = null;
-  function fmt(el, v, i) {
-    var dec = +(el.dataset.dec || 0);
-    var s = v.toFixed(dec);
-    return el.hasAttribute('data-sep') ? Number(s).toLocaleString('en-US') : s;
-  }
-  function render(el, p) {
-    var tos = el.dataset.to.split(',').map(Number);
-    var out = el.dataset.tpl;
-    tos.forEach(function (t, i) { out = out.replace('{' + i + '}', fmt(el, t * p, i)); });
-    el.innerHTML = out;
-  }
-  els.forEach(function (el) { render(el, 0); });
-  function tick(t) {
-    if (start === null) start = t;
-    var p = Math.min((t - start) / dur, 1);
-    var e = 1 - Math.pow(1 - p, 3);
-    els.forEach(function (el) { render(el, e); });
-    if (p < 1) requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
-  setTimeout(function () { start = -1e9; els.forEach(function (el) { render(el, 1); }); }, dur + 400);
-})();
-</script>
+
+<footer>&copy; 2026 David Stewart</footer>
+
+</div>
+<script src="site.js"></script>
 <script data-goatcounter="https://dstew2816.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
