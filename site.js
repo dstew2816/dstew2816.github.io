@@ -117,3 +117,38 @@
   window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function () { colors(); draw(); });
   init();
 })();
+
+// Section map: a small log in the margin that tracks where you are and jumps to a section.
+(function () {
+  var sections = document.querySelectorAll('[data-map]');
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  var nav = document.createElement('nav');
+  nav.className = 'map';
+  nav.setAttribute('aria-label', 'Page sections');
+  var ol = document.createElement('ol');
+  var items = [{ id: 'top', label: 'top', el: document.getElementById('top') }];
+  sections.forEach(function (s) { items.push({ id: s.id, label: s.dataset.map, el: s }); });
+  var byId = {};
+  items.forEach(function (it, i) {
+    var li = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = '#' + it.id;
+    a.textContent = String(i).padStart(2, '0') + '  ' + it.label;
+    li.appendChild(a); ol.appendChild(li);
+    byId[it.id] = li;
+  });
+  nav.appendChild(ol);
+  document.body.appendChild(nav);
+  function setOn(id) {
+    Object.keys(byId).forEach(function (k) {
+      var on = k === id;
+      byId[k].classList.toggle('on', on);
+      byId[k].firstChild.classList.toggle('on', on);
+    });
+  }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) setOn(e.target.id); });
+  }, { rootMargin: '-35% 0px -60% 0px' });
+  items.forEach(function (it) { if (it.el) io.observe(it.el); });
+  setOn('top');
+})();
