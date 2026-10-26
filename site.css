@@ -130,3 +130,5 @@ footer { padding: 2rem 0 3.5rem; border-top: 1px solid var(--line); color: var(-
 .pager { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); font: 400 .95rem "IBM Plex Sans", system-ui, sans-serif; }
 .pager a { color: var(--muted); text-decoration: none; }
 .pager a:hover { color: var(--text); }
+
+.monitor .cap { margin: .4rem 0 0; color: var(--muted); font: 400 .8rem/1.5 "IBM Plex Sans", system-ui, sans-serif; max-width: 34rem; }
