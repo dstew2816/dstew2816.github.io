@@ -3,94 +3,60 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Truly Diverse Soldiers case study | David Stewart</title>
-<meta name="description" content="Case study: Truly Diverse Soldiers, a Mount & Blade II: Bannerlord mod that gives every soldier a lasting identity.">
-<meta name="color-scheme" content="dark">
+<title>Truly Diverse Soldiers | David Stewart</title>
+<meta name="description" content="Truly Diverse Soldiers is a Mount & Blade II: Bannerlord mod that gives every soldier a build and a face that stay the same from battle to battle.">
+<meta name="color-scheme" content="dark light">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Truly Diverse Soldiers case study | David Stewart">
-<meta property="og:description" content="A Bannerlord mod that gives every soldier a lasting identity, so armies stop looking like clones.">
+<meta property="og:title" content="Truly Diverse Soldiers | David Stewart">
+<meta property="og:description" content="A Bannerlord mod that gives every soldier a build and a face that stay the same from battle to battle.">
 <meta property="og:image" content="https://dstew2816.github.io/og-image.png">
 <meta property="og:url" content="https://dstew2816.github.io/projects/truly-diverse-soldiers.html">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<script>try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../styles.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../site.css">
 </head>
 <body>
-<main class="case">
+<div class="wrap">
 
-<p class="crumb"><a href="../index.html">&larr; David Stewart</a></p>
+<div class="top">
+  <a class="name" href="../index.html">David Stewart</a>
+  <button class="toggle" type="button">Light mode</button>
+</div>
 
-<header class="case-head">
+<main class="page">
+  <p class="back"><a href="../index.html">Back to the home page</a></p>
   <h1>Truly Diverse Soldiers</h1>
-  <p class="lede">A Bannerlord mod that gives every soldier a lasting identity, so armies stop looking like clones.</p>
-  <dl class="facts">
-    <div><dt>Status</dt><dd>Released, v1.0.0</dd></div>
-    <div><dt>Game</dt><dd>Mount &amp; Blade II: Bannerlord v1.4.8</dd></div>
-    <div><dt>Built with</dt><dd>C#, Harmony</dd></div>
-  </dl>
-</header>
+  <p class="sub">A mod for Mount &amp; Blade II: Bannerlord, written in C# with Harmony. Version 1.0.0, released on Nexus Mods.</p>
 
-<section aria-labelledby="problem">
-  <h2 id="problem">The problem</h2>
-  <p>In the base game, every recruit of a troop type shares the same build, and every face is reshuffled from battle to battle. Soldiers have no lasting identity, so a large army reads as a crowd of clones.</p>
-  <!-- TODO: Why you cared enough to build it, in your own words. -->
-</section>
+  <h2>What it changes</h2>
+  <p>In the base game every recruit of a troop type shares the same build, and every face is reshuffled from battle to battle, so a big army looks like a crowd of copies. The mod gives each soldier an appearance that stays the same every battle. A share of regular soldiers, 30 percent by default, spawn as women who are built that way from the start, with the right body, animations and voice. They take their faces, hair and tattoos from the women of their own culture. Weight and build also vary more within each troop type, and each culture keeps its character, so Sturgians stay broad and Khuzaits stay lean, just less uniform.</p>
+  <!-- TODO: why David made it, in his own words. -->
 
-<section aria-labelledby="users">
-  <h2 id="users">Who it is for</h2>
-  <p>Bannerlord players, many of whom run large mod lists. That shaped the requirements: it has to coexist with other mods, be safe to add or remove mid-campaign, and be easy to configure.</p>
-</section>
+  <h2>How it works</h2>
+  <p>Each soldier is generated from a seed built from the party, the troop type and the soldier's position in the party, so the same position always produces the same soldier. Because of that, the mod saves nothing in the game save, which makes it safe to add or remove in the middle of a campaign. The cost is that the game only tracks how many of each troop a party has, not the individual soldiers. When soldiers die or get upgraded, the later ones slide into new positions and their looks change.</p>
 
-<section aria-labelledby="decisions">
-  <h2 id="decisions">Three decisions that shaped it</h2>
+  <h2>Playing alongside other mods</h2>
+  <p>Many players run long mod lists, so the mod never changes the player character, companions, lords or any other hero, and it leaves alone troops whose gender or face another mod has already set. I tested it with a list of more than 100 mods, including Dynamic Troop Equipment, Culture Diversity Mod and Living Armies. It works in field battles, sieges and hideouts.</p>
+  <p>Three settings live in one configuration file: the share of women, how much body build varies, and whether faces stay exactly identical every battle or come from the game's lighter face cache, which only looks similar. If the file is missing, the mod falls back to its defaults.</p>
 
-  <h3 class="dec">I derive each soldier from a stable seed instead of saving anything.</h3>
-  <p>Each soldier's gender, face and build come from a seed hashed from the party, the troop type and the soldier's slot, so the same slot always produces the same soldier. That means the mod stores nothing in the save, which makes it safe to add or remove mid-campaign. The cost is that the game only tracks how many of each troop a party has, not individuals. When soldiers die or are upgraded, later soldiers shift into new slots and their appearance changes. I state that limit on the mod page instead of hiding it.</p>
+  <h2>Limits and what comes next</h2>
+  <p>Custom Battle has no persistent parties, so looks are random there. Height is not varied yet, and that is the next thing I would add. After that I would look for ways to reduce how often looks shift when soldiers die or get upgraded.</p>
+  <p><a href="https://www.nexusmods.com/mountandblade2bannerlord/mods/14184">Get it on Nexus Mods</a>.</p>
 
-  <h3 class="dec">I build soldiers correctly from the start.</h3>
-  <p>A configurable share of regular soldiers, 30% by default, spawn as women built that way from the start, with the right body, animations and voice, rather than being swapped after they appear. Their faces, hair and tattoos come from their own culture's women, and every culture keeps its character: Sturgians stay broad and Khuzaits stay lean, just less uniform.</p>
-
-  <h3 class="dec">I leave heroes and other mods' choices alone, and let players pick the tradeoff.</h3>
-  <p>The player character, companions, lords and every other hero are never changed, and troops whose gender or face another mod has already set are left as they are. Many mods depend on heroes, so touching them would break the load orders this audience runs. For performance, one setting lets players choose between identical faces every battle and the game's lighter face cache, which only looks similar. Three settings in one config file cover everything, and the mod falls back to defaults if the file is missing.</p>
-</section>
-
-<section aria-labelledby="results">
-  <h2 id="results">Results</h2>
-  <p>Released as v1.0.0 on Nexus Mods. It works in field battles, sieges and hideouts, and I tested it alongside a load order of more than 100 mods, including Dynamic Troop Equipment, Culture Diversity Mod, Living Armies and RBM.</p>
-  <ul class="stats">
-    <li><strong>v1.0.0</strong> <span>first release</span></li>
-    <li><strong>100+</strong> <span>mods in the test load order</span></li>
-  </ul>
-  <div class="callout"><p>Known limitations, stated on the mod page: soldier appearance shifts when slots change, Custom Battle is random each time because it has no persistent parties, and height is not varied yet.</p></div>
-</section>
-
-<section aria-labelledby="next">
-  <h2 id="next">What I would do next</h2>
-  <ul class="plain">
-    <li>Vary height as well as weight and build, since it is the main thing still uniform.</li>
-    <li>Reduce how often appearances shift when soldiers die or are upgraded.</li>
-    <li>Read the player feedback after release and prioritize fixes by what people actually report.</li>
-  </ul>
-</section>
-
-<section aria-labelledby="links">
-  <h2 id="links">Get it</h2>
-  <ul class="buttons">
-    <li><a href="https://www.nexusmods.com/mountandblade2bannerlord/mods/14184">View on Nexus Mods &rarr;</a></li>
-  </ul>
-</section>
-
-<nav class="pager" aria-label="Case studies">
-  <a href="backroom.html">&larr; Previous: Backroom</a>
-  <a href="../index.html">Back to portfolio &rarr;</a>
-</nav>
-
+  <nav class="pager" aria-label="Other projects">
+    <a href="backroom.html">Backroom</a>
+    <a href="opsaudit.html">OpsAudit</a>
+  </nav>
 </main>
+
+</div>
+<script src="../site.js"></script>
 <script data-goatcounter="https://dstew2816.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

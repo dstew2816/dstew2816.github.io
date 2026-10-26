@@ -3,121 +3,68 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Backroom product brief | David Stewart</title>
-<meta name="description" content="Product brief: Backroom, a game master tool that surfaces your own prepped ideas mid-session.">
-<meta name="color-scheme" content="dark">
+<title>Backroom | David Stewart</title>
+<meta name="description" content="Backroom is a tool for tabletop game masters that finds the notes you already wrote that fit the scene in front of you.">
+<meta name="color-scheme" content="dark light">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Backroom product brief | David Stewart">
-<meta property="og:description" content="A game master tool that surfaces your own prepped ideas mid-session. The problem, users, scope and principles.">
+<meta property="og:title" content="Backroom | David Stewart">
+<meta property="og:description" content="A tool for tabletop game masters that finds the notes you already wrote that fit the scene in front of you.">
 <meta property="og:image" content="https://dstew2816.github.io/og-image.png">
 <meta property="og:url" content="https://dstew2816.github.io/projects/backroom.html">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<script>try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../styles.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../site.css">
 </head>
 <body>
-<main class="case">
+<div class="wrap">
 
-<p class="crumb"><a href="../index.html">&larr; David Stewart</a></p>
+<div class="top">
+  <a class="name" href="../index.html">David Stewart</a>
+  <button class="toggle" type="button">Light mode</button>
+</div>
 
-<header class="case-head">
-  <h1>Backroom <span class="status">In progress</span></h1>
-  <p class="lede">A product brief for a game master tool that surfaces your own prepped ideas mid-session.</p>
-  <dl class="facts">
-    <div><dt>Status</dt><dd>In progress, with a public demo</dd></div>
-    <div><dt>Runs</dt><dd>Locally, no generative AI</dd></div>
-    <div><dt>Built with</dt><dd>TypeScript, Node, local embeddings</dd></div>
-  </dl>
-</header>
+<main class="page">
+  <p class="back"><a href="../index.html">Back to the home page</a></p>
+  <h1>Backroom <span class="status">in progress</span></h1>
+  <p class="sub">A tool for tabletop game masters. TypeScript and Node, with a public demo.</p>
 
-<section aria-labelledby="problem">
-  <h2 id="problem">The problem</h2>
-  <p>A game master prepares far more than a single session can use, and the prep lives in notes. Mid-session, when the table does something unexpected, the useful idea is somewhere in those notes and there is no time to look for it. The prep exists, but it is not available when it matters.</p>
-  <!-- TODO: The story behind it: how you ran into this at your own table, in a sentence or two. -->
-</section>
+  <h2>What it does</h2>
+  <p>You type what is happening at the table, and Backroom finds the notes you already wrote that fit the scene. Each result is one idea from your own notes, shown with the note it came from, its heading and its line numbers, so you can see where it lives. You can mark an idea as used and hide the ones you have used. You can also give old prep that you never got to a small boost, so it comes back around.</p>
 
-<section aria-labelledby="users">
-  <h2 id="users">Who it is for</h2>
-  <p>Game masters who keep their prep as Markdown notes and run live sessions, where attention is the scarce resource. They need an answer in seconds, in their own words, without leaving the scene.</p>
-  <!-- TODO: Which game masters you have in mind or have asked, and what system or campaign they run. -->
-</section>
+  <h2>Why I'm building it</h2>
+  <p>A game master prepares far more than a session can use, and all of it sits in notes. When the table does something unexpected, the idea that would fit is in there somewhere, and there is no time to look for it in the middle of play.</p>
+  <!-- TODO: how David ran into this at his own table, in his own words. -->
 
-<section aria-labelledby="scope">
-  <h2 id="scope">Scope</h2>
-  <div class="scope">
-    <div>
-      <h3>In scope now</h3>
-      <ul class="plain">
-        <li>Type the current scene and get the most relevant ideas from your own notes, each with its note, heading and line numbers.</li>
-        <li>Mark an idea as used, filter to unused ideas, and give old unused prep a small boost.</li>
-        <li>Re-index changed notes.</li>
-        <li>Run entirely on your machine. A public demo runs the same search in the browser on invented sample notes.</li>
-      </ul>
-    </div>
-    <div>
-      <h3>Out of scope</h3>
-      <ul class="plain">
-        <li>Generating plots, characters, descriptions or any new content.</li>
-        <li>Editing or rewriting the game master's notes.</li>
-        <li>Sending notes to an outside service.</li>
-      </ul>
-    </div>
-  </div>
-</section>
+  <h2>Who it is for</h2>
+  <p>Game masters who keep their prep as Markdown notes and run live sessions.</p>
+  <!-- TODO: which game masters David has in mind or has asked, and what system or campaign they run. -->
 
-<section aria-labelledby="principle">
-  <h2 id="principle">The principle: AI maintains, never writes your story</h2>
-  <p>For now, the tool does one thing: it pulls relevant notes and ideas the game master already wrote. It generates nothing. It uses no generative AI at all; a small local model is used only to measure how similar two pieces of text are. If AI ever does more, it will be limited to looking after the game master's own material, and it will never author the story.</p>
-  <p>I held this line for three reasons.</p>
-  <ul class="plain">
-    <li><strong>Trust at the table.</strong> A game master has to be able to act on a result without checking it. A result that is their own sentence, with the note and line it came from, needs no checking. Generated text would.</li>
-    <li><strong>The world stays coherent.</strong> A campaign only works if its facts agree with each other. New text from a model would not know the world, and would quietly add contradictions.</li>
-    <li><strong>The value is recall, not invention.</strong> Game masters do not lack ideas. They lack access to the ones they already had.</li>
-  </ul>
-  <!-- TODO: What "maintain" means in practice: the specific upkeep jobs you imagine AI helping with, such as tagging or tidying notes. -->
-</section>
+  <h2>What it will not do</h2>
+  <p>Backroom only finds and ranks text you wrote. It does not generate plots, characters or descriptions, it does not rewrite your notes, and it does not send them anywhere. It runs on your own computer. The first time you start it, it downloads one small language model of about 25 megabytes, which it uses only to compare how similar two pieces of text are.</p>
+  <p>That comparison is the only job any AI has here, and I want to keep it that way. A game master's world only holds together if its facts agree with each other, and a model that has not read the whole campaign would add contradictions without anyone noticing. A result that is your own sentence, with the note it came from, is something you can trust at the table without checking it. Generated text would not be. If I ever add more AI, it will be limited to looking after your own notes, and it will not write your story.</p>
 
-<section aria-labelledby="measure">
-  <h2 id="measure">How I would know it works</h2>
-  <p>The tool already records which results a game master marks as used. That is the product signal. The questions I would track:</p>
-  <ul class="plain">
-    <li>How often a search leads to an idea being marked used.</li>
-    <li>How much old, never-used prep gets surfaced and used, since resurfacing it is the point.</li>
-    <li>How long a search takes, because a tool used mid-session has to feel instant.</li>
-  </ul>
-  <p>I have not yet measured these with real sessions. For scale, building the demo index from 5 sample notes (29 ideas) takes about 0.6 seconds.</p>
-  <!-- TODO: Any real usage or feedback once you have it. -->
-</section>
+  <h2>How I will know whether it works</h2>
+  <p>Backroom already records which results a game master marks as used, and that is the signal I care about most. I want to know how often a search ends with an idea being marked as used, and how fast the search comes back, since it has to feel instant in the middle of a scene. I have not measured either in real sessions yet. For a sense of speed, building the demo index from five sample notes took about 0.6 seconds.</p>
+  <!-- TODO: any real usage or feedback once David has it. -->
 
-<section aria-labelledby="status">
-  <h2 id="status">Status and next</h2>
-  <p>It works end to end: a local web page and command-line tools for search, marking ideas used and re-indexing, backed by an automated test suite, plus the public demo.</p>
-  <ul class="plain">
-    <li>Run it in real sessions and use the "mark used" data to see which ideas get found and which never do.</li>
-    <li>Tune the ranking and the point where relevance drops off against those sessions.</li>
-    <li>Pick up changed notes without a manual re-index.</li>
-  </ul>
-</section>
+  <h2>Where it stands</h2>
+  <p>It works from start to finish. There is a local web page and a set of command line tools for searching, marking ideas as used and re-indexing, with an automated test suite behind them, and a public demo that runs in the browser on invented sample notes. Next I want to run it in real sessions, see which ideas get found and which never do, and tune the ranking against that. It also needs to pick up changed notes without a manual re-index.</p>
+  <p><a href="https://dstew2816.github.io/backroom/">Try the demo</a> or <a href="https://github.com/dstew2816/backroom">read the source</a>.</p>
 
-<section aria-labelledby="links">
-  <h2 id="links">Explore it</h2>
-  <ul class="buttons">
-    <li><a href="https://dstew2816.github.io/backroom/">Try the demo &rarr;</a></li>
-    <li><a href="https://github.com/dstew2816/backroom">Source on GitHub &rarr;</a></li>
-  </ul>
-</section>
-
-<nav class="pager" aria-label="Case studies">
-  <a href="opsaudit.html">&larr; Previous: OpsAudit</a>
-  <a href="truly-diverse-soldiers.html">Next: Truly Diverse Soldiers &rarr;</a>
-</nav>
-
+  <nav class="pager" aria-label="Other projects">
+    <a href="opsaudit.html">OpsAudit</a>
+    <a href="truly-diverse-soldiers.html">Truly Diverse Soldiers</a>
+  </nav>
 </main>
+
+</div>
+<script src="../site.js"></script>
 <script data-goatcounter="https://dstew2816.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
