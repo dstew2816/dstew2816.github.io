@@ -280,3 +280,20 @@ footer a { color: var(--text); }
 .tl-dash { margin-top: 1.4rem; padding-top: 1rem; border-top: 1px solid var(--line); }
 .tl-dash .eyebrow { margin: 0 0 .3rem; }
 .tl-dash p { margin: 0 0 .6rem; font-size: .92rem; }
+
+/* TSMC card: figures across the top, then two columns */
+.work { grid-template-columns: 1fr; }
+.work .figures { grid-template-columns: repeat(2, 1fr); }
+.work-cols { display: grid; gap: 1.5rem 2.5rem; }
+.work .from { margin-top: 0; padding-top: 0; border-top: 0; align-self: start; }
+@media (min-width: 52rem) {
+  .work .figures { grid-template-columns: repeat(4, 1fr); }
+  .work-cols { grid-template-columns: 1.35fr 1fr; }
+  .work .from { padding-left: 2rem; border-left: 1px solid var(--line); }
+}
+.figures div { flex-direction: column-reverse; }
+.dash-grid { display: grid; gap: .8rem; }
+.dash-grid div { background: var(--surface-2); border-radius: 12px; padding: .8rem .9rem; }
+.dash-grid b { display: block; font-size: .93rem; margin-bottom: .15rem; }
+.dash-grid span { font-size: .85rem; color: var(--muted); line-height: 1.45; }
+@media (min-width: 52rem) { .dash-grid { grid-template-columns: repeat(4, 1fr); } }
