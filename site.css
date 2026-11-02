@@ -308,3 +308,13 @@ footer a { color: var(--text); }
 .soldiers .fig { transform-box: fill-box; transform-origin: 50% 100%; animation: breathe var(--dur) ease-in-out var(--dl) infinite; }
 @keyframes breathe { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(calc(1 - var(--a) * .4), calc(1 + var(--a))); } }
 @media (prefers-reduced-motion: reduce) { .soldiers .fig { animation: none; } }
+
+/* Experience rows: titles first, details on expand */
+.entry.xp { padding: 0; margin: 0; border-bottom: 1px solid var(--line); }
+.entry.xp:last-child { border-bottom: 0; }
+.entry.xp summary { display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 1rem; padding: .85rem 0; }
+.entry.xp summary::after { flex: none; }
+.xp-t b { display: block; font-size: .98rem; font-weight: 600; }
+.xp-t .sub { display: block; margin-top: .1rem; color: var(--muted); font-size: .85rem; font-weight: 400; }
+.xp-b { padding: 0 0 1rem; }
+.xp-b p { margin: 0 0 .7rem; max-width: 46rem; font-size: .92rem; line-height: 1.65; }
