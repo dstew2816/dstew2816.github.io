@@ -78,15 +78,6 @@
       <h3>Taiwan Semiconductor Manufacturing Company</h3>
       <p class="role"><span>Automation Program Management Intern</span><span>Phoenix, Arizona, May to August 2026</span></p>
       <p>I interned at TSMC's Arizona fab on the team that maintains the automation platform and procedures. I proposed an audit of the runs that never started, scoped it, and led it.</p>
-      <div class="timeline" aria-label="Internship timeline">
-        <div class="tl-axis eyebrow"><span>May 2026</span><span>August 2026</span></div>
-        <ol>
-          <li><b>Learned the system</b><span>Manufacturing principles first, then the automation platform and how procedures get written.</span></li>
-          <li><b>Scoped the audit</b><span>Proposed it, then defined what to check across 130 procedures and 2,200+ tools.</span></li>
-          <li><b>Ran it</b><span>SQL and Python over 1,000,000+ daily log entries, with on-call alerts for critical misses.</span></li>
-          <li><b>Presented and shipped</b><span>A time-saved-per-run KPI approved by Fab 21's head of manufacturing, plus four Power BI dashboards.</span></li>
-        </ol>
-      </div>
       <details>
         <summary>More on what I did</summary>
         <div>
@@ -99,6 +90,21 @@
         <p class="eyebrow">What came out of it</p>
         <p><a href="projects/opsaudit.html">OpsAudit</a>, my own version of the audit, rebuilt on synthetic data so I can show it.</p>
         <ul class="tags"><li>SQL</li><li>Python</li><li>Power BI</li><li>Statistical process control</li><li>Root cause analysis</li><li>Stakeholder management</li><li>Mandarin</li></ul>
+      </div>
+    </div>
+    <div class="timeline" aria-label="Internship timeline">
+      <div class="tl-axis eyebrow"><span>May 2026</span><span>August 2026</span></div>
+      <ol>
+        <li><span class="wk">Weeks 1&ndash;2</span><b>Learned the platform</b><span>Manufacturing process steps and principles, the automation platform and how procedures get built, KPIs, and a lot of SQL.</span></li>
+        <li><span class="wk">Week 4</span><b>Scoped and proposed it</b><span>Drafted the project framework and made the case with a real example: a missed case I found while practicing SQL that never showed in the platform's tracker, because it was never caught.</span></li>
+        <li><span class="wk">Weeks 5&ndash;7</span><b>Built three detectors</b><span>By hand: resetting load port statuses, marking or fixing department holds, and the emergency N2 purge, the most valuable of the three.</span></li>
+        <li><span class="wk">Week 8</span><b>Made it reusable</b><span>A new template framework for future automations, and the generation logic behind it.</span></li>
+        <li><span class="wk">Weeks 9&ndash;10</span><b>Measured and shipped</b><span>A KPI for each procedure's value in time saved or cost, approved by Fab 21's head of manufacturing.</span></li>
+      </ol>
+      <div class="tl-dash">
+        <p class="eyebrow">Throughout</p>
+        <p>Four Power BI dashboards, all in active use:</p>
+        <ul class="tags"><li>Failure-rate quick reference</li><li>Update status vs. Fab 18</li><li>Manual, urgent and notification linkage</li><li>Disabled and in-progress nodes</li></ul>
       </div>
     </div>
   </div>
