@@ -19,14 +19,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../site.css?v=20261102m">
+<link rel="stylesheet" href="../site.css?v=20261102n">
 </head>
 <body>
 <nav class="nav" aria-label="Main">
   <div class="nav-in">
     <a class="brand" href="../index.html">David Stewart <span>&middot; Industrial engineering</span></a>
     <ul class="links">
-      <li><a href="../index.html#work">Work</a></li>
+      <li><a href="../index.html#work">Internship</a></li>
       <li><a href="../index.html#projects">Projects</a></li>
       <li><a href="../index.html#about">About</a></li>
     </ul>
@@ -40,7 +40,7 @@
   <p class="sub">A tool for tabletop game masters. TypeScript and Node, with a public demo.</p>
 
   <h2>What it does</h2>
-  <p>You type what is happening at the table, and Backroom finds the notes you already wrote that fit the scene. Each result is one idea from your own notes, shown with the note it came from, its heading and its line numbers, so you can see where it lives. You can mark an idea as used and hide the ones you have used. You can also give old prep that you never got to a small boost, so it comes back around.</p>
+  <p>You type what is happening at the table, and Backroom finds the notes you already wrote that fit the scene. Each result is one idea from your own notes, shown with the note it came from, its heading and its line numbers, so you can see where it lives. You can mark an idea as used and hide the ones you have used. You can also give old prep that you never got to a small boost, so it comes back around. Anything you jot down in the same notes, including a half-formed idea, comes back the same way when a search or a few minutes of planning ahead matches it.</p>
 
   <h2>Why I'm building it</h2>
   <p>A game master prepares far more than a session can use, and all of it sits in notes. When the table does something unexpected, the idea that would fit is in there somewhere, and there is no time to look for it in the middle of play.</p>
@@ -48,7 +48,6 @@
 
   <h2>Who it is for</h2>
   <p>Game masters who keep their prep as Markdown notes and run live sessions.</p>
-  <!-- TODO: which game masters David has in mind or has asked, and what system or campaign they run. -->
 
   <h2>What it will not do</h2>
   <p>Backroom only finds and ranks text you wrote. It does not generate plots, characters or descriptions, it does not rewrite your notes, and it does not send them anywhere. It runs on your own computer. The first time you start it, it downloads one small language model of about 25 megabytes, which it uses only to compare how similar two pieces of text are.</p>
@@ -56,7 +55,6 @@
 
   <h2>How I will know whether it works</h2>
   <p>Backroom already records which results a game master marks as used, and that is the signal I care about most. I want to know how often a search ends with an idea being marked as used, and how fast the search comes back, since it has to feel instant in the middle of a scene. I have not measured either in real sessions yet. For a sense of speed, building the demo index from five sample notes took about 0.6 seconds.</p>
-  <!-- TODO: any real usage or feedback once David has it. -->
 
   <h2>Where it stands</h2>
   <p>It works from start to finish. There is a local web page and a set of command line tools for searching, marking ideas as used and re-indexing, with an automated test suite behind them, and a public demo that runs in the browser on invented sample notes. Next I want to run it in real sessions, see which ideas get found and which never do, and tune the ranking against that. It also needs to pick up changed notes without a manual re-index.</p>
@@ -68,7 +66,7 @@
   </nav>
 </main>
 
-<script src="../site.js?v=20261102m"></script>
+<script src="../site.js?v=20261102n"></script>
 <script data-goatcounter="https://dstew2816.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
