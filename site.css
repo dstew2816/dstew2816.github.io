@@ -212,3 +212,4 @@ footer a { color: var(--text); }
 .page .summary ul { margin: 0 0 .7rem; }
 .page .summary .stack { margin: 0; color: var(--muted); font-size: .92rem; }
 .proj p b { color: var(--text); font-weight: 600; }
+.panelbody > p { max-width: 46rem; line-height: 1.7; }
