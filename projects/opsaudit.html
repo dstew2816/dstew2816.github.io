@@ -59,14 +59,14 @@
 
 <h2>Three decisions that shaped it</h2>
 
-  <h3>I audited from raw history, not from each procedure's own log.</h3>
+  <h3>I rebuilt what should have happened from raw history.</h3>
   <p>A procedure's success rate only counts the cases it handled, so it can never show a case it never saw. I rebuilt what each procedure should have picked up from the raw events and compared that with what it logged. The cost is that the audit needs two independent sources, and in practice the hard part is getting access to the automation's own log.</p>
 
   <h3>I made the comparison hard to cheat, including against myself.</h3>
-  <p>I wrote the answer keys by hand and froze the baseline rules before training any model, then scored the test set once. The checks are tested too: the audit fails if a procedure returns zero misses, because a query that finds nothing looks the same as one that is broken. The cost is that I wrote the keys, so they share my vocabulary and the results lean optimistic. I say that on the page instead of hiding it.</p>
+  <p>I wrote the answer keys by hand and froze the baseline rules before training any model, then scored the test set once. The checks are tested too: the audit fails if a procedure returns zero misses, because a query that finds nothing looks the same as one that is broken. The cost is that I wrote the keys, so they share my vocabulary and the results lean optimistic, and the limits below say so.</p>
 
   <h3>I priced the misses with assumptions anyone can change.</h3>
-  <p>Managers act on a ranked list of fixes, not on a count of misses. So each miss becomes labor hours and cost at risk, misses are grouped into fixes, and the fixes are ranked by cost, hours or payback. Every input is an editable assumption, set low on purpose. The dollar figures are illustrative and the annualized number just scales a 14-day window, so it should not be read as a forecast.</p>
+  <p>Managers act on a ranked list of fixes, so each miss becomes labor hours and cost at risk, misses are grouped into fixes, and the fixes are ranked by cost, hours or payback. Every input is an editable assumption, set low on purpose. The dollar figures are illustrative and the annualized number just scales a 14-day window, so it should not be read as a forecast.</p>
 
 
 <h2>Results</h2>
@@ -94,9 +94,9 @@
     <figcaption>Where the model gets confused. Decision tree, naming the kind of check (6 kinds) on the 413 held-out records: 355 correct, or 86.0%. Green is right, red is a mix-up.</figcaption>
   </figure>
 
-  <p><strong>Real data, and a weak result.</strong> I stress-tested the same ideas on UCI SECOM, a public semiconductor dataset of 1,567 production runs. The control charts as built did not separate failures from passes (95.0% of failing runs were flagged, but so were 98.8% of passing runs), and no classifier clearly beat chance on the later runs. I report it as it came out.</p>
+  <p><strong>Real data, and a weak result.</strong> I stress-tested the same ideas on UCI SECOM, a public semiconductor dataset of 1,567 production runs. The control charts as built did not separate failures from passes (95.0% of failing runs were flagged, but so were 98.8% of passing runs), and no classifier clearly beat chance on the later runs.</p>
   <p><strong>AI layers.</strong> One run each. The right procedure resolved 5 of 5 times, but only 2 of 5 generated queries matched the baseline exactly. Root-cause grouping passed 3 of 5 checks and recovered the outage cluster exactly.</p>
-  <p class="note">Limits: synthetic data, a small sample (24 misses, one 14-day window), answer keys I wrote myself, and one run of each AI layer. Treat the numbers as a demonstration of method, not a benchmark or a forecast.</p>
+  <p class="note">Limits: synthetic data, a small sample (24 misses, one 14-day window), answer keys I wrote myself, and one run of each AI layer. The numbers show how the method behaves on small samples and should not be read as a benchmark or a forecast.</p>
 
 
 <h2>What I would do next</h2>
