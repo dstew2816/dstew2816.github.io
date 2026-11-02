@@ -146,7 +146,7 @@
     ctx.shadowColor = c.signal; ctx.shadowBlur = 8;
     for (k = 0; k < extras.length; k++) {
       var g2 = extras[k];
-      if (g2.seen) bad++;
+      if (g2.heat > 0.5) bad++;
       if (g2.heat <= 0.01) continue;
       var p = ease(Math.min(1, g2.heat));
       die(g2.x, g2.y, size * g2.sz * (0.4 + 0.75 * p), c.signal, Math.min(1, 0.3 + p), g2.rot * p);
@@ -155,9 +155,9 @@
     if (bandOn) {
       ctx.fillStyle = c.accent; ctx.globalAlpha = 0.5; ctx.fillRect(bandX - 0.5, 0, 1, H); ctx.globalAlpha = 1;
     }
-    if (checkedEl && bad) {
-      checkedEl.textContent = 'Dies on the wafer: ' + dies.length;
-      badEl.innerHTML = 'Never fired, found so far: <span class="bad">' + bad + '</span> of ' + extras.length;
+    if (checkedEl) {
+      checkedEl.textContent = 'Automations on the wafer: ' + dies.length;
+      badEl.innerHTML = 'Never fired, in view: <span class="bad">' + bad + '</span>';
     }
     return active;
   }
