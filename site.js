@@ -58,7 +58,7 @@
   var checkedEl = document.getElementById('mon-checked');
   var badEl = document.getElementById('mon-bad');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var BAND = 46, MISSING = 0.05, N = 17;
+  var BAND = 46, MISSING = 0.05, N = 17, HOLD = 1250, lastScan = 0;
   var dies = [], extras = [], W = 0, H = 0, cx = 0, cy = 0, R = 0, pitch = 0, size = 0, c = {}, bandX = -999, bandOn = false, raf = 0, sweepStart = 0;
 
   function colors() {
@@ -117,8 +117,10 @@
     for (k = 0; k < extras.length; k++) {
       var e = extras[k];
       if (!reduce) {
-        if (bandOn && Math.abs(e.x - bandX) < BAND) { e.heat = 1; e.seen = true; }
-        else if (e.heat > 0.01) e.heat *= 0.94; else e.heat = 0;
+        // Found misses stay lit while the scan is going and for a moment after it stops, so they can all be seen at once.
+        if (bandOn && Math.abs(e.x - bandX) < BAND) { e.heat = 1; e.seen = true; e.found = true; }
+        else if (e.found && performance.now() - lastScan < HOLD) e.heat = 1;
+        else if (e.heat > 0.01) { e.found = false; e.heat *= 0.94; } else { e.heat = 0; e.found = false; }
       }
       if (e.heat > 0.01) active = true;
     }
@@ -165,7 +167,7 @@
     raf = 0;
     if (sweepStart) {
       var p = Math.min((performance.now() - sweepStart) / 3400, 1);
-      bandX = W * (1 - Math.pow(1 - p, 2)); bandOn = true;
+      bandX = W * (1 - Math.pow(1 - p, 2)); bandOn = true; lastScan = performance.now();
       if (p >= 1) { sweepStart = 0; bandOn = false; }
     }
     var active = draw();
@@ -174,7 +176,7 @@
   function kick() { if (!raf) raf = requestAnimationFrame(loop); }
 
   function init() { colors(); layout(); draw(); if (!reduce) { sweepStart = performance.now(); kick(); } }
-  var inRect = false;
+  var inRect = false, lastMove = 0;
   document.addEventListener('pointermove', function (e) {
     if (reduce) return;
     var r = canvas.getBoundingClientRect();
@@ -182,16 +184,19 @@
     var inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
     if (!near) {
       inRect = false;
-      if (bandOn && !sweepStart) { bandOn = false; kick(); }
+      if (bandOn && !sweepStart) { bandOn = false; lastScan = performance.now(); kick(); }
       return;
     }
-    // Every new hover over the wafer finds the misses in new places.
-    if ((inside && !inRect) || (!bandOn && extras.every(function (x) { return x.heat < 0.05; }))) {
-      if (inside && !inRect) extras.forEach(function (x) { x.heat = 0; });
+    // Every new pass finds the misses in new places: entering the wafer, coming back into the area around it,
+    // or starting to move again after a pause.
+    var nowT = performance.now(), fresh = nowT - lastMove > 350;
+    lastMove = nowT;
+    if ((inside && !inRect) || fresh || !bandOn) {
+      extras.forEach(function (x) { x.heat = 0; });
       reseed();
     }
     inRect = inside;
-    sweepStart = 0; bandOn = true; bandX = e.clientX - r.left; kick();
+    sweepStart = 0; bandOn = true; bandX = e.clientX - r.left; lastScan = nowT; kick();
   });
   window.addEventListener('resize', function () { layout(); draw(); });
   document.addEventListener('themechange', function () { colors(); draw(); });
