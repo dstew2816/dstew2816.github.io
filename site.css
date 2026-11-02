@@ -205,3 +205,10 @@ footer a { color: var(--text); }
 .outside p { margin: 0; font-size: .95rem; }
 .outside p.eyebrow { font-size: .72rem; }
 @media (min-width: 52rem) { .outside { grid-template-columns: 1fr 1fr; } .outside .card:first-child, .outside .card:last-child { grid-column: 1 / -1; } }
+
+.page .summary { margin: 1.5rem 0 1.75rem; padding: 1.25rem 1.4rem; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+.page .summary .eyebrow { margin: 0 0 .5rem; }
+.page .summary p { margin: 0 0 .7rem; }
+.page .summary ul { margin: 0 0 .7rem; }
+.page .summary .stack { margin: 0; color: var(--muted); font-size: .92rem; }
+.proj p b { color: var(--text); font-weight: 600; }

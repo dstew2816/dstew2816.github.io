@@ -39,15 +39,26 @@
   <h1>OpsAudit <span class="status">live demo</span></h1>
   <p class="sub">Finding what operations automation silently misses, and putting a price on it. Synthetic data, plus one public real-data check. JavaScript, React, SQLite, Python, scikit-learn.</p>
 
+  <div class="summary">
+    <p class="eyebrow">Summary</p>
+    <p>A rebuild of the audit I led at <strong>TSMC</strong>. It reconstructs from raw history which cases <strong>should have</strong> triggered each automated procedure, compares that with what the procedure logged, and <strong>prices the gap</strong> into a ranked list of fixes.</p>
+    <ul>
+      <li><strong>24 of 92</strong> qualifying cases silently missed (<strong>26.1%</strong>), sized at <strong>17.6 labor hours</strong> and <strong>$3,618</strong> at risk over 14 days.</li>
+      <li>A <strong>random forest</strong> classifier named which of <strong>33</strong> kinds of check a messy procedure definition describes with <strong>89.1%</strong> accuracy, against <strong>66.3%</strong> for hand-written rules.</li>
+      <li><strong>Statistical process control</strong> flagged a planted drift three subgroups after it began.</li>
+    </ul>
+    <p class="stack"><strong>SQL</strong>, <strong>Python</strong>, <strong>scikit-learn</strong>, <strong>statistical process control</strong>, <strong>React</strong>, LLM evaluation.</p>
+  </div>
+
   <figure class="shot">
-    <img src="img/opsaudit-demo.gif" width="880" height="546" alt="A 15-second walkthrough of the OpsAudit demo: the audit, the control charts, the fix queue and the classifier.">
-    <figcaption>A 15-second walkthrough of the live demo. <a href="https://dstew2816.github.io/ops-audit/">Open it and click around.</a></figcaption>
+    <img src="img/opsaudit-summary.png" width="1280" height="800" alt="The front page of the OpsAudit demo: the summary, four headline results and the start of the how-it-works steps.">
+    <figcaption>The front page of the <a href="https://dstew2816.github.io/ops-audit/">live demo</a>. It opens on the results and keeps the detail a click away.</figcaption>
   </figure>
 
   <h2>The problem</h2>
   <p>Automated procedures watch for a condition, such as a port blocked for 30 minutes, and act on it. They run on live events with no historical replay. If the platform is down, an event arrives late, or a rule is slightly too narrow, the case is never picked up and nothing records that it was missed.</p>
   <p>Success metrics are calculated over the cases that were handled, so a procedure can report 100% while missing a quarter of what it should have caught.</p>
-  <p class="note">This is a demo of the kind of work I did at my TSMC internship. All data on this page is synthetic, except the clearly labeled public-data check.</p>
+  
 
 
 <h2>Who it is for</h2>
@@ -96,7 +107,7 @@
 
   <p><strong>Real data, and a weak result.</strong> I stress-tested the same ideas on UCI SECOM, a public semiconductor dataset of 1,567 production runs. The control charts as built did not separate failures from passes (95.0% of failing runs were flagged, but so were 98.8% of passing runs), and no classifier clearly beat chance on the later runs.</p>
   <p><strong>AI layers.</strong> One run each. The right procedure resolved 5 of 5 times, but only 2 of 5 generated queries matched the baseline exactly. Root-cause grouping passed 3 of 5 checks and recovered the outage cluster exactly.</p>
-  <p class="note">Limits: synthetic data, a small sample (24 misses, one 14-day window), answer keys I wrote myself, and one run of each AI layer. The numbers show how the method behaves on small samples and should not be read as a benchmark or a forecast.</p>
+  <p class="note">Limits: this is a demo of the kind of work I did at TSMC, and all data on this page is synthetic except the clearly labeled public-data check. Other limits: a small sample (24 misses, one 14-day window), answer keys I wrote myself, and one run of each AI layer. The numbers show how the method behaves on small samples and should not be read as a benchmark or a forecast.</p>
 
 
 <h2>What I would do next</h2>
