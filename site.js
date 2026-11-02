@@ -258,97 +258,120 @@
   if (panel) panel.addEventListener('panelshow', function () { setTimeout(play, 30); });
 })();
 
-// Backroom card: a cloud of notes. A scene is typed, the notes that fit it light up and connect to it, then the next scene.
+// Backroom card: a network of notes. A scene is typed, the match travels along the network's own links to the notes
+// that fit it, and those notes light up, then the next scene.
 (function () {
   var canvas = document.querySelector('canvas.graph');
   if (!canvas || !canvas.getContext) return;
   var ctx = canvas.getContext('2d');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var W = 0, H = 0, nodes = [], edges = [], c = {}, raf = 0, t0 = 0, visible = false;
+  var W = 0, H = 0, nodes = [], edges = [], adj = [], c = {}, raf = 0, t0 = 0, visible = false;
   var SCENES = [
-    { text: 'the wizard starts flying', q: [0.30, 0.42], names: ['Alley trap', 'Rooftop chase', 'Tower guards'] },
-    { text: 'the party reaches the keep', q: [0.68, 0.36], names: ['Gate captain', 'Moat riddle', 'Hidden stair'] },
-    { text: 'they bargain with the guild', q: [0.55, 0.66], names: ['Guildmaster\'s debt', 'Smuggler\'s cache', 'Forged seal'] }
+    { text: 'the wizard starts flying', q: [0.30, 0.50], names: ['Alley trap', 'Rooftop chase', 'Tower guards'] },
+    { text: 'the party reaches the keep', q: [0.72, 0.38], names: ['Gate captain', 'Moat riddle', 'Hidden stair'] },
+    { text: 'they bargain with the guild', q: [0.50, 0.66], names: ['Guildmaster\'s debt', 'Smuggler\'s cache', 'Forged seal'] }
   ];
-  var SCENE_MS = 5200;
+  var SCENE_MS = 5600;
 
   function rng(seed) { return function () { seed |= 0; seed = (seed + 0x6D2B79F5) | 0; var t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
   function colors() {
     var s = getComputedStyle(document.documentElement), g = function (n) { return s.getPropertyValue(n).trim(); };
     c = { line: g('--line-strong'), text: g('--text'), muted: g('--muted'), signal: g('--signal') };
   }
+  function dist(i, j) { return Math.hypot((nodes[i].x - nodes[j].x) * W, (nodes[i].y - nodes[j].y) * H); }
   function build() {
     var r = canvas.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
     W = r.width; H = r.height;
     canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    var rand = rng(5), n = 46;
+    var rand = rng(9), n = 78, tries = 0;
     nodes = [];
-    var tries = 0;
-    while (nodes.length < n && tries++ < 4000) {
-      var x = 0.06 + rand() * 0.88, y = 0.08 + rand() * 0.72;
-      if (y < 0.24 && x < 0.46) continue; // keep clear of the status badge
-      if (nodes.every(function (o) { return Math.hypot((o.x - x) * W, (o.y - y) * H) > 17; })) nodes.push({ x: x, y: y, p: rand() * 6.28, r: 1.6 + rand() * 1.6 });
+    while (nodes.length < n && tries++ < 8000) {
+      var x = 0.03 + rand() * 0.94, y = 0.05 + rand() * 0.78;
+      if (y < 0.24 && x < 0.44) continue; // keep clear of the status badge
+      if (nodes.every(function (o) { return Math.hypot((o.x - x) * W, (o.y - y) * H) > 15; })) nodes.push({ x: x, y: y, p: rand() * 6.28, r: 1.5 + rand() * 1.5 });
     }
+    // Each note links to its three nearest neighbours, and a spanning pass guarantees the network is one piece.
+    var key = {}, uf = nodes.map(function (_, i) { return i; });
+    function find(i) { while (uf[i] !== i) { uf[i] = uf[uf[i]]; i = uf[i]; } return i; }
+    function link(i, j) { var k = i < j ? i + '_' + j : j + '_' + i; if (key[k]) return; key[k] = 1; edges.push([i, j]); uf[find(i)] = find(j); }
     edges = [];
     nodes.forEach(function (a, i) {
-      var near = nodes.map(function (b, j) { return { j: j, d: Math.hypot((a.x - b.x) * W, (a.y - b.y) * H) }; })
-        .filter(function (o) { return o.j !== i; }).sort(function (u, v) { return u.d - v.d; }).slice(0, 2);
-      near.forEach(function (o) { if (o.j > i || !edges.some(function (e) { return e[0] === o.j && e[1] === i; })) edges.push([i, o.j]); });
+      nodes.map(function (b, j) { return { j: j, d: dist(i, j) }; }).filter(function (o) { return o.j !== i; })
+        .sort(function (u, v) { return u.d - v.d; }).slice(0, 3).forEach(function (o) { link(i, o.j); });
     });
+    var pairs = [];
+    for (var i = 0; i < nodes.length; i++) for (var j = i + 1; j < nodes.length; j++) pairs.push([i, j, dist(i, j)]);
+    pairs.sort(function (u, v) { return u[2] - v[2]; });
+    pairs.forEach(function (p) { if (find(p[0]) !== find(p[1])) link(p[0], p[1]); });
+    adj = nodes.map(function () { return []; });
+    edges.forEach(function (e) { adj[e[0]].push(e[1]); adj[e[1]].push(e[0]); });
+
     SCENES.forEach(function (sc) {
-      var qx = sc.q[0] * W, qy = sc.q[1] * H;
-      var order = nodes.map(function (nd, i) { return { i: i, d: Math.hypot(nd.x * W - qx, nd.y * H - qy) }; })
-        .sort(function (u, v) { return u.d - v.d; });
-      sc.hits = [];
-      order.forEach(function (o) {
-        if (sc.hits.length >= 3) return;
-        var far = sc.hits.every(function (h) { return Math.hypot((nodes[h].x - nodes[o.i].x) * W, (nodes[h].y - nodes[o.i].y) * H) > 62; });
-        if (far) sc.hits.push(o.i);
+      var qx = sc.q[0] * W, qy = sc.q[1] * H, start = 0, best = 1e9;
+      nodes.forEach(function (nd, i) { var d = Math.hypot(nd.x * W - qx, nd.y * H - qy); if (d < best) { best = d; start = i; } });
+      // Breadth-first search outward along the links.
+      var par = {}, depth = {}, queue = [start], seen = {};
+      par[start] = -1; depth[start] = 0; seen[start] = true;
+      while (queue.length) { var u = queue.shift(); adj[u].forEach(function (v) { if (!seen[v]) { seen[v] = true; par[v] = u; depth[v] = depth[u] + 1; queue.push(v); } }); }
+      var cands = Object.keys(depth).map(Number).filter(function (i) { return depth[i] >= 3 && depth[i] <= 5; })
+        .sort(function (a2, b2) { return dist(start, b2) - dist(start, a2); });
+      var hits = [];
+      cands.forEach(function (i) {
+        if (hits.length >= 3) return;
+        if (hits.every(function (h) { return dist(h, i) > 75; }) && !(nodes[i].y > 0.78)) hits.push(i);
       });
+      sc.start = start; sc.hits = hits;
+      sc.paths = hits.map(function (h) { var p = [], cur = h; while (cur !== -1) { p.unshift(cur); cur = par[cur]; } return p; });
     });
   }
-  function pos(i, t) { var n = nodes[i]; return [n.x * W + Math.sin(t / 1800 + n.p) * 2.2, n.y * H + Math.cos(t / 2100 + n.p) * 2.2]; }
+  function pos(i, t) { var n = nodes[i]; return [n.x * W + Math.sin(t / 1800 + n.p) * 2, n.y * H + Math.cos(t / 2100 + n.p) * 2]; }
   function frame(now) {
     raf = 0;
-    var t = reduce ? 3000 : now - t0;
+    var t = reduce ? 4000 : now - t0;
     var si = Math.floor(t / SCENE_MS) % SCENES.length, sc = SCENES[si], u = (t % SCENE_MS) / SCENE_MS;
-    if (reduce) { si = 0; sc = SCENES[0]; u = 0.6; }
-    var typed = Math.min(1, u / 0.22), found = Math.max(0, Math.min(1, (u - 0.3) / 0.18)), fade = u > 0.86 ? 1 - (u - 0.86) / 0.14 : 1;
+    if (reduce) { si = 0; sc = SCENES[0]; u = 0.7; }
+    var typed = Math.min(1, u / 0.2), found = Math.max(0, Math.min(1, (u - 0.32) / 0.34)), fade = u > 0.88 ? 1 - (u - 0.88) / 0.12 : 1;
     ctx.clearRect(0, 0, W, H);
-    var lit = {}; sc.hits.forEach(function (i) { lit[i] = true; });
     ctx.lineWidth = 1;
     edges.forEach(function (e) {
       var a = pos(e[0], t), b = pos(e[1], t);
-      ctx.globalAlpha = 0.5; ctx.strokeStyle = c.line;
+      ctx.globalAlpha = 0.55; ctx.strokeStyle = c.line;
       ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
     });
-    var qx = sc.q[0] * W, qy = sc.q[1] * H;
-    // query ring expands from the query point, then lines run to the notes that fit
-    if (u > 0.22) {
-      var ring = Math.min(1, (u - 0.22) / 0.2);
-      ctx.globalAlpha = (1 - ring) * 0.7 * fade; ctx.strokeStyle = c.signal;
-      ctx.beginPath(); ctx.arc(qx, qy, 4 + ring * 46, 0, 6.283); ctx.stroke();
-    }
+    // the nodes, all alike
+    var lit = {}; sc.hits.forEach(function (i) { lit[i] = true; });
     nodes.forEach(function (nd, i) {
-      var p = pos(i, t), on = lit[i] && found > 0;
-      ctx.globalAlpha = on ? 1 : 0.9; ctx.fillStyle = on ? c.text : c.line;
-      var rr = nd.r + (on ? 2.2 * found : 0);
-      ctx.beginPath(); ctx.arc(p[0], p[1], rr, 0, 6.283); ctx.fill();
+      var p = pos(i, t), on = lit[i] && found > 0.98;
+      ctx.globalAlpha = 0.95; ctx.fillStyle = on ? c.text : c.line;
+      ctx.beginPath(); ctx.arc(p[0], p[1], nd.r + (on ? 2.4 : 0), 0, 6.283); ctx.fill();
     });
-    if (found > 0) {
-      sc.hits.forEach(function (i, k) {
-        var p = pos(i, t), x = qx + (p[0] - qx) * found, y = qy + (p[1] - qy) * found;
-        ctx.globalAlpha = fade; ctx.strokeStyle = c.signal; ctx.lineWidth = 1.3;
-        ctx.beginPath(); ctx.moveTo(qx, qy); ctx.lineTo(x, y); ctx.stroke();
-        ctx.fillStyle = c.text; ctx.font = '500 9px "IBM Plex Mono", monospace';
-        var lbl = sc.names[k], right = p[0] < W * 0.62;
-        ctx.globalAlpha = fade * found; ctx.textAlign = right ? 'left' : 'right';
-        ctx.fillText(lbl, p[0] + (right ? 8 : -8), p[1] + (k === 1 ? 14 : -6));
+    // the match travels along the network's own links
+    if (u > 0.2) {
+      var sp = pos(sc.start, t), ring = Math.min(1, (u - 0.2) / 0.25);
+      ctx.globalAlpha = (1 - ring) * 0.7 * fade; ctx.strokeStyle = c.signal;
+      ctx.beginPath(); ctx.arc(sp[0], sp[1], 4 + ring * 30, 0, 6.283); ctx.stroke();
+      ctx.globalAlpha = fade; ctx.fillStyle = c.signal; ctx.beginPath(); ctx.arc(sp[0], sp[1], 3.6, 0, 6.283); ctx.fill();
+      ctx.strokeStyle = c.signal; ctx.lineWidth = 1.7; ctx.lineCap = 'round';
+      sc.paths.forEach(function (path) {
+        var prog = found * (path.length - 1);
+        for (var s = 0; s < path.length - 1; s++) {
+          var f = Math.max(0, Math.min(1, prog - s)); if (f <= 0) break;
+          var a = pos(path[s], t), b = pos(path[s + 1], t);
+          ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f); ctx.stroke();
+          if (f >= 1) { ctx.fillStyle = c.signal; ctx.beginPath(); ctx.arc(b[0], b[1], 1.9, 0, 6.283); ctx.fill(); }
+        }
       });
-      ctx.globalAlpha = fade; ctx.fillStyle = c.signal; ctx.beginPath(); ctx.arc(qx, qy, 3.2, 0, 6.283); ctx.fill();
+      ctx.lineWidth = 1;
     }
-    // the typed scene
+    if (found > 0.98) {
+      sc.hits.forEach(function (i, k) {
+        var p = pos(i, t), right = p[0] < W * 0.6;
+        ctx.globalAlpha = fade * Math.min(1, (found - 0.98) * 50 + 0.0); ctx.fillStyle = c.text; ctx.font = '500 9px "IBM Plex Mono", monospace';
+        ctx.textAlign = right ? 'left' : 'right';
+        ctx.fillText(sc.names[k], p[0] + (right ? 8 : -8), p[1] + (k === 1 ? 14 : -6));
+      });
+    }
     ctx.globalAlpha = fade; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.font = '500 10px "IBM Plex Mono", monospace';
     ctx.fillText('> ' + sc.text.slice(0, Math.round(sc.text.length * typed)) + (typed < 1 || (u * 8 | 0) % 2 ? '_' : ''), 14, H - 14);
     ctx.globalAlpha = 1;
