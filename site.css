@@ -320,3 +320,9 @@ footer a { color: var(--text); }
 .xp-b p { margin: 0 0 .7rem; max-width: 46rem; font-size: .92rem; line-height: 1.65; }
 
 .readout { min-height: 3.1rem; }
+
+.xp-t { display: flex; flex-direction: column; gap: .3rem; }
+.xp-t b { display: block; font-size: 1rem; }
+.xp-t .sub { display: block; margin: 0; }
+.xp-b .when { margin: 0 0 .6rem; font: 500 .72rem "IBM Plex Mono", ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+.entry.xp summary { padding: 1rem 0; }
