@@ -318,3 +318,5 @@ footer a { color: var(--text); }
 .xp-t .sub { display: block; margin-top: .1rem; color: var(--muted); font-size: .85rem; font-weight: 400; }
 .xp-b { padding: 0 0 1rem; }
 .xp-b p { margin: 0 0 .7rem; max-width: 46rem; font-size: .92rem; line-height: 1.65; }
+
+.readout { min-height: 3.1rem; }

@@ -146,7 +146,7 @@
     ctx.shadowColor = c.signal; ctx.shadowBlur = 8;
     for (k = 0; k < extras.length; k++) {
       var g2 = extras[k];
-      if (g2.heat > 0.5) bad++;
+      if (g2.heat > 0.3) bad++;
       if (g2.heat <= 0.01) continue;
       var p = ease(Math.min(1, g2.heat));
       die(g2.x, g2.y, size * g2.sz * (0.4 + 0.75 * p), c.signal, Math.min(1, 0.3 + p), g2.rot * p);
