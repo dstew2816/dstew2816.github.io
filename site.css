@@ -146,21 +146,20 @@ details > div { padding-top: .9rem; }
 
 /* About me bento */
 .bento { display: grid; gap: 1.25rem; }
-.bento .card-pad { display: flex; flex-direction: column; min-height: 22rem; }
+.bento .card-pad { display: flex; flex-direction: column; }
 .bento-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem; }
 @media (min-width: 52rem) { .bento { grid-template-columns: 1fr 1.15fr 1fr; } .bento .wide { grid-column: 1 / -1; } .bento .wide .card-pad { min-height: 0; } }
 
-/* Skills: a pile of pills you can drag around */
-.pile { position: relative; flex: 1; min-height: 16rem; margin: 0; padding: 0; list-style: none; touch-action: none; }
-.pile li { position: absolute; padding: .4rem .85rem; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line-strong); font-size: .85rem; font-weight: 500; white-space: nowrap; cursor: grab; user-select: none; touch-action: none; }
+/* Skills */
+.pile { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0; padding: 0; list-style: none; }
+.pile li { padding: .4rem .85rem; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line-strong); font-size: .85rem; font-weight: 500; }
 .pile li.red { border-color: var(--signal); color: var(--signal); }
-.pile li.drag { cursor: grabbing; z-index: 5; }
 
 /* Tabs */
 .tabs { display: inline-flex; gap: .35rem; margin-bottom: 1rem; flex-wrap: wrap; }
 .tabs button { background: var(--surface-2); color: var(--muted); border: 0; border-radius: 999px; padding: .4rem .9rem; font: inherit; font-size: .85rem; font-weight: 500; cursor: pointer; }
 .tabs button[aria-selected="true"] { background: var(--text); color: var(--on-solid); }
-.panelbody { overflow: auto; flex: 1; max-height: 17rem; padding-right: .5rem; }
+.panelbody { flex: 1; }
 .panelbody[hidden] { display: none; }
 .panelbody p { margin: 0 0 .8rem; font-size: .95rem; }
 .entry { padding: 0 0 1rem; margin: 0 0 1rem; border-bottom: 1px solid var(--line); }
@@ -193,6 +192,14 @@ footer a { color: var(--text); }
 /* polish */
 .figures dd { white-space: nowrap; font-size: 1.4rem; }
 @media (min-width: 52rem) { .work { grid-template-columns: 20rem 1fr; } }
-.panelbody { -webkit-mask-image: linear-gradient(#000 calc(100% - 2rem), transparent); mask-image: linear-gradient(#000 calc(100% - 2rem), transparent); padding-bottom: 1.5rem; }
 .readout { font-size: .72rem; }
 @media (max-width: 43.99rem) { .brand span { display: none; } }
+
+/* Case-study figures and notes */
+.page figure.shot { margin: 1.5rem 0; }
+.page figure.shot img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 10px; }
+.page figcaption { margin-top: .5rem; font-size: .85rem; color: var(--muted); }
+.page h3 { font-size: 1.05rem; font-weight: 600; margin: 1.5rem 0 .4rem; }
+.page ul { margin: 0 0 1rem; padding-left: 1.2rem; }
+.page li { margin-bottom: .4rem; }
+.page .note { color: var(--muted); border-left: 2px solid var(--line-strong); padding-left: .9rem; }

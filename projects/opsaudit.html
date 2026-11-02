@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OpsAudit case study | David Stewart</title>
-<meta name="description" content="Case study: OpsAudit, an audit that finds what operations automation silently misses and puts a price on it.">
-<meta name="color-scheme" content="dark">
+<title>OpsAudit | David Stewart</title>
+<meta name="description" content="OpsAudit is an audit that finds what operations automation silently misses and puts a price on it.">
+<meta name="color-scheme" content="dark light">
 <meta property="og:type" content="article">
-<meta property="og:title" content="OpsAudit case study | David Stewart">
+<meta property="og:title" content="OpsAudit | David Stewart">
 <meta property="og:description" content="An audit that finds what operations automation silently misses and puts a price on it.">
 <meta property="og:image" content="https://dstew2816.github.io/og-image.png">
 <meta property="og:url" content="https://dstew2816.github.io/projects/opsaudit.html">
@@ -15,65 +15,65 @@
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<script>try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../styles.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../site.css">
 </head>
 <body>
-<main class="case">
+<nav class="nav" aria-label="Main">
+  <div class="nav-in">
+    <a class="brand" href="../index.html">David Stewart <span>&middot; Industrial engineering</span></a>
+    <ul class="links">
+      <li><a href="../index.html#work">Work</a></li>
+      <li><a href="../index.html#projects">Projects</a></li>
+      <li><a href="../index.html#about">About</a></li>
+    </ul>
+    <button class="switch" type="button" role="switch" aria-checked="true"><span class="lbl">Dark</span><span class="track"></span></button>
+  </div>
+</nav>
 
-<p class="crumb"><a href="../index.html">&larr; David Stewart</a></p>
+<main class="page">
+  <p class="back"><a href="../index.html">Back to the home page</a></p>
+  <h1>OpsAudit <span class="status">live demo</span></h1>
+  <p class="sub">Finding what operations automation silently misses, and putting a price on it. Synthetic data, plus one public real-data check. JavaScript, React, SQLite, Python, scikit-learn.</p>
 
-<header class="case-head">
-  <h1>OpsAudit</h1>
-  <p class="lede">Finding what operations automation silently misses, and putting a price on it.</p>
-  <dl class="facts">
-    <div><dt>Status</dt><dd>Live demo</dd></div>
-    <div><dt>Data</dt><dd>Synthetic, plus one public real-data check</dd></div>
-    <div><dt>Built with</dt><dd>JavaScript, React, SQLite, Python, scikit-learn</dd></div>
-  </dl>
-</header>
+  <figure class="shot">
+    <img src="img/opsaudit-demo.gif" width="880" height="546" alt="A 15-second walkthrough of the OpsAudit demo: the audit, the control charts, the fix queue and the classifier.">
+    <figcaption>A 15-second walkthrough of the live demo. <a href="https://dstew2816.github.io/ops-audit/">Open it and click around.</a></figcaption>
+  </figure>
 
-<figure class="shot demo">
-  <img src="img/opsaudit-demo.gif" width="880" height="546" alt="A 15-second walkthrough of the OpsAudit demo: the audit, the control charts, the fix queue and the classifier.">
-  <figcaption>A 15-second walkthrough of the live demo. <a href="https://dstew2816.github.io/ops-audit/">Open it and click around.</a></figcaption>
-</figure>
-
-<section aria-labelledby="problem">
-  <h2 id="problem">The problem</h2>
+  <h2>The problem</h2>
   <p>Automated procedures watch for a condition, such as a port blocked for 30 minutes, and act on it. They run on live events with no historical replay. If the platform is down, an event arrives late, or a rule is slightly too narrow, the case is never picked up and nothing records that it was missed.</p>
   <p>Success metrics are calculated over the cases that were handled, so a procedure can report 100% while missing a quarter of what it should have caught.</p>
-  <div class="callout"><p>This is a demo of the kind of work I did at my TSMC internship. All data on this page is synthetic, except the clearly labeled public-data check.</p></div>
-</section>
+  <p class="note">This is a demo of the kind of work I did at my TSMC internship. All data on this page is synthetic, except the clearly labeled public-data check.</p>
 
-<section aria-labelledby="users">
-  <h2 id="users">Who it is for</h2>
-  <ul class="plain">
+
+<h2>Who it is for</h2>
+  <ul>
     <li><strong>Operations and program managers</strong> who own automated procedures and need to know what those procedures are not catching, what it costs, and which fix to do first.</li>
     <li><strong>Automation and process engineers</strong> who write the detection logic and maintain it as documents drift.</li>
   </ul>
-</section>
 
-<section aria-labelledby="decisions">
-  <h2 id="decisions">Three decisions that shaped it</h2>
 
-  <h3 class="dec">I audited from raw history, not from each procedure's own log.</h3>
+<h2>Three decisions that shaped it</h2>
+
+  <h3>I audited from raw history, not from each procedure's own log.</h3>
   <p>A procedure's success rate only counts the cases it handled, so it can never show a case it never saw. I rebuilt what each procedure should have picked up from the raw events and compared that with what it logged. The cost is that the audit needs two independent sources, and in practice the hard part is getting access to the automation's own log.</p>
 
-  <h3 class="dec">I made the comparison hard to cheat, including against myself.</h3>
+  <h3>I made the comparison hard to cheat, including against myself.</h3>
   <p>I wrote the answer keys by hand and froze the baseline rules before training any model, then scored the test set once. The checks are tested too: the audit fails if a procedure returns zero misses, because a query that finds nothing looks the same as one that is broken. The cost is that I wrote the keys, so they share my vocabulary and the results lean optimistic. I say that on the page instead of hiding it.</p>
 
-  <h3 class="dec">I priced the misses with assumptions anyone can change.</h3>
+  <h3>I priced the misses with assumptions anyone can change.</h3>
   <p>Managers act on a ranked list of fixes, not on a count of misses. So each miss becomes labor hours and cost at risk, misses are grouped into fixes, and the fixes are ranked by cost, hours or payback. Every input is an editable assumption, set low on purpose. The dollar figures are illustrative and the annualized number just scales a 14-day window, so it should not be read as a forecast.</p>
-</section>
 
-<section aria-labelledby="results">
-  <h2 id="results">Results</h2>
-  <ul class="stats three">
-    <li><strong>26.1%</strong> <span>miss rate: 24 of 92 qualifying cases</span></li>
-    <li><strong>89% vs 66%</strong> <span>accuracy: random forest vs hand-written rules, on 413 held-out records</span></li>
-    <li><strong>33</strong> <span>specific check types classified</span></li>
+
+<h2>Results</h2>
+  <ul>
+    <li><strong>26.1%</strong>: miss rate: 24 of 92 qualifying cases</li>
+    <li><strong>89% vs 66%</strong>: accuracy: random forest vs hand-written rules, on 413 held-out records</li>
+    <li><strong>33</strong>: specific check types classified</li>
   </ul>
 
   <p><strong>Audit.</strong> 92 qualifying cases, 68 logged, 24 missed. Grouped into fixes and ranked by cost at risk, the largest fix, an outage backfill, covers 8 of the 24 misses.</p>
@@ -96,33 +96,28 @@
 
   <p><strong>Real data, and a weak result.</strong> I stress-tested the same ideas on UCI SECOM, a public semiconductor dataset of 1,567 production runs. The control charts as built did not separate failures from passes (95.0% of failing runs were flagged, but so were 98.8% of passing runs), and no classifier clearly beat chance on the later runs. I report it as it came out.</p>
   <p><strong>AI layers.</strong> One run each. The right procedure resolved 5 of 5 times, but only 2 of 5 generated queries matched the baseline exactly. Root-cause grouping passed 3 of 5 checks and recovered the outage cluster exactly.</p>
-  <div class="callout"><p>Limits: synthetic data, a small sample (24 misses, one 14-day window), answer keys I wrote myself, and one run of each AI layer. Treat the numbers as a demonstration of method, not a benchmark or a forecast.</p></div>
-</section>
+  <p class="note">Limits: synthetic data, a small sample (24 misses, one 14-day window), answer keys I wrote myself, and one run of each AI layer. Treat the numbers as a demonstration of method, not a benchmark or a forecast.</p>
 
-<section aria-labelledby="next">
-  <h2 id="next">What I would do next</h2>
-  <ul class="plain">
+
+<h2>What I would do next</h2>
+  <ul>
     <li>Run it on a real pair of sources, the raw events plus the automation's own log, since that access is the real bottleneck.</li>
     <li>Replace my hand-written answer keys with keys written by someone who owns the procedures.</li>
     <li>Repeat the AI runs enough times to report a spread, instead of one sample each.</li>
     <li>Extend the same audit to other domains that have the same two-source structure, such as inventory reorders, shipment exceptions and ticket escalations.</li>
   </ul>
-</section>
 
-<section aria-labelledby="links">
-  <h2 id="links">Explore it</h2>
-  <ul class="buttons">
-    <li><a href="https://dstew2816.github.io/ops-audit/">Open the live demo &rarr;</a></li>
-    <li><a href="https://github.com/dstew2816/ops-audit">Source on GitHub &rarr;</a></li>
-  </ul>
-</section>
 
-<nav class="pager" aria-label="Case studies">
-  <a href="../index.html">&larr; Back to portfolio</a>
-  <a href="backroom.html">Next: Backroom &rarr;</a>
-</nav>
+<h2>Try it</h2>
+  <p><a href="https://dstew2816.github.io/ops-audit/">Open the live demo</a> or <a href="https://github.com/dstew2816/ops-audit">read the source</a>.</p>
 
+  <nav class="pager" aria-label="Other projects">
+    <a href="backroom.html">Backroom</a>
+    <a href="truly-diverse-soldiers.html">Truly Diverse Soldiers</a>
+  </nav>
 </main>
+
+<script src="../site.js"></script>
 <script data-goatcounter="https://dstew2816.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
