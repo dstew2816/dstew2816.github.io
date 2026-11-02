@@ -45,53 +45,6 @@
       });
     });
   });
-
-  // Skills: a loose pile of pills that can be dragged around inside the card.
-  var pile = document.getElementById('pile');
-  if (pile) {
-    var items = Array.prototype.slice.call(pile.children);
-    var seed = 3;
-    var rand = function () { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
-    var rot = items.map(function () { return (rand() - 0.5) * 12; });
-    var layout = function () {
-      var W = pile.clientWidth, x = 0, y = 4, rowH = 0, row = [];
-      var flush = function () {
-        var used = row.reduce(function (s, r) { return s + r.w; }, 0) + (row.length - 1) * 8;
-        var cx = Math.max(0, (W - used) / 2);
-        row.forEach(function (r) { r.el.style.left = cx + 'px'; r.el.style.top = y + 'px'; cx += r.w + 8; });
-        y += rowH + 10; row = []; x = 0; rowH = 0;
-      };
-      items.forEach(function (el, i) {
-        el.style.transform = 'rotate(' + rot[i].toFixed(1) + 'deg)';
-        var w = el.offsetWidth, h = el.offsetHeight;
-        if (x && x + w > W) flush();
-        row.push({ el: el, w: w }); x += w + 8; rowH = Math.max(rowH, h);
-      });
-      flush();
-      pile.style.minHeight = Math.max(pile.clientHeight, y) + 'px';
-    };
-    var drag = null;
-    pile.addEventListener('pointerdown', function (e) {
-      var el = e.target.closest('li'); if (!el) return;
-      var r = el.getBoundingClientRect();
-      drag = { el: el, dx: e.clientX - r.left, dy: e.clientY - r.top };
-      el.classList.add('drag'); el.setPointerCapture(e.pointerId); e.preventDefault();
-    });
-    pile.addEventListener('pointermove', function (e) {
-      if (!drag) return;
-      var p = pile.getBoundingClientRect();
-      var x = e.clientX - p.left - drag.dx, y = e.clientY - p.top - drag.dy;
-      x = Math.max(0, Math.min(x, p.width - drag.el.offsetWidth));
-      y = Math.max(0, Math.min(y, p.height - drag.el.offsetHeight));
-      drag.el.style.left = x + 'px'; drag.el.style.top = y + 'px';
-    });
-    var end = function () { if (drag) { drag.el.classList.remove('drag'); drag = null; } };
-    pile.addEventListener('pointerup', end);
-    pile.addEventListener('pointercancel', end);
-    var go = function () { layout(); };
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(go); else go();
-    window.addEventListener('resize', go);
-  }
 })();
 
 // Run monitor: a field of runs, a few percent of which never ran. A scan band follows the cursor
@@ -129,9 +82,13 @@
     runs = [];
     for (var row = 0; row < ROWS; row++) {
       for (var col = 0; col < cols; col++) {
-        runs.push({ x: (col + 0.5) * gx, y: (row + 0.5) * gy, bad: rand() < MISSING, seen: reduce, heat: 0 });
+        runs.push({ x: (col + 0.5) * gx, y: (row + 0.5) * gy, bad: false, seen: reduce, heat: 0 });
       }
     }
+    // Exactly MISSING of the runs never ran, so the readout agrees with the caption.
+    var idx = runs.map(function (_, i) { return i; });
+    for (var k = idx.length - 1; k > 0; k--) { var j = Math.floor(rand() * (k + 1)); var t = idx[k]; idx[k] = idx[j]; idx[j] = t; }
+    for (var m = 0; m < Math.round(runs.length * MISSING); m++) runs[idx[m]].bad = true;
   }
   function tick(r, color, alpha, extra) {
     ctx.globalAlpha = alpha; ctx.fillStyle = color;

@@ -52,7 +52,7 @@
 
   <h2>What it will not do</h2>
   <p>Backroom only finds and ranks text you wrote. It does not generate plots, characters or descriptions, it does not rewrite your notes, and it does not send them anywhere. It runs on your own computer. The first time you start it, it downloads one small language model of about 25 megabytes, which it uses only to compare how similar two pieces of text are.</p>
-  <p>That comparison is the only job any AI has here, and I want to keep it that way. A game master's world only holds together if its facts agree with each other, and a model that has not read the whole campaign would add contradictions without anyone noticing. A result that is your own sentence, with the note it came from, is something you can trust at the table without checking it. Generated text would not be. If I ever add more AI, it will be limited to looking after your own notes, and it will not write your story.</p>
+  <p>That comparison is the only thing any AI does in Backroom. A game master's world only holds together if its facts agree with each other, and a model that has not read the whole campaign would add contradictions without anyone noticing. A result that is your own sentence, with the note it came from, is something you can trust at the table without checking it, which generated text could not offer. If I add more AI later, it will only help look after your own notes.</p>
 
   <h2>How I will know whether it works</h2>
   <p>Backroom already records which results a game master marks as used, and that is the signal I care about most. I want to know how often a search ends with an idea being marked as used, and how fast the search comes back, since it has to feel instant in the middle of a scene. I have not measured either in real sessions yet. For a sense of speed, building the demo index from five sample notes took about 0.6 seconds.</p>
@@ -60,7 +60,7 @@
 
   <h2>Where it stands</h2>
   <p>It works from start to finish. There is a local web page and a set of command line tools for searching, marking ideas as used and re-indexing, with an automated test suite behind them, and a public demo that runs in the browser on invented sample notes. Next I want to run it in real sessions, see which ideas get found and which never do, and tune the ranking against that. It also needs to pick up changed notes without a manual re-index.</p>
-  <p><a href="https://dstew2816.github.io/backroom/">Try the demo</a> or <a href="https://github.com/dstew2816/backroom">read the source</a>.</p>
+  <p><a href="https://dstew2816.github.io/backroom/">Try the demo</a> (it is a large download of about 36 megabytes, because it bundles the small language model, so give it a moment to load) or <a href="https://github.com/dstew2816/backroom">read the source</a>.</p>
 
   <nav class="pager" aria-label="Other projects">
     <a href="opsaudit.html">OpsAudit</a>
