@@ -212,13 +212,13 @@
       e.target.classList.add('in');
       io.unobserve(e.target);
       if (e.target.classList.contains('work')) startCounts(e.target);
-      var ch = e.target.querySelector && e.target.querySelector('.chart');
+      var ch = e.target.querySelector && e.target.querySelector('.audit');
       if (ch) ch.classList.add('go');
     });
   }, { threshold: 0.15 });
   document.querySelectorAll('[data-reveal]').forEach(function (el) { io.observe(el); });
   document.querySelectorAll('.proj').forEach(function (card) {
-    var ch = card.querySelector('.chart');
+    var ch = card.querySelector('.audit');
     if (!ch) return;
     card.addEventListener('mouseenter', function () {
       ch.classList.remove('go'); void ch.getBoundingClientRect(); ch.classList.add('go');
@@ -241,15 +241,118 @@
   }
 })();
 
-// Route map: draws the path when its tab opens.
+// Route map: draws the path whenever it comes into view (including when its tab opens).
 (function () {
-  var panel = document.getElementById('lang');
-  if (!panel) return;
-  var map = panel.querySelector('.route');
+  var map = document.querySelector('.route');
   if (!map) return;
-  panel.addEventListener('panelshow', function () {
-    map.classList.remove('go');
-    void map.getBoundingClientRect();
-    map.classList.add('go');
-  });
+  function play() { map.classList.remove('go'); void map.getBoundingClientRect(); map.classList.add('go'); }
+  if (!('IntersectionObserver' in window)) { map.classList.add('go'); return; }
+  new IntersectionObserver(function (en) { if (en[0].isIntersecting) play(); else map.classList.remove('go'); }, { threshold: 0.3 }).observe(map);
+  var panel = document.getElementById('lang');
+  if (panel) panel.addEventListener('panelshow', function () { setTimeout(play, 30); });
+})();
+
+// Backroom card: a cloud of notes. A scene is typed, the notes that fit it light up and connect to it, then the next scene.
+(function () {
+  var canvas = document.querySelector('canvas.graph');
+  if (!canvas || !canvas.getContext) return;
+  var ctx = canvas.getContext('2d');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var W = 0, H = 0, nodes = [], edges = [], c = {}, raf = 0, t0 = 0, visible = false;
+  var SCENES = [
+    { text: 'the wizard starts flying', q: [0.30, 0.42], names: ['Alley trap', 'Rooftop chase', 'Tower guards'] },
+    { text: 'the party reaches the keep', q: [0.68, 0.36], names: ['Gate captain', 'Moat riddle', 'Hidden stair'] },
+    { text: 'they bargain with the guild', q: [0.55, 0.66], names: ['Guildmaster\'s debt', 'Smuggler\'s cache', 'Forged seal'] }
+  ];
+  var SCENE_MS = 5200;
+
+  function rng(seed) { return function () { seed |= 0; seed = (seed + 0x6D2B79F5) | 0; var t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  function colors() {
+    var s = getComputedStyle(document.documentElement), g = function (n) { return s.getPropertyValue(n).trim(); };
+    c = { line: g('--line-strong'), text: g('--text'), muted: g('--muted'), signal: g('--signal') };
+  }
+  function build() {
+    var r = canvas.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+    W = r.width; H = r.height;
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var rand = rng(5), n = 46;
+    nodes = [];
+    var tries = 0;
+    while (nodes.length < n && tries++ < 4000) {
+      var x = 0.06 + rand() * 0.88, y = 0.08 + rand() * 0.72;
+      if (y < 0.24 && x < 0.46) continue; // keep clear of the status badge
+      if (nodes.every(function (o) { return Math.hypot((o.x - x) * W, (o.y - y) * H) > 17; })) nodes.push({ x: x, y: y, p: rand() * 6.28, r: 1.6 + rand() * 1.6 });
+    }
+    edges = [];
+    nodes.forEach(function (a, i) {
+      var near = nodes.map(function (b, j) { return { j: j, d: Math.hypot((a.x - b.x) * W, (a.y - b.y) * H) }; })
+        .filter(function (o) { return o.j !== i; }).sort(function (u, v) { return u.d - v.d; }).slice(0, 2);
+      near.forEach(function (o) { if (o.j > i || !edges.some(function (e) { return e[0] === o.j && e[1] === i; })) edges.push([i, o.j]); });
+    });
+    SCENES.forEach(function (sc) {
+      var qx = sc.q[0] * W, qy = sc.q[1] * H;
+      var order = nodes.map(function (nd, i) { return { i: i, d: Math.hypot(nd.x * W - qx, nd.y * H - qy) }; })
+        .sort(function (u, v) { return u.d - v.d; });
+      sc.hits = [];
+      order.forEach(function (o) {
+        if (sc.hits.length >= 3) return;
+        var far = sc.hits.every(function (h) { return Math.hypot((nodes[h].x - nodes[o.i].x) * W, (nodes[h].y - nodes[o.i].y) * H) > 62; });
+        if (far) sc.hits.push(o.i);
+      });
+    });
+  }
+  function pos(i, t) { var n = nodes[i]; return [n.x * W + Math.sin(t / 1800 + n.p) * 2.2, n.y * H + Math.cos(t / 2100 + n.p) * 2.2]; }
+  function frame(now) {
+    raf = 0;
+    var t = reduce ? 3000 : now - t0;
+    var si = Math.floor(t / SCENE_MS) % SCENES.length, sc = SCENES[si], u = (t % SCENE_MS) / SCENE_MS;
+    if (reduce) { si = 0; sc = SCENES[0]; u = 0.6; }
+    var typed = Math.min(1, u / 0.22), found = Math.max(0, Math.min(1, (u - 0.3) / 0.18)), fade = u > 0.86 ? 1 - (u - 0.86) / 0.14 : 1;
+    ctx.clearRect(0, 0, W, H);
+    var lit = {}; sc.hits.forEach(function (i) { lit[i] = true; });
+    ctx.lineWidth = 1;
+    edges.forEach(function (e) {
+      var a = pos(e[0], t), b = pos(e[1], t);
+      ctx.globalAlpha = 0.5; ctx.strokeStyle = c.line;
+      ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+    });
+    var qx = sc.q[0] * W, qy = sc.q[1] * H;
+    // query ring expands from the query point, then lines run to the notes that fit
+    if (u > 0.22) {
+      var ring = Math.min(1, (u - 0.22) / 0.2);
+      ctx.globalAlpha = (1 - ring) * 0.7 * fade; ctx.strokeStyle = c.signal;
+      ctx.beginPath(); ctx.arc(qx, qy, 4 + ring * 46, 0, 6.283); ctx.stroke();
+    }
+    nodes.forEach(function (nd, i) {
+      var p = pos(i, t), on = lit[i] && found > 0;
+      ctx.globalAlpha = on ? 1 : 0.9; ctx.fillStyle = on ? c.text : c.line;
+      var rr = nd.r + (on ? 2.2 * found : 0);
+      ctx.beginPath(); ctx.arc(p[0], p[1], rr, 0, 6.283); ctx.fill();
+    });
+    if (found > 0) {
+      sc.hits.forEach(function (i, k) {
+        var p = pos(i, t), x = qx + (p[0] - qx) * found, y = qy + (p[1] - qy) * found;
+        ctx.globalAlpha = fade; ctx.strokeStyle = c.signal; ctx.lineWidth = 1.3;
+        ctx.beginPath(); ctx.moveTo(qx, qy); ctx.lineTo(x, y); ctx.stroke();
+        ctx.fillStyle = c.text; ctx.font = '500 9px "IBM Plex Mono", monospace';
+        var lbl = sc.names[k], right = p[0] < W * 0.62;
+        ctx.globalAlpha = fade * found; ctx.textAlign = right ? 'left' : 'right';
+        ctx.fillText(lbl, p[0] + (right ? 8 : -8), p[1] + (k === 1 ? 14 : -6));
+      });
+      ctx.globalAlpha = fade; ctx.fillStyle = c.signal; ctx.beginPath(); ctx.arc(qx, qy, 3.2, 0, 6.283); ctx.fill();
+    }
+    // the typed scene
+    ctx.globalAlpha = fade; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.font = '500 10px "IBM Plex Mono", monospace';
+    ctx.fillText('> ' + sc.text.slice(0, Math.round(sc.text.length * typed)) + (typed < 1 || (u * 8 | 0) % 2 ? '_' : ''), 14, H - 14);
+    ctx.globalAlpha = 1;
+    if (!reduce && visible) raf = requestAnimationFrame(frame);
+  }
+  function start() { if (!raf) { t0 = t0 || performance.now(); raf = requestAnimationFrame(frame); } }
+  function init() { colors(); build(); if (reduce) frame(0); else if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (en) { visible = en[0].isIntersecting; if (visible) start(); }, { threshold: 0.1 }).observe(canvas);
+  } else { visible = true; start(); } }
+  window.addEventListener('resize', function () { build(); if (reduce) frame(0); });
+  document.addEventListener('themechange', function () { colors(); if (reduce) frame(0); });
+  init();
 })();
