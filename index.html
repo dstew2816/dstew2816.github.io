@@ -51,7 +51,7 @@
     <p class="eyebrow">Runs, scanned</p>
     <canvas id="monitor" aria-hidden="true"></canvas>
     <p class="readout mono" aria-hidden="true"><span id="mon-checked">Move your cursor across the runs.</span><span id="mon-bad"></span></p>
-    <p class="cap">Every mark is a run that should have started. Move across the grid and the ones that never fired turn red. Finding them was my project at TSMC.</p>
+    <p class="cap">Every mark is a run that should have started. Scan across to find the ones that never fired.</p>
   </div>
 </header>
 
@@ -77,14 +77,13 @@
     <div>
       <h3>Taiwan Semiconductor Manufacturing Company</h3>
       <p class="role"><span>Automation Program Management Intern</span><span>Phoenix, Arizona, May to August 2026</span></p>
-      <p>I interned at TSMC's Arizona fab on the team that maintains the automation platform and procedures. I proposed an audit of the runs that never started, scoped it, and led it across 130 procedures and more than 2,200 tools.</p>
+      <p>I interned at TSMC's Arizona fab on the team that maintains the automation platform and procedures. I proposed an audit of the runs that never started, scoped it, and led it.</p>
       <details>
         <summary>More on what I did</summary>
         <div>
-          <p>The platform reports how many of the runs it started were successful, and it had no record of the ones that never started. The audit found silent failures equal to 4 to 6 percent of the runs that did start.</p>
-          <p>The procedures had been written from inconsistent templates, so I turned them into detection specifications and found owners for them across several departments and with teams in Taiwan, where I worked in Mandarin. I wrote SQL and Python against more than 1,000,000 daily log entries and set up on-call alerts for critical misses.</p>
-          <p>I quantified about 600 hours a month of manual work and an estimated six figures in scrap, with wafers worth about $25,000 each, by prioritizing the fixes that protect wafer flow. I also built a reusable audit template organized by candidate type.</p>
-          <p>I shipped a key performance indicator across the whole platform, time saved per run, that measures what each automation is actually worth, along with four Power BI dashboards that are now in active use. The indicator was approved after I presented it to the head of manufacturing for Fab 21, and it has been implemented.</p>
+          <p>The procedures came from inconsistent templates, so I turned them into detection specifications and found owners for them across several departments and with teams in Taiwan, where I worked in Mandarin. I wrote SQL and Python against more than 1,000,000 daily log entries and set up on-call alerts for critical misses.</p>
+          <p>I sized the gap at about 600 hours a month of manual work and an estimated six figures in scrap, with wafers worth about $25,000 each, and prioritized the fixes that protect wafer flow. I also built a reusable audit template.</p>
+          <p>I shipped a platform-wide key performance indicator, time saved per run, along with four Power BI dashboards that are now in active use. The indicator was approved after I presented it to the head of manufacturing for Fab 21.</p>
         </div>
       </details>
       <div class="from">
@@ -97,14 +96,14 @@
 </section>
 
 <section class="block" id="projects">
-  <h2>Things I've built</h2>
+  <h2>What I've built</h2>
   <div class="grid3">
 
     <a class="card proj" href="projects/opsaudit.html">
       <div class="cover"><img src="img/cover-opsaudit.png" width="1000" height="625" alt="A control chart showing a drift between two process lanes being caught"><span class="badge live">Live demo</span></div>
       <div class="proj-body">
         <div class="proj-top"><h3>OpsAudit</h3><span class="arrow" aria-hidden="true">&nearr;</span></div>
-        <p>An audit that finds what operations automation silently misses and prices the gap. It found <b>24 of 92</b> cases never ran and ranked the fixes, using <b>SQL</b>, <b>Python</b> and <b>statistical process control</b>. On a public semiconductor dataset the method did not hold up, which I wrote up.</p>
+        <p>An audit that finds what automation silently misses and prices the gap: <b>24 of 92</b> cases never ran, with the fixes ranked.</p>
         <span class="meta mono">Python, SQL, JavaScript</span>
       </div>
     </a>
@@ -133,7 +132,7 @@
 <section class="block" id="about">
   <h2>More about me</h2>
   <div class="card card-pad resume" data-tabs>
-    <div class="bento-head"><span class="eyebrow">Background</span><a class="eyebrow" href="resume.pdf">PDF</a></div>
+    <div class="bento-head"><span class="eyebrow">Background</span></div>
       <div class="tabs" role="tablist">
       <button role="tab" aria-selected="true" data-for="exp">Experience</button>
       <button role="tab" aria-selected="false" data-for="edu">Education</button>
@@ -143,7 +142,6 @@
       <button role="tab" aria-selected="false" data-for="cam">On camera</button>
     </div>
     <div class="panelbody" id="exp" role="tabpanel">
-      <div class="entry"><h4>Automation Program Management Intern</h4><p class="sub">Taiwan Semiconductor Manufacturing Company, Summer 2026</p><p>Audited 130 automated procedures across more than 2,200 tools and shipped a key performance indicator for the whole platform.</p></div>
       <div class="entry"><h4>Product Management Fellow</h4><p class="sub">Microsoft Student Research, September 2026 to present</p><p>Prototyping an AI-native incident management portal for a Microsoft product team, as a React web app on Azure Static Web Apps with customer and engineer views that I refine weekly with the Microsoft product lead. I also benchmarked a competitor platform across six evaluation tracks, separating verified capability from vendor marketing with sourced evidence.</p></div>
       <div class="entry"><h4>Director of Events</h4><p class="sub">Product @ GT, Georgia Tech, August 2026 to present</p><p>I run events for Georgia Tech's premier product management club, whose partners include Google, Microsoft, Home Depot and UPS.</p></div>
       <div class="entry"><h4>Finance Director, Product Consultant</h4><p class="sub">180 Degrees Consulting, September 2024 to present</p><p>Worked with Pro Bono Partnership of Atlanta and drove a 30 percent increase in monthly active users and 20 percent in client registration by auditing engagement data and directing a rebuild of their content management system.</p></div>
@@ -170,7 +168,7 @@
 </main>
 
 <footer>
-  <a href="mailto:david.y.stewart1@gmail.com">david.y.stewart1@gmail.com</a> &middot; <a href="https://www.linkedin.com/in/david-y-stewart" rel="noopener">LinkedIn</a> &middot; <a href="resume.pdf">R&eacute;sum&eacute;</a>
+  <a href="mailto:david.y.stewart1@gmail.com">david.y.stewart1@gmail.com</a> &middot; <a href="https://www.linkedin.com/in/david-y-stewart" rel="noopener">LinkedIn</a>
 </footer>
 
 </div>
