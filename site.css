@@ -336,3 +336,6 @@ footer a { color: var(--text); }
 .route .stop circle { r: 6; stroke-width: 2.2; }
 .route text { font-size: 15px; font-weight: 600; }
 .route text.sub { font-size: 11.5px; font-weight: 500; }
+
+.hero .meta-line { margin: 1rem 0 0; font-size: .85rem; color: var(--muted); }
+.hero .meta-line a { color: var(--muted); }
