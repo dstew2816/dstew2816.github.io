@@ -174,15 +174,23 @@
   function kick() { if (!raf) raf = requestAnimationFrame(loop); }
 
   function init() { colors(); layout(); draw(); if (!reduce) { sweepStart = performance.now(); kick(); } }
+  var inRect = false;
   document.addEventListener('pointermove', function (e) {
     if (reduce) return;
     var r = canvas.getBoundingClientRect();
-    if (e.clientY < r.top - 140 || e.clientY > r.bottom + 140 || e.clientX < r.left - 140 || e.clientX > r.right + 140) {
+    var near = !(e.clientY < r.top - 140 || e.clientY > r.bottom + 140 || e.clientX < r.left - 140 || e.clientX > r.right + 140);
+    var inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+    if (!near) {
+      inRect = false;
       if (bandOn && !sweepStart) { bandOn = false; kick(); }
       return;
     }
-    // A new pass over the wafer finds the misses in new places.
-    if (!bandOn && extras.every(function (x) { return x.heat < 0.05; })) reseed();
+    // Every new hover over the wafer finds the misses in new places.
+    if ((inside && !inRect) || (!bandOn && extras.every(function (x) { return x.heat < 0.05; }))) {
+      if (inside && !inRect) extras.forEach(function (x) { x.heat = 0; });
+      reseed();
+    }
+    inRect = inside;
     sweepStart = 0; bandOn = true; bandX = e.clientX - r.left; kick();
   });
   window.addEventListener('resize', function () { layout(); draw(); });
