@@ -48,8 +48,9 @@
 })();
 
 // Wafer map: a round field of dies that looks like a clean grid. A scan band follows the cursor. Where the
-// band passes, the dies that never fired show up as red extras that squeeze into the grid and push the
-// regular dies apart. When the scan moves on, the grid settles back. The count of regular dies never changes.
+// band passes, the dies that never fired show up as red extras that squeeze into the grid and warp the
+// regular dies around them. When the scan moves on, the grid settles back. The regular die count never
+// changes, and the extras land in new places every time the wafer is scanned again.
 (function () {
   var canvas = document.getElementById('monitor');
   if (!canvas || !canvas.getContext) return;
@@ -57,17 +58,9 @@
   var checkedEl = document.getElementById('mon-checked');
   var badEl = document.getElementById('mon-bad');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var BAND = 46, MISSING = 0.05, N = 17, REACH = 2.3;
+  var BAND = 46, MISSING = 0.05, N = 17;
   var dies = [], extras = [], W = 0, H = 0, cx = 0, cy = 0, R = 0, pitch = 0, size = 0, c = {}, bandX = -999, bandOn = false, raf = 0, sweepStart = 0;
 
-  function rng(seed) {
-    return function () {
-      seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
-      var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
-  }
   function colors() {
     var s = getComputedStyle(document.documentElement);
     var get = function (n) { return s.getPropertyValue(n).trim(); };
@@ -81,7 +74,6 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     cx = W / 2; cy = H / 2; R = Math.min(W, H) / 2 - 6;
     pitch = (2 * R) / N; size = pitch - 2.6;
-    var rand = rng(11);
     dies = [];
     for (var row = 0; row < N; row++) {
       for (var col = 0; col < N; col++) {
@@ -89,20 +81,24 @@
         var dx = x - cx, dy = y - cy;
         if (Math.sqrt(dx * dx + dy * dy) > R - pitch * 0.55) continue;
         if (dy > R - pitch * 1.0) continue; // the flat at the bottom of the wafer
-        dies.push({ x: x, y: y, heat: 0 });
+        dies.push({ x: x, y: y, heat: 0, jx: 0, jy: 0, jr: 0 });
       }
     }
-    // The dies that never fired are extra: each sits between regular dies, at the corner where four meet.
+    reseed();
+  }
+  // New random extras and new random warping, so each scan finds the misses somewhere different.
+  function reseed() {
+    dies.forEach(function (d) { d.jx = Math.random() * 2 - 1; d.jy = Math.random() * 2 - 1; d.jr = Math.random() * 2 - 1; });
     extras = [];
     var want = Math.max(1, Math.round(dies.length * MISSING)), tries = 0;
-    while (extras.length < want && tries++ < 400) {
-      var base = dies[Math.floor(rand() * dies.length)];
-      var ex = base.x + pitch / 2, ey = base.y + pitch / 2;
+    while (extras.length < want && tries++ < 600) {
+      var base = dies[Math.floor(Math.random() * dies.length)];
+      var ex = base.x + pitch * (Math.random() < 0.5 ? 0.5 : -0.5), ey = base.y + pitch * (Math.random() < 0.5 ? 0.5 : -0.5);
       var ddx = ex - cx, ddy = ey - cy;
       if (Math.sqrt(ddx * ddx + ddy * ddy) > R - pitch * 1.2 || ddy > R - pitch * 1.4) continue;
-      var near = extras.some(function (o) { return Math.abs(o.x - ex) < pitch * 2.4 && Math.abs(o.y - ey) < pitch * 2.4; });
-      if (near) continue;
-      extras.push({ x: ex, y: ey, heat: reduce ? 1 : 0, seen: reduce, rot: (rand() - 0.5) * 0.6 });
+      if (extras.some(function (o) { return Math.abs(o.x - ex) < pitch * 2.2 && Math.abs(o.y - ey) < pitch * 2.2; })) continue;
+      extras.push({ x: ex, y: ey, heat: reduce ? 1 : 0, seen: reduce, rot: (Math.random() - 0.5) * 0.8,
+        sig: (1.4 + Math.random() * 0.9) * pitch, amp: (0.42 + Math.random() * 0.26) * pitch, sz: 0.95 + Math.random() * 0.3 });
     }
   }
   function die(x, y, s, color, alpha, rot) {
@@ -116,7 +112,7 @@
     ctx.clearRect(0, 0, W, H);
     ctx.globalAlpha = 0.5; ctx.strokeStyle = c.line; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke();
-    var active = false, seenN = 0, bad = 0, i, k;
+    var active = false, bad = 0, i, k;
 
     for (k = 0; k < extras.length; k++) {
       var e = extras[k];
@@ -131,36 +127,35 @@
       if (bandOn && Math.abs(r.x - bandX) < BAND) r.heat = 1;
       else if (r.heat > 0.01) r.heat *= 0.93; else r.heat = 0;
       if (r.heat > 0.01) active = true;
-      // The regular dies are pushed away from any extra that is showing.
-      var x = r.x, y = r.y;
+      // The grid warps smoothly around each extra, with a little irregularity from die to die.
+      var x = r.x, y = r.y, F = 0;
       for (k = 0; k < extras.length; k++) {
         var ee = extras[k];
         if (ee.heat <= 0.01) continue;
-        var dx = r.x - ee.x, dy = r.y - ee.y, d = Math.sqrt(dx * dx + dy * dy), reach = REACH * pitch;
-        if (d < reach && d > 0.01) {
-          var f = Math.pow(1 - d / reach, 1.4) * pitch * 1.1 * ease(ee.heat);
-          x += (dx / d) * f; y += (dy / d) * f;
-        }
+        var dx = r.x - ee.x, dy = r.y - ee.y, d = Math.sqrt(dx * dx + dy * dy);
+        var g = Math.exp(-Math.pow(d / ee.sig, 2)) * ease(ee.heat);
+        if (g < 0.01) continue;
+        x += (dx / d) * ee.amp * g; y += (dy / d) * ee.amp * g; F += g;
       }
+      x += r.jx * pitch * 0.14 * F; y += r.jy * pitch * 0.14 * F;
+      var rot = r.jr * 0.2 * Math.min(1, F);
       var swell = 1 + 0.15 * r.heat;
-      if (r.heat > 0.01) die(x, y, size * swell, c.text, 0.35 + 0.65 * r.heat);
-      else die(x, y, size, x === r.x && y === r.y ? c.line : c.text, x === r.x && y === r.y ? 0.55 : 0.6);
+      if (r.heat > 0.01) die(x, y, size * swell, c.text, 0.35 + 0.65 * r.heat, rot);
+      else die(x, y, size, F > 0.01 ? c.text : c.line, F > 0.01 ? 0.6 : 0.55, rot);
     }
     ctx.shadowColor = c.signal; ctx.shadowBlur = 8;
     for (k = 0; k < extras.length; k++) {
-      var g = extras[k];
-      if (g.seen) { seenN++; bad++; }
-      if (g.heat <= 0.01) continue;
-      var p = ease(Math.min(1, g.heat));
-      die(g.x, g.y, size * (0.4 + 0.75 * p), c.signal, Math.min(1, 0.3 + p), g.rot * p);
+      var g2 = extras[k];
+      if (g2.seen) bad++;
+      if (g2.heat <= 0.01) continue;
+      var p = ease(Math.min(1, g2.heat));
+      die(g2.x, g2.y, size * g2.sz * (0.4 + 0.75 * p), c.signal, Math.min(1, 0.3 + p), g2.rot * p);
     }
     ctx.shadowBlur = 0; ctx.globalAlpha = 1;
     if (bandOn) {
       ctx.fillStyle = c.accent; ctx.globalAlpha = 0.5; ctx.fillRect(bandX - 0.5, 0, 1, H); ctx.globalAlpha = 1;
     }
     if (checkedEl && bad) {
-      var scanned = 0;
-      for (i = 0; i < dies.length; i++) if (dies[i].x < Math.max(bandX, 0) + BAND || !bandOn) scanned++;
       checkedEl.textContent = 'Dies on the wafer: ' + dies.length;
       badEl.innerHTML = 'Never fired, found so far: <span class="bad">' + bad + '</span> of ' + extras.length;
     }
@@ -186,6 +181,8 @@
       if (bandOn && !sweepStart) { bandOn = false; kick(); }
       return;
     }
+    // A new pass over the wafer finds the misses in new places.
+    if (!bandOn && extras.every(function (x) { return x.heat < 0.05; })) reseed();
     sweepStart = 0; bandOn = true; bandX = e.clientX - r.left; kick();
   });
   window.addEventListener('resize', function () { layout(); draw(); });
@@ -247,7 +244,8 @@
   if (!map) return;
   function play() { map.classList.remove('go'); void map.getBoundingClientRect(); map.classList.add('go'); }
   if (!('IntersectionObserver' in window)) { map.classList.add('go'); return; }
-  new IntersectionObserver(function (en) { if (en[0].isIntersecting) play(); else map.classList.remove('go'); }, { threshold: 0.3 }).observe(map);
+  var seen = false;
+  new IntersectionObserver(function (en) { if (en[0].isIntersecting && !seen) { seen = true; play(); } }, { threshold: 0.2 }).observe(map);
   var panel = document.getElementById('lang');
   if (panel) panel.addEventListener('panelshow', function () { setTimeout(play, 30); });
 })();
