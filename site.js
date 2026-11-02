@@ -88,11 +88,24 @@
     // Exactly MISSING of the runs never ran, so the readout agrees with the caption.
     var idx = runs.map(function (_, i) { return i; });
     for (var k = idx.length - 1; k > 0; k--) { var j = Math.floor(rand() * (k + 1)); var t = idx[k]; idx[k] = idx[j]; idx[j] = t; }
-    for (var m = 0; m < Math.round(runs.length * MISSING); m++) runs[idx[m]].bad = true;
+    for (var m = 0; m < Math.round(runs.length * MISSING); m++) {
+      var o = runs[idx[m]];
+      o.bad = true;
+      // The runs that never ran sit out of line with the grid.
+      o.ox = (rand() < 0.5 ? -1 : 1) * (4 + rand() * 8);
+      o.oy = (rand() < 0.5 ? -1 : 1) * (5 + rand() * 10);
+      o.rot = (rand() - 0.5) * 1.1;
+      if (o.y + o.oy < 12 || o.y + o.oy > H - 12) o.oy = -o.oy;
+      if (o.y + o.oy < 12 || o.y + o.oy > H - 12) o.oy = 0;
+    }
   }
-  function tick(r, color, alpha, extra) {
+  function tick(r, color, alpha, extra, out) {
     ctx.globalAlpha = alpha; ctx.fillStyle = color;
-    ctx.fillRect(r.x - 1.5, r.y - 8 - (extra || 0), 3, 16 + 2 * (extra || 0));
+    ctx.save();
+    ctx.translate(r.x + (out ? r.ox : 0), r.y + (out ? r.oy : 0));
+    if (out) ctx.rotate(r.rot);
+    ctx.fillRect(-1.5, -8 - (extra || 0), 3, 16 + 2 * (extra || 0));
+    ctx.restore();
   }
   function draw() {
     ctx.clearRect(0, 0, W, H);
@@ -105,7 +118,7 @@
       if (r.seen) { checked++; if (r.bad) bad++; }
       if (r.seen && r.bad) {
         ctx.shadowColor = c.signal; ctx.shadowBlur = 8;
-        tick(r, c.signal, 1, 3);
+        tick(r, c.signal, 1, 3, true);
         ctx.shadowBlur = 0;
       } else if (r.heat > 0.01) {
         tick(r, c.text, 0.35 + 0.65 * r.heat);
