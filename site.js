@@ -78,68 +78,56 @@
     W = r.width; H = r.height;
     canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    // The grid is the batch the platform ran. A margin around it holds the runs that should have been in it.
-    var padX = 30, padY = 26;
+    var padX = 8, padY = 16;
     var cols = Math.max(14, Math.floor((W - 2 * padX) / 12)), gx = (W - 2 * padX) / cols, gy = (H - 2 * padY) / ROWS, rand = rng(11);
     runs = [];
     for (var row = 0; row < ROWS; row++) {
       for (var col = 0; col < cols; col++) {
-        runs.push({ x: padX + (col + 0.5) * gx, y: padY + (row + 0.5) * gy, bad: false, seen: reduce, heat: 0, prog: 0 });
+        runs.push({ x: padX + (col + 0.5) * gx, y: padY + (row + 0.5) * gy, bad: false, seen: reduce, heat: 0 });
       }
     }
-    // Exactly MISSING of the runs never ran, so the readout agrees with the caption.
+    // Exactly MISSING of the runs never fired, so the readout agrees with the caption.
     var idx = runs.map(function (_, i) { return i; });
     for (var k = idx.length - 1; k > 0; k--) { var j = Math.floor(rand() * (k + 1)); var t = idx[k]; idx[k] = idx[j]; idx[j] = t; }
-    for (var m = 0; m < Math.round(runs.length * MISSING); m++) {
-      var o = runs[idx[m]], tx, ty;
-      o.bad = true;
-      // When found, the run leaves its slot and sits in the margin, outside the batch.
-      var side = Math.floor(rand() * 4);
-      if (side < 2) { tx = 10 + rand() * (W - 20); ty = side === 0 ? 12 : H - 12; }
-      else { ty = 10 + rand() * (H - 20); tx = side === 2 ? 12 : W - 12; }
-      o.ox = tx - o.x; o.oy = ty - o.y; o.rot = (rand() - 0.5) * 0.8;
-      if (reduce) o.prog = 1;
-    }
+    for (var m = 0; m < Math.round(runs.length * MISSING); m++) runs[idx[m]].bad = true;
   }
-  function tick(r, color, alpha, extra, e) {
+  function tick(x, y, color, alpha, extra, stretch) {
     ctx.globalAlpha = alpha; ctx.fillStyle = color;
-    ctx.save();
-    ctx.translate(r.x + (e ? r.ox * e : 0), r.y + (e ? r.oy * e : 0));
-    if (e) ctx.rotate(r.rot * e);
-    ctx.fillRect(-1.5, -8 - (extra || 0), 3, 16 + 2 * (extra || 0));
-    ctx.restore();
+    var half = 8 * (stretch || 1) + (extra || 0);
+    ctx.fillRect(x - 1.5, y - half, 3, 2 * half);
   }
   function draw() {
     ctx.clearRect(0, 0, W, H);
-    var active = false, checked = 0, bad = 0;
+    var active = false, checked = 0, bad = 0, flagged = [];
     for (var i = 0; i < runs.length; i++) {
       var r = runs[i];
       if (bandOn && Math.abs(r.x - bandX) < BAND) { r.heat = 1; r.seen = true; }
       else if (r.heat > 0.01) r.heat *= 0.93; else r.heat = 0;
       if (r.heat > 0.01) active = true;
       if (r.seen) { checked++; if (r.bad) bad++; }
+      // Under the scan the grid swells slightly: runs spread away from the band and grow taller.
+      var d = Math.max(-1, Math.min(1, (r.x - bandX) / BAND));
+      var x = r.x + (r.heat > 0.01 ? d * 6 * r.heat : 0);
+      var stretch = 1 + 0.2 * r.heat;
       if (r.seen && r.bad) {
-        if (r.prog < 1) { r.prog = Math.min(1, r.prog + 0.04); active = true; }
-        var e = 1 - Math.pow(1 - r.prog, 3);
-        // The empty slot where the run belonged.
-        ctx.globalAlpha = 0.7; ctx.strokeStyle = c.signal; ctx.lineWidth = 1; ctx.setLineDash([2, 2]);
-        ctx.strokeRect(r.x - 2.5, r.y - 8.5, 5, 17); ctx.setLineDash([]);
-        ctx.shadowColor = c.signal; ctx.shadowBlur = 8;
-        tick(r, c.signal, 1, 3, e);
-        ctx.shadowBlur = 0;
+        flagged.push({ x: x, y: r.y, s: stretch });
       } else if (r.heat > 0.01) {
-        tick(r, c.text, 0.35 + 0.65 * r.heat);
+        tick(x, r.y, c.text, 0.35 + 0.65 * r.heat, 0, stretch);
       } else {
-        tick(r, c.line, r.seen ? 0.85 : 0.5);
+        tick(x, r.y, c.line, r.seen ? 0.85 : 0.5, 0, 1);
       }
     }
+    // The runs that never fired are drawn last so they sit on top.
+    ctx.shadowColor = c.signal; ctx.shadowBlur = 8;
+    for (var f = 0; f < flagged.length; f++) tick(flagged[f].x, flagged[f].y, c.signal, 1, 2, flagged[f].s);
+    ctx.shadowBlur = 0;
     ctx.globalAlpha = 1;
     if (bandOn) {
       ctx.fillStyle = c.accent; ctx.globalAlpha = 0.5; ctx.fillRect(bandX - 0.5, 0, 1, H); ctx.globalAlpha = 1;
     }
     if (checkedEl && checked) {
       checkedEl.textContent = 'Runs checked: ' + checked.toLocaleString('en-US');
-      badEl.innerHTML = 'Never ran: <span class="bad">' + bad + '</span> (' + (Math.round(1000 * bad / checked) / 10) + '%)';
+      badEl.innerHTML = 'Never fired: <span class="bad">' + bad + '</span> (' + (Math.round(1000 * bad / checked) / 10) + '%)';
     }
     return active;
   }
