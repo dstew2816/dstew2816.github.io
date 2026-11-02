@@ -32,7 +32,7 @@
         var on = t === tab;
         t.setAttribute('aria-selected', on ? 'true' : 'false');
         var p = document.getElementById(t.dataset.for);
-        if (p) p.hidden = !on;
+        if (p) { var was = p.hidden; p.hidden = !on; if (on && was) p.dispatchEvent(new CustomEvent('panelshow')); }
       });
     }
     tabs.forEach(function (t, i) {
@@ -47,8 +47,8 @@
   });
 })();
 
-// Run monitor: a field of runs, a few percent of which never ran. A scan band follows the cursor
-// and reveals the ones that went missing, with a running count.
+// Wafer map: a round field of dies that looks like a clean grid. A scan band follows the cursor, the dies
+// under it swell slightly, and the few that never fired turn red and sit out of true.
 (function () {
   var canvas = document.getElementById('monitor');
   if (!canvas || !canvas.getContext) return;
@@ -56,8 +56,8 @@
   var checkedEl = document.getElementById('mon-checked');
   var badEl = document.getElementById('mon-bad');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var ROWS = 6, BAND = 70, MISSING = 0.05;
-  var runs = [], W = 0, H = 0, c = {}, bandX = -999, bandOn = false, raf = 0, sweepStart = 0;
+  var BAND = 46, MISSING = 0.05, N = 17;
+  var dies = [], W = 0, H = 0, cx = 0, cy = 0, R = 0, pitch = 0, size = 0, c = {}, bandX = -999, bandOn = false, raf = 0, sweepStart = 0;
 
   function rng(seed) {
     return function () {
@@ -78,55 +78,68 @@
     W = r.width; H = r.height;
     canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    var padX = 8, padY = 16;
-    var cols = Math.max(14, Math.floor((W - 2 * padX) / 12)), gx = (W - 2 * padX) / cols, gy = (H - 2 * padY) / ROWS, rand = rng(11);
-    runs = [];
-    for (var row = 0; row < ROWS; row++) {
-      for (var col = 0; col < cols; col++) {
-        runs.push({ x: padX + (col + 0.5) * gx, y: padY + (row + 0.5) * gy, bad: false, seen: reduce, heat: 0 });
+    cx = W / 2; cy = H / 2; R = Math.min(W, H) / 2 - 6;
+    pitch = (2 * R) / N; size = pitch - 2.6;
+    var rand = rng(11);
+    dies = [];
+    for (var row = 0; row < N; row++) {
+      for (var col = 0; col < N; col++) {
+        var x = cx + (col - (N - 1) / 2) * pitch, y = cy + (row - (N - 1) / 2) * pitch;
+        var dx = x - cx, dy = y - cy;
+        if (Math.sqrt(dx * dx + dy * dy) > R - pitch * 0.55) continue;
+        if (dy > R - pitch * 1.0) continue; // the flat at the bottom of the wafer
+        dies.push({ x: x, y: y, bad: false, seen: reduce, heat: 0, prog: reduce ? 1 : 0, ox: 0, oy: 0, rot: 0 });
       }
     }
-    // Exactly MISSING of the runs never fired, so the readout agrees with the caption.
-    var idx = runs.map(function (_, i) { return i; });
+    // Exactly MISSING of the dies never fired, so the readout agrees with what you see.
+    var idx = dies.map(function (_, i) { return i; });
     for (var k = idx.length - 1; k > 0; k--) { var j = Math.floor(rand() * (k + 1)); var t = idx[k]; idx[k] = idx[j]; idx[j] = t; }
-    for (var m = 0; m < Math.round(runs.length * MISSING); m++) runs[idx[m]].bad = true;
+    for (var m = 0; m < Math.max(1, Math.round(dies.length * MISSING)); m++) {
+      var d = dies[idx[m]];
+      d.bad = true;
+      d.ox = (rand() < 0.5 ? -1 : 1) * (2 + rand() * 3);
+      d.oy = (rand() < 0.5 ? -1 : 1) * (2 + rand() * 3);
+      d.rot = (rand() - 0.5) * 0.7;
+    }
   }
-  function tick(x, y, color, alpha, extra, stretch) {
+  function die(x, y, s, color, alpha, rot) {
     ctx.globalAlpha = alpha; ctx.fillStyle = color;
-    var half = 8 * (stretch || 1) + (extra || 0);
-    ctx.fillRect(x - 1.5, y - half, 3, 2 * half);
+    ctx.save(); ctx.translate(x, y); if (rot) ctx.rotate(rot);
+    ctx.fillRect(-s / 2, -s / 2, s, s);
+    ctx.restore();
   }
   function draw() {
     ctx.clearRect(0, 0, W, H);
+    // wafer outline with the flat
+    ctx.globalAlpha = 0.5; ctx.strokeStyle = c.line; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke();
     var active = false, checked = 0, bad = 0, flagged = [];
-    for (var i = 0; i < runs.length; i++) {
-      var r = runs[i];
+    for (var i = 0; i < dies.length; i++) {
+      var r = dies[i];
       if (bandOn && Math.abs(r.x - bandX) < BAND) { r.heat = 1; r.seen = true; }
       else if (r.heat > 0.01) r.heat *= 0.93; else r.heat = 0;
       if (r.heat > 0.01) active = true;
       if (r.seen) { checked++; if (r.bad) bad++; }
-      // Under the scan the grid swells slightly: runs spread away from the band and grow taller.
       var d = Math.max(-1, Math.min(1, (r.x - bandX) / BAND));
-      var x = r.x + (r.heat > 0.01 ? d * 6 * r.heat : 0);
-      var stretch = 1 + 0.2 * r.heat;
+      var x = r.x + (r.heat > 0.01 ? d * 4 * r.heat : 0);
+      var s = size * (1 + 0.22 * r.heat);
       if (r.seen && r.bad) {
-        flagged.push({ x: x, y: r.y, s: stretch });
+        if (r.prog < 1) { r.prog = Math.min(1, r.prog + 0.07); active = true; }
+        flagged.push({ x: x + r.ox * r.prog, y: r.y + r.oy * r.prog, s: size * (1 + 0.18 * r.prog) + 1, rot: r.rot * r.prog });
       } else if (r.heat > 0.01) {
-        tick(x, r.y, c.text, 0.35 + 0.65 * r.heat, 0, stretch);
+        die(x, r.y, s, c.text, 0.35 + 0.65 * r.heat);
       } else {
-        tick(x, r.y, c.line, r.seen ? 0.85 : 0.5, 0, 1);
+        die(x, r.y, size, c.line, r.seen ? 0.9 : 0.55);
       }
     }
-    // The runs that never fired are drawn last so they sit on top.
     ctx.shadowColor = c.signal; ctx.shadowBlur = 8;
-    for (var f = 0; f < flagged.length; f++) tick(flagged[f].x, flagged[f].y, c.signal, 1, 2, flagged[f].s);
-    ctx.shadowBlur = 0;
-    ctx.globalAlpha = 1;
+    for (var f = 0; f < flagged.length; f++) die(flagged[f].x, flagged[f].y, flagged[f].s, c.signal, 1, flagged[f].rot);
+    ctx.shadowBlur = 0; ctx.globalAlpha = 1;
     if (bandOn) {
       ctx.fillStyle = c.accent; ctx.globalAlpha = 0.5; ctx.fillRect(bandX - 0.5, 0, 1, H); ctx.globalAlpha = 1;
     }
     if (checkedEl && checked) {
-      checkedEl.textContent = 'Runs checked: ' + checked.toLocaleString('en-US');
+      checkedEl.textContent = 'Dies checked: ' + checked.toLocaleString('en-US');
       badEl.innerHTML = 'Never fired: <span class="bad">' + bad + '</span> (' + (Math.round(1000 * bad / checked) / 10) + '%)';
     }
     return active;
@@ -134,7 +147,7 @@
   function loop() {
     raf = 0;
     if (sweepStart) {
-      var p = Math.min((performance.now() - sweepStart) / 3200, 1);
+      var p = Math.min((performance.now() - sweepStart) / 3400, 1);
       bandX = W * (1 - Math.pow(1 - p, 2)); bandOn = true;
       if (p >= 1) { sweepStart = 0; bandOn = false; }
     }
@@ -157,4 +170,64 @@
   document.addEventListener('themechange', function () { colors(); draw(); });
   window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function () { colors(); draw(); });
   init();
+})();
+
+// Scroll reveals and count-up numbers.
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce || !('IntersectionObserver' in window)) { document.documentElement.classList.remove('js'); return; }
+
+  var groups = ['.block > h2', '.work', '.proj', '.resume', '.hero .panel', '.affil'];
+  groups.forEach(function (sel) {
+    document.querySelectorAll(sel).forEach(function (el, i) {
+      el.setAttribute('data-reveal', '');
+      el.style.setProperty('--d', (i % 3) * 90 + 'ms');
+    });
+  });
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+      if (e.target.classList.contains('work')) startCounts(e.target);
+      var ch = e.target.querySelector && e.target.querySelector('.chart');
+      if (ch) ch.classList.add('go');
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('[data-reveal]').forEach(function (el) { io.observe(el); });
+  document.querySelectorAll('.proj').forEach(function (card) {
+    var ch = card.querySelector('.chart');
+    if (!ch) return;
+    card.addEventListener('mouseenter', function () {
+      ch.classList.remove('go'); void ch.getBoundingClientRect(); ch.classList.add('go');
+    });
+  });
+
+  function startCounts(root) {
+    root.querySelectorAll('[data-count]').forEach(function (el) {
+      var to = parseFloat(el.getAttribute('data-count')), t0 = performance.now(), dur = 1200;
+      function step(now) {
+        var p = Math.min((now - t0) / dur, 1), e = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(to * e).toLocaleString('en-US');
+        if (p < 1) requestAnimationFrame(step);
+      }
+      el.textContent = '0';
+      requestAnimationFrame(step);
+    });
+    var tl = root.querySelector('.timeline');
+    if (tl) tl.classList.add('go');
+  }
+})();
+
+// Route map: draws the path when its tab opens.
+(function () {
+  var panel = document.getElementById('lang');
+  if (!panel) return;
+  var map = panel.querySelector('.route');
+  if (!map) return;
+  panel.addEventListener('panelshow', function () {
+    map.classList.remove('go');
+    void map.getBoundingClientRect();
+    map.classList.add('go');
+  });
 })();
