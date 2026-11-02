@@ -39,8 +39,8 @@
 
 <header class="hero">
   <div>
-    <h1>Hi, I'm David.</h1>
-    <p>I study industrial engineering at Georgia Tech and graduate in May 2028. This past summer I interned at Taiwan Semiconductor Manufacturing Company in Arizona, where I audited automated procedures to find the ones that were failing without anyone noticing.</p>
+    <h1>Hey! I'm David.</h1>
+    <p>I'm studying industrial engineering at Georgia Tech, graduating in May 2028, and this past summer I interned at TSMC in Arizona.</p>
     <p class="small">I'm looking for Summer 2027 internships in technical program management, operations, product management, supply chain, or data and analytics.</p>
     <div class="cta">
       <a class="btn solid" href="resume.pdf">View r&eacute;sum&eacute;</a>
@@ -52,7 +52,7 @@
     <p class="eyebrow">Runs, scanned</p>
     <canvas id="monitor" aria-hidden="true"></canvas>
     <p class="readout mono" aria-hidden="true"><span id="mon-checked">Move your cursor across the runs.</span><span id="mon-bad"></span></p>
-    <p class="cap">An illustration of the gap I found at the fab. Each mark is one run, and about 5 percent never ran. This is not real data.</p>
+    <p class="cap">The runs that started line up in a tidy grid. The ones that never ran sit out of line, and finding them was my project at TSMC. About 5 percent here; the data is made up.</p>
   </div>
 </header>
 
@@ -67,7 +67,7 @@
 <main>
 
 <section class="block" id="work">
-  <h2>Work</h2>
+  <h2>Summer at TSMC</h2>
   <div class="card card-pad work">
     <dl class="figures">
       <div><dd>130</dd><dt>procedures audited</dt></div>
@@ -77,22 +77,28 @@
     </dl>
     <div>
       <h3>Taiwan Semiconductor Manufacturing Company</h3>
-      <p class="role"><span>Automation Program Management Intern</span><span>Intelligent Manufacturing Engineer Intern, Phoenix, Arizona, May to August 2026</span></p>
-      <p>Automated procedures at the fab watch for a condition and act on it, and the platform reports how many of the runs it started were successful. It had no record of the runs that never started. I proposed an audit of that gap, scoped it, and led it across 130 automated procedures and more than 2,200 tools. The audit found silent failures equal to 4 to 6 percent of the runs that did start.</p>
+      <p class="role"><span>Automation Program Management Intern</span><span>Phoenix, Arizona, May to August 2026</span></p>
+      <p>I interned at TSMC's Arizona fab on the team that runs automated procedures. I proposed an audit of the runs that never started, scoped it, and led it across 130 procedures and more than 2,200 tools.</p>
       <details>
-        <summary>Read the full story</summary>
+        <summary>More on what I did</summary>
         <div>
+          <p>The platform reports how many of the runs it started were successful, and it had no record of the ones that never started. The audit found silent failures equal to 4 to 6 percent of the runs that did start.</p>
           <p>The procedures had been written from inconsistent templates, so I turned them into detection specifications and found owners for them across several departments and with teams in Taiwan, where I worked in Mandarin. I wrote SQL and Python against more than 1,000,000 daily log entries and set up on-call alerts for critical misses.</p>
           <p>I quantified about 600 hours a month of manual work and an estimated six figures in scrap, with wafers worth about $25,000 each, by prioritizing the fixes that protect wafer flow. I also built a reusable audit template organized by candidate type.</p>
           <p>I shipped a key performance indicator across the whole platform, time saved per run, that measures what each automation is actually worth, along with four Power BI dashboards that are now in active use. The indicator was approved after I presented it to the head of manufacturing for Fab 21, and it has been implemented.</p>
         </div>
       </details>
+      <div class="from">
+        <p class="eyebrow">What came out of it</p>
+        <p><a href="projects/opsaudit.html">OpsAudit</a>, my own version of the audit, rebuilt on synthetic data so I can show it.</p>
+        <ul class="tags"><li>SQL</li><li>Python</li><li>Power BI</li><li>Statistical process control</li><li>Root cause analysis</li><li>Stakeholder management</li><li>Mandarin</li></ul>
+      </div>
     </div>
   </div>
 </section>
 
 <section class="block" id="projects">
-  <h2>Projects</h2>
+  <h2>Things I've built</h2>
   <div class="grid3">
 
     <a class="card proj" href="projects/opsaudit.html">
@@ -126,44 +132,40 @@
 </section>
 
 <section class="block" id="about">
-  <h2>About me</h2>
-  <div class="bento">
-
-    <div class="card card-pad">
-      <div class="bento-head"><span class="eyebrow">Skills</span></div>
-      <ul class="pile" id="pile">
-        <li>SQL</li><li>Python</li><li>Statistical process control</li><li>Power BI</li><li>Tableau</li><li>Excel</li>
-        <li>Root cause analysis</li><li>Process mapping</li><li>Process automation</li><li>Stakeholder management</li>
-        <li>Requirements gathering</li><li>Risk prioritization</li><li>Jira</li><li>Git and GitHub</li><li>LLM evaluation</li><li>Mandarin</li>
-      </ul>
-    </div>
-
-    <div class="card card-pad" data-tabs>
-      <div class="bento-head"><span class="eyebrow">R&eacute;sum&eacute;</span><a class="eyebrow" href="resume.pdf">PDF</a></div>
+  <h2>More about me</h2>
+  <div class="card card-pad resume" data-tabs>
+    <div class="bento-head"><span class="eyebrow">R&eacute;sum&eacute; summary</span><a class="eyebrow" href="resume.pdf">PDF</a></div>
       <div class="tabs" role="tablist">
-        <button role="tab" aria-selected="true" data-for="exp">Experience</button>
-        <button role="tab" aria-selected="false" data-for="edu">Education</button>
-      </div>
-      <div class="panelbody" id="exp" role="tabpanel">
-        <div class="entry"><h4>Automation Program Management Intern</h4><p class="sub">Taiwan Semiconductor Manufacturing Company, Summer 2026</p><p>Audited 130 automated procedures across more than 2,200 tools and shipped a key performance indicator for the whole platform.</p></div>
-        <div class="entry"><h4>Product Management Fellow</h4><p class="sub">Microsoft Student Research, September 2026 to present</p><p>Research on AI-powered incident management and on-call tooling for a Microsoft product team. Competitive teardowns, market sizing and discovery, including a teardown of one competitor across six evaluation tracks with sourced evidence that separates verified capability from vendor marketing.</p></div>
-        <div class="entry"><h4>Director of Events</h4><p class="sub">Product @ GT, Georgia Tech, August 2026 to present</p></div>
-      </div>
-      <div class="panelbody" id="edu" role="tabpanel" hidden>
-        <div class="entry"><h4>Georgia Institute of Technology</h4><p class="sub">B.S. in Industrial Engineering, concentration in Analytics and Data Science, graduating May 2028. Stamps President's Scholar.</p><p>Coursework includes Database Systems, Engineering Optimization, Simulation Analysis and Design, Quality Improvement Methods, and Regression and Forecasting.</p></div>
-      </div>
+      <button role="tab" aria-selected="true" data-for="exp">Experience</button>
+      <button role="tab" aria-selected="false" data-for="edu">Education</button>
     </div>
-
-    <div class="card wide">
-      <div class="card-pad">
-        <div class="bento-head"><span class="eyebrow">Outside of work</span></div>
-        <div class="about-cols">
-          <p>I grew up in Hangzhou and I'm fluent in Mandarin, which I used at Taiwan Semiconductor Manufacturing Company to work with teams in Taiwan. I have six years of acting experience, and I run a Dungeons &amp; Dragons campaign.</p>
-          <p>Storytelling is my favorite thing, and the clearest example is a research pitch I gave as a Germination Project fellow, on mental illness treatment and healthcare disparities among veterans and people experiencing homelessness. Our team had spent most of the project in the data. When we reached the final presentation, I took the ending and added a few short recollections from our interviews, along with my own personal connection to the topic. I kept them controlled and let them sit next to the numbers. The audience included Penn Medicine staff and local government leaders, and we won the pitch. I think the numbers made the case and the stories made it matter to the room, which is how I try to approach any presentation: who is listening, what they need to hear, and how to make it land for them.</p>
-        </div>
-      </div>
+    <div class="panelbody" id="exp" role="tabpanel">
+      <div class="entry"><h4>Automation Program Management Intern</h4><p class="sub">Taiwan Semiconductor Manufacturing Company, Summer 2026</p><p>Audited 130 automated procedures across more than 2,200 tools and shipped a key performance indicator for the whole platform.</p></div>
+      <div class="entry"><h4>Product Management Fellow</h4><p class="sub">Microsoft Student Research, September 2026 to present</p><p>Research on AI-powered incident management and on-call tooling for a Microsoft product team. Competitive teardowns, market sizing and discovery, including a teardown of one competitor across six evaluation tracks with sourced evidence that separates verified capability from vendor marketing.</p></div>
+      <div class="entry"><h4>Director of Events</h4><p class="sub">Product @ GT, Georgia Tech, August 2026 to present</p></div>
     </div>
+    <div class="panelbody" id="edu" role="tabpanel" hidden>
+      <div class="entry"><h4>Georgia Institute of Technology</h4><p class="sub">B.S. in Industrial Engineering, concentration in Analytics and Data Science, graduating May 2028. Stamps President's Scholar.</p><p>Coursework includes Database Systems, Engineering Optimization, Simulation Analysis and Design, Quality Improvement Methods, and Regression and Forecasting.</p></div>
+    </div>
+  </div>
 
+  <div class="outside">
+    <div class="card card-pad">
+      <p class="eyebrow">Presenting</p>
+      <p>I gave a research pitch as a Germination Project fellow on mental illness treatment and healthcare disparities among veterans and people experiencing homelessness. Our team had spent most of the project in the data. For the final presentation I took the ending and added a few short recollections from our interviews, along with my own personal connection to the topic. I kept them controlled and let them sit next to the numbers. The audience included Penn Medicine staff and local government leaders, and we won the pitch. The numbers made the case and the stories made it matter to the room, which is how I try to approach any presentation: who is listening, what they need to hear, and how to make it land for them.</p>
+    </div>
+    <div class="card card-pad">
+      <p class="eyebrow">Running the table</p>
+      <p>I run a Dungeons &amp; Dragons campaign, and it is where <a href="projects/backroom.html">Backroom</a> came from. In one session a supposedly level 3 wizard started flying and I forgot about the trap I had set in the alleyway. I scraped together a sudden fight, and while the players were celebrating I rewrote my next session so that it took place right after.</p>
+    </div>
+    <div class="card card-pad">
+      <p class="eyebrow">Two languages</p>
+      <p>I grew up in Hangzhou and moved to New Mexico in third grade, where I started over in English. I learned it from library books and an online fan community, and I'm fluent in both languages now. At TSMC that meant I could confirm what a procedure was meant to do directly with teams in Taiwan.</p>
+    </div>
+    <div class="card card-pad">
+      <p class="eyebrow">Fun fact</p>
+      <p>I've been in short films and scholastic commercials since I was around twelve.</p>
+    </div>
   </div>
 </section>
 
