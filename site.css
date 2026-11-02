@@ -326,3 +326,7 @@ footer a { color: var(--text); }
 .xp-t .sub { display: block; margin: 0; }
 .xp-b .when { margin: 0 0 .6rem; font: 500 .72rem "IBM Plex Mono", ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
 .entry.xp summary { padding: 1rem 0; }
+
+.route .land { fill: none; stroke: var(--line-strong); stroke-width: 2.3; stroke-linecap: round; opacity: .6; }
+.route text { paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+@media (max-width: 43.99rem) { .route { min-width: 760px; } }
