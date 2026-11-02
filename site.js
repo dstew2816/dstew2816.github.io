@@ -96,6 +96,7 @@
       else keep = extras.filter(function (x) { return x.heat > 0.05; }).map(function (x) { if (!x.ghost) { x.ghost = true; x.until = now + HOLD; } return x; });
     }
     lastReseed = now;
+    canvas.dataset.pass = String((+canvas.dataset.pass || 0) + 1);
     if (!partial) dies.forEach(function (d) { d.jx = Math.random() * 2 - 1; d.jy = Math.random() * 2 - 1; d.jr = Math.random() * 2 - 1; });
     extras = keep.slice();
     var total = Math.max(1, Math.round(dies.length * MISSING));
@@ -185,13 +186,18 @@
       if (p >= 1) { sweepStart = 0; bandOn = false; }
     }
     var active = draw();
+    if (pending && !active && quiet()) { reseed(false); pending = false; draw(); }
     if (active || sweepStart) raf = requestAnimationFrame(loop);
   }
   function kick() { if (!raf) raf = requestAnimationFrame(loop); }
 
   function init() { colors(); layout(); draw(); if (!reduce) { sweepStart = performance.now(); kick(); } }
   var inRect = false, inCircle = false, wasNear = false, lastMove = 0;
-  function maybeReseed(now, partial) { if (now - lastReseed > 120) reseed(partial); }
+  // A re-roll never happens mid-scan: it is requested on a crossing, and applied only once every die and every red
+  // has settled back to its default look.
+  var pending = false;
+  function quiet() { return extras.every(function (x) { return x.heat <= 0.01; }) && dies.every(function (d) { return d.heat <= 0.01; }); }
+  function maybeReseed() { if (quiet()) { reseed(false); pending = false; } else pending = true; }
   document.addEventListener('pointermove', function (e) {
     if (reduce) return;
     var r = canvas.getBoundingClientRect(), nowT = performance.now();
@@ -200,7 +206,7 @@
     var circle = Math.hypot(e.clientX - (r.left + cx), e.clientY - (r.top + cy)) <= R;
     if (!near) {
       // leaving the whole area: the misses move somewhere new for the next pass
-      if (wasNear) maybeReseed(nowT, false);
+      if (wasNear) maybeReseed();
       wasNear = false; inRect = false; inCircle = false;
       if (bandOn && !sweepStart) { bandOn = false; lastScan = nowT; kick(); }
       return;
@@ -208,8 +214,7 @@
     // Every crossing re-rolls the misses: into or out of the area, the box, or the wafer circle, or moving again after a pause.
     var fresh = nowT - lastMove > 350;
     lastMove = nowT;
-    if ((near && !wasNear) || !bandOn) maybeReseed(nowT, false);
-    else if (inside !== inRect || circle !== inCircle || fresh) maybeReseed(nowT, true);
+    if ((near && !wasNear) || !bandOn || inside !== inRect || circle !== inCircle || fresh) maybeReseed();
     wasNear = near; inRect = inside; inCircle = circle;
     sweepStart = 0; bandOn = true; bandX = e.clientX - r.left; lastScan = nowT; kick();
   });
