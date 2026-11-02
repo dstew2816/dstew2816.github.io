@@ -58,7 +58,7 @@
   var checkedEl = document.getElementById('mon-checked');
   var badEl = document.getElementById('mon-bad');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var BAND = 46, MISSING = 0.05, N = 17, HOLD = 1250, lastScan = 0;
+  var BAND = 46, MISSING = 0.05, N = 17, HOLD = 1250, lastScan = 0, lastReseed = 0;
   var dies = [], extras = [], W = 0, H = 0, cx = 0, cy = 0, R = 0, pitch = 0, size = 0, c = {}, bandX = -999, bandOn = false, raf = 0, sweepStart = 0;
 
   function colors() {
@@ -88,17 +88,21 @@
   }
   // New random extras and new random warping, so each scan finds the misses somewhere different.
   function reseed() {
+    var keepAt = performance.now(), kept = reduce ? [] : extras.filter(function (x) { return x.heat > 0.05; });
+    kept.forEach(function (x) { if (!x.ghost) { x.ghost = true; x.until = keepAt + HOLD; } });
+    lastReseed = keepAt;
     dies.forEach(function (d) { d.jx = Math.random() * 2 - 1; d.jy = Math.random() * 2 - 1; d.jr = Math.random() * 2 - 1; });
-    extras = [];
-    var want = Math.max(1, Math.round(dies.length * MISSING)), tries = 0;
-    while (extras.length < want && tries++ < 600) {
+    extras = kept.slice();
+    var want = Math.max(1, Math.round(dies.length * MISSING)), tries = 0, made = 0;
+    while (made < want && tries++ < 600) {
       var base = dies[Math.floor(Math.random() * dies.length)];
       var ex = base.x + pitch * (Math.random() < 0.5 ? 0.5 : -0.5), ey = base.y + pitch * (Math.random() < 0.5 ? 0.5 : -0.5);
       var ddx = ex - cx, ddy = ey - cy;
       if (Math.sqrt(ddx * ddx + ddy * ddy) > R - pitch * 1.2 || ddy > R - pitch * 1.4) continue;
-      if (extras.some(function (o) { return Math.abs(o.x - ex) < pitch * 2.2 && Math.abs(o.y - ey) < pitch * 2.2; })) continue;
+      if (extras.some(function (o) { return !o.ghost && Math.abs(o.x - ex) < pitch * 2.2 && Math.abs(o.y - ey) < pitch * 2.2; })) continue;
       extras.push({ x: ex, y: ey, heat: reduce ? 1 : 0, seen: reduce, rot: (Math.random() - 0.5) * 0.8,
         sig: (1.4 + Math.random() * 0.9) * pitch, amp: (0.42 + Math.random() * 0.26) * pitch, sz: 0.95 + Math.random() * 0.3 });
+      made++;
     }
   }
   function die(x, y, s, color, alpha, rot) {
@@ -114,16 +118,20 @@
     ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke();
     var active = false, bad = 0, i, k;
 
+    var nowD = performance.now();
     for (k = 0; k < extras.length; k++) {
       var e = extras[k];
       if (!reduce) {
-        // Found misses stay lit while the scan is going and for a moment after it stops, so they can all be seen at once.
-        if (bandOn && Math.abs(e.x - bandX) < BAND) { e.heat = 1; e.seen = true; e.found = true; }
-        else if (e.found && performance.now() - lastScan < HOLD) e.heat = 1;
+        if (e.ghost) {
+          // a leftover from the previous pass: holds for a moment, then fades, and no longer reacts to the scan
+          if (nowD < e.until) { /* hold */ } else if (e.heat > 0.01) e.heat *= 0.94; else e.heat = 0;
+        } else if (bandOn && Math.abs(e.x - bandX) < BAND) { e.heat = 1; e.seen = true; e.found = true; }
+        else if (e.found && nowD - lastScan < HOLD) e.heat = 1;
         else if (e.heat > 0.01) { e.found = false; e.heat *= 0.94; } else { e.heat = 0; e.found = false; }
       }
       if (e.heat > 0.01) active = true;
     }
+    extras = extras.filter(function (x) { return !x.ghost || x.heat > 0.01; });
     for (i = 0; i < dies.length; i++) {
       var r = dies[i];
       if (bandOn && Math.abs(r.x - bandX) < BAND) r.heat = 1;
@@ -176,26 +184,26 @@
   function kick() { if (!raf) raf = requestAnimationFrame(loop); }
 
   function init() { colors(); layout(); draw(); if (!reduce) { sweepStart = performance.now(); kick(); } }
-  var inRect = false, lastMove = 0;
+  var inRect = false, inCircle = false, wasNear = false, lastMove = 0;
+  function maybeReseed(now) { if (now - lastReseed > 120) reseed(); }
   document.addEventListener('pointermove', function (e) {
     if (reduce) return;
-    var r = canvas.getBoundingClientRect();
+    var r = canvas.getBoundingClientRect(), nowT = performance.now();
     var near = !(e.clientY < r.top - 140 || e.clientY > r.bottom + 140 || e.clientX < r.left - 140 || e.clientX > r.right + 140);
     var inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+    var circle = Math.hypot(e.clientX - (r.left + cx), e.clientY - (r.top + cy)) <= R;
     if (!near) {
-      inRect = false;
-      if (bandOn && !sweepStart) { bandOn = false; lastScan = performance.now(); kick(); }
+      // leaving the whole area: the misses move somewhere new for the next pass
+      if (wasNear) maybeReseed(nowT);
+      wasNear = false; inRect = false; inCircle = false;
+      if (bandOn && !sweepStart) { bandOn = false; lastScan = nowT; kick(); }
       return;
     }
-    // Every new pass finds the misses in new places: entering the wafer, coming back into the area around it,
-    // or starting to move again after a pause.
-    var nowT = performance.now(), fresh = nowT - lastMove > 350;
+    // Every crossing re-rolls the misses: into or out of the area, the box, or the wafer circle, or moving again after a pause.
+    var fresh = nowT - lastMove > 350;
     lastMove = nowT;
-    if ((inside && !inRect) || fresh || !bandOn) {
-      extras.forEach(function (x) { x.heat = 0; });
-      reseed();
-    }
-    inRect = inside;
+    if (near !== wasNear || inside !== inRect || circle !== inCircle || fresh || !bandOn) maybeReseed(nowT);
+    wasNear = near; inRect = inside; inCircle = circle;
     sweepStart = 0; bandOn = true; bandX = e.clientX - r.left; lastScan = nowT; kick();
   });
   window.addEventListener('resize', function () { layout(); draw(); });
@@ -276,7 +284,7 @@
     { text: 'the party reaches the keep', q: [0.72, 0.38], names: ['Gate captain', 'Moat riddle', 'Hidden stair'] },
     { text: 'they bargain with the guild', q: [0.50, 0.66], names: ['Guildmaster\'s debt', 'Smuggler\'s cache', 'Forged seal'] }
   ];
-  var SCENE_MS = 5600;
+  var SCENE_MS = 9000;
 
   function rng(seed) { return function () { seed |= 0; seed = (seed + 0x6D2B79F5) | 0; var t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
   function colors() {
@@ -328,7 +336,7 @@
     sc.start = start; sc.hits = hits;
     sc.paths = hits.map(function (h) { var p = [], cur = h; while (cur !== -1) { p.unshift(cur); cur = par[cur]; } return p; });
     // when each path starts and how long it takes, in fractions of the scene
-    sc.timing = hits.map(function () { return { d: 0.32 + Math.random() * 0.2, w: 0.2 + Math.random() * 0.16 }; });
+    sc.timing = hits.map(function () { return { d: 0.2 + Math.random() * 0.2, w: 0.12 + Math.random() * 0.08 }; });
   }
   function pos(i, t) { var n = nodes[i]; return [n.x * W + Math.sin(t / 1800 + n.p) * 2, n.y * H + Math.cos(t / 2100 + n.p) * 2]; }
   function frame(now) {
@@ -337,7 +345,7 @@
     var cyc = Math.floor(t / SCENE_MS), si = cyc % SCENES.length, sc = SCENES[si], u = (t % SCENE_MS) / SCENE_MS;
     if (reduce) { si = 0; sc = SCENES[0]; u = 0.95; cyc = 0; }
     if (sc.cyc !== cyc) { plan(sc); sc.cyc = cyc; }
-    var typed = Math.min(1, u / 0.2), fade = u > 0.9 ? 1 - (u - 0.9) / 0.1 : 1;
+    var typed = Math.min(1, u / 0.14), fade = u > 0.9 ? 1 - (u - 0.9) / 0.1 : 1;
     ctx.clearRect(0, 0, W, H);
     ctx.lineWidth = 1;
     edges.forEach(function (e) {
@@ -353,8 +361,8 @@
       ctx.globalAlpha = 0.95; ctx.fillStyle = a2 > 0.5 ? c.text : c.line;
       ctx.beginPath(); ctx.arc(p[0], p[1], nd.r + 2.4 * a2, 0, 6.283); ctx.fill();
     });
-    if (u > 0.2) {
-      var sp = pos(sc.start, t), ring = Math.min(1, (u - 0.2) / 0.25);
+    if (u > 0.14) {
+      var sp = pos(sc.start, t), ring = Math.min(1, (u - 0.14) / 0.2);
       ctx.globalAlpha = (1 - ring) * 0.7 * fade; ctx.strokeStyle = c.signal;
       ctx.beginPath(); ctx.arc(sp[0], sp[1], 4 + ring * 30, 0, 6.283); ctx.stroke();
       ctx.globalAlpha = fade; ctx.fillStyle = c.signal; ctx.beginPath(); ctx.arc(sp[0], sp[1], 3.6, 0, 6.283); ctx.fill();
