@@ -307,31 +307,32 @@
     adj = nodes.map(function () { return []; });
     edges.forEach(function (e) { adj[e[0]].push(e[1]); adj[e[1]].push(e[0]); });
 
-    SCENES.forEach(function (sc) {
-      var qx = sc.q[0] * W, qy = sc.q[1] * H, start = 0, best = 1e9;
-      nodes.forEach(function (nd, i) { var d = Math.hypot(nd.x * W - qx, nd.y * H - qy); if (d < best) { best = d; start = i; } });
-      // Breadth-first search outward along the links.
-      var par = {}, depth = {}, queue = [start], seen = {};
-      par[start] = -1; depth[start] = 0; seen[start] = true;
-      while (queue.length) { var u = queue.shift(); adj[u].forEach(function (v) { if (!seen[v]) { seen[v] = true; par[v] = u; depth[v] = depth[u] + 1; queue.push(v); } }); }
-      var cands = Object.keys(depth).map(Number).filter(function (i) { return depth[i] >= 3 && depth[i] <= 5; })
-        .sort(function (a2, b2) { return dist(start, b2) - dist(start, a2); });
-      var hits = [];
-      cands.forEach(function (i) {
-        if (hits.length >= 3) return;
-        if (hits.every(function (h) { return dist(h, i) > 75; }) && !(nodes[i].y > 0.78)) hits.push(i);
-      });
-      sc.start = start; sc.hits = hits;
-      sc.paths = hits.map(function (h) { var p = [], cur = h; while (cur !== -1) { p.unshift(cur); cur = par[cur]; } return p; });
-    });
+    SCENES.forEach(function (sc) { sc.cyc = -1; });
+  }
+  // Each pass picks a new starting note, new matches and new timing, so no two look alike.
+  function plan(sc) {
+    var pool = nodes.map(function (_, i) { return i; }).filter(function (i) { return nodes[i].y > 0.14 && nodes[i].y < 0.74 && nodes[i].x > 0.1 && nodes[i].x < 0.9; });
+    var start = pool[Math.floor(Math.random() * pool.length)];
+    var par = {}, depth = {}, queue = [start], seen = {};
+    par[start] = -1; depth[start] = 0; seen[start] = true;
+    while (queue.length) { var u = queue.shift(); adj[u].forEach(function (v) { if (!seen[v]) { seen[v] = true; par[v] = u; depth[v] = depth[u] + 1; queue.push(v); } }); }
+    var cands = Object.keys(depth).map(Number).filter(function (i) { return depth[i] >= 3 && depth[i] <= 5 && nodes[i].y < 0.78; });
+    for (var k = cands.length - 1; k > 0; k--) { var m = Math.floor(Math.random() * (k + 1)), t = cands[k]; cands[k] = cands[m]; cands[m] = t; }
+    var hits = [];
+    cands.forEach(function (i) { if (hits.length < 3 && hits.every(function (h) { return dist(h, i) > 75; })) hits.push(i); });
+    sc.start = start; sc.hits = hits;
+    sc.paths = hits.map(function (h) { var p = [], cur = h; while (cur !== -1) { p.unshift(cur); cur = par[cur]; } return p; });
+    // when each path starts and how long it takes, in fractions of the scene
+    sc.timing = hits.map(function () { return { d: 0.32 + Math.random() * 0.2, w: 0.2 + Math.random() * 0.16 }; });
   }
   function pos(i, t) { var n = nodes[i]; return [n.x * W + Math.sin(t / 1800 + n.p) * 2, n.y * H + Math.cos(t / 2100 + n.p) * 2]; }
   function frame(now) {
     raf = 0;
     var t = reduce ? 4000 : now - t0;
-    var si = Math.floor(t / SCENE_MS) % SCENES.length, sc = SCENES[si], u = (t % SCENE_MS) / SCENE_MS;
-    if (reduce) { si = 0; sc = SCENES[0]; u = 0.7; }
-    var typed = Math.min(1, u / 0.2), found = Math.max(0, Math.min(1, (u - 0.32) / 0.34)), fade = u > 0.88 ? 1 - (u - 0.88) / 0.12 : 1;
+    var cyc = Math.floor(t / SCENE_MS), si = cyc % SCENES.length, sc = SCENES[si], u = (t % SCENE_MS) / SCENE_MS;
+    if (reduce) { si = 0; sc = SCENES[0]; u = 0.95; cyc = 0; }
+    if (sc.cyc !== cyc) { plan(sc); sc.cyc = cyc; }
+    var typed = Math.min(1, u / 0.2), fade = u > 0.9 ? 1 - (u - 0.9) / 0.1 : 1;
     ctx.clearRect(0, 0, W, H);
     ctx.lineWidth = 1;
     edges.forEach(function (e) {
@@ -339,39 +340,40 @@
       ctx.globalAlpha = 0.55; ctx.strokeStyle = c.line;
       ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
     });
-    // the nodes, all alike
-    var lit = {}; sc.hits.forEach(function (i) { lit[i] = true; });
+    // arrival of each match: 0 until its path reaches the note, then eases to 1 over a short while
+    var arrive = sc.hits.map(function (_, k) { var tm = sc.timing[k]; return Math.max(0, Math.min(1, (u - (tm.d + tm.w)) / 0.07)); });
+    var arr = {}; sc.hits.forEach(function (i, k) { arr[i] = arrive[k]; });
     nodes.forEach(function (nd, i) {
-      var p = pos(i, t), on = lit[i] && found > 0.98;
-      ctx.globalAlpha = 0.95; ctx.fillStyle = on ? c.text : c.line;
-      ctx.beginPath(); ctx.arc(p[0], p[1], nd.r + (on ? 2.4 : 0), 0, 6.283); ctx.fill();
+      var p = pos(i, t), a2 = arr[i] || 0;
+      ctx.globalAlpha = 0.95; ctx.fillStyle = a2 > 0.5 ? c.text : c.line;
+      ctx.beginPath(); ctx.arc(p[0], p[1], nd.r + 2.4 * a2, 0, 6.283); ctx.fill();
     });
-    // the match travels along the network's own links
     if (u > 0.2) {
       var sp = pos(sc.start, t), ring = Math.min(1, (u - 0.2) / 0.25);
       ctx.globalAlpha = (1 - ring) * 0.7 * fade; ctx.strokeStyle = c.signal;
       ctx.beginPath(); ctx.arc(sp[0], sp[1], 4 + ring * 30, 0, 6.283); ctx.stroke();
       ctx.globalAlpha = fade; ctx.fillStyle = c.signal; ctx.beginPath(); ctx.arc(sp[0], sp[1], 3.6, 0, 6.283); ctx.fill();
       ctx.strokeStyle = c.signal; ctx.lineWidth = 1.7; ctx.lineCap = 'round';
-      sc.paths.forEach(function (path) {
-        var prog = found * (path.length - 1);
+      sc.paths.forEach(function (path, k) {
+        var tm = sc.timing[k], prog = Math.max(0, Math.min(1, (u - tm.d) / tm.w)) * (path.length - 1);
         for (var s = 0; s < path.length - 1; s++) {
           var f = Math.max(0, Math.min(1, prog - s)); if (f <= 0) break;
           var a = pos(path[s], t), b = pos(path[s + 1], t);
+          ctx.globalAlpha = fade;
           ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f); ctx.stroke();
           if (f >= 1) { ctx.fillStyle = c.signal; ctx.beginPath(); ctx.arc(b[0], b[1], 1.9, 0, 6.283); ctx.fill(); }
         }
       });
       ctx.lineWidth = 1;
     }
-    if (found > 0.98) {
-      sc.hits.forEach(function (i, k) {
-        var p = pos(i, t), right = p[0] < W * 0.6;
-        ctx.globalAlpha = fade * Math.min(1, (found - 0.98) * 50 + 0.0); ctx.fillStyle = c.text; ctx.font = '500 9px "IBM Plex Mono", monospace';
-        ctx.textAlign = right ? 'left' : 'right';
-        ctx.fillText(sc.names[k], p[0] + (right ? 8 : -8), p[1] + (k === 1 ? 14 : -6));
-      });
-    }
+    // each label fades in on its own once its path has arrived
+    sc.hits.forEach(function (i, k) {
+      var al = arrive[k]; if (al <= 0) return;
+      var p = pos(i, t), right = p[0] < W * 0.6, e = al * al * (3 - 2 * al);
+      ctx.globalAlpha = fade * e; ctx.fillStyle = c.text; ctx.font = '500 9px "IBM Plex Mono", monospace';
+      ctx.textAlign = right ? 'left' : 'right';
+      ctx.fillText(sc.names[k], p[0] + (right ? 8 : -8), p[1] + (k === 1 ? 14 : -6) + (1 - e) * 4);
+    });
     ctx.globalAlpha = fade; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.font = '500 10px "IBM Plex Mono", monospace';
     ctx.fillText('> ' + sc.text.slice(0, Math.round(sc.text.length * typed)) + (typed < 1 || (u * 8 | 0) % 2 ? '_' : ''), 14, H - 14);
     ctx.globalAlpha = 1;
