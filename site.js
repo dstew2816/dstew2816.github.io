@@ -58,7 +58,7 @@
   var checkedEl = document.getElementById('mon-checked');
   var badEl = document.getElementById('mon-bad');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var BAND = 46, MISSING = 0.05, N = 17, HOLD = 1250, lastScan = 0, lastReseed = 0;
+  var BAND = 46, MISSING = 0.05, N = 17, HOLD = 750, lastScan = 0, lastReseed = 0;
   var dies = [], extras = [], W = 0, H = 0, cx = 0, cy = 0, R = 0, pitch = 0, size = 0, c = {}, bandX = -999, bandOn = false, raf = 0, sweepStart = 0;
 
   function colors() {
