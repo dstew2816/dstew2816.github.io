@@ -144,6 +144,14 @@ details > div { padding-top: .9rem; }
 .proj .meta { margin-top: auto; padding-top: .6rem; font-size: .75rem; color: var(--muted); }
 @media (min-width: 52rem) { .grid3 { grid-template-columns: repeat(3, 1fr); } }
 
+/* Next-up project strip */
+.next { margin-top: 1.25rem; padding: 1.1rem 1.25rem 1.2rem; display: flex; flex-direction: column; gap: .35rem; }
+.next-top { display: flex; justify-content: space-between; align-items: baseline; gap: .75rem; flex-wrap: wrap; }
+.next h3 { margin: 0; font-size: 1.1rem; font-weight: 600; }
+.next .tag { font-size: .75rem; color: var(--muted); border: 1px solid var(--line-strong); border-radius: 999px; padding: .1rem .6rem; }
+.next p { margin: 0; color: var(--muted); font-size: .95rem; max-width: 46rem; }
+.next .meta { padding-top: .4rem; font-size: .75rem; color: var(--muted); }
+
 /* Tabs */
 .tabs { display: inline-flex; gap: .35rem; margin-bottom: 1rem; flex-wrap: wrap; }
 .tabs button { background: var(--surface-2); color: var(--muted); border: 0; border-radius: 999px; padding: .4rem .9rem; font: inherit; font-size: .85rem; font-weight: 500; cursor: pointer; }
